@@ -319,7 +319,7 @@ h3 {
 }
 
 /* ==========================================================================
-   10. Team/Contact Section
+   10. Team/Contact Section - UPDATED for better mobile experience
    ========================================================================== */
 /* Team section container centering */
 #contact .container {
@@ -328,7 +328,7 @@ h3 {
     align-items: center;
 }
 
-/* Team rows with 3 members */
+/* Team rows with flexible layout */
 .team-row {
     display: flex;
     justify-content: center;
@@ -336,9 +336,10 @@ h3 {
     margin-bottom: 30px;
     width: 100%;
     max-width: 1050px;
+    flex-wrap: wrap; /* Allow wrapping by default for better responsiveness */
 }
 
-/* Team member cards with equal width */
+/* Team member cards with improved mobile styling */
 .team-member {
     background-color: var(--white);
     border-radius: 8px;
@@ -347,8 +348,9 @@ h3 {
     transition: transform var(--transition-speed) ease;
     text-align: center;
     flex: 1;
-    min-width: 0;
+    min-width: 300px; /* Ensure cards have enough width for content */
     max-width: 300px;
+    margin-bottom: 15px; /* Add space between wrapped rows */
 }
 
 .team-member:hover {
@@ -371,12 +373,19 @@ h3 {
 .team-member p.contact {
     font-size: 0.9rem;
     margin: 5px 0;
+    /* Ensure text wrapping for long URLs */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .team-member a {
     color: var(--primary-color);
     text-decoration: none;
     transition: color var(--transition-speed) ease;
+    /* Ensure links can break to new lines if needed */
+    display: inline-block;
+    max-width: 100%;
+    word-break: break-word;
 }
 
 .team-member a:hover {
@@ -624,89 +633,6 @@ footer {
 
 .examples li:hover {
     opacity: 0.8;
-}
-
-
-/* Align name, brand, and barcode nicely, stacked with minimal spacing */
-.product-header {
-  margin-bottom: 1em;
-}
-
-/* Larger name with a distinct color or style if you wish */
-.product-name {
-  font-size: 1.4em;
-  margin-bottom: 0.5em;
-  color: #1a5276; /* example color */
-}
-
-/* Frame for the product image */
-.product-image-frame {
-  max-width: 200px; /* or whatever you prefer */
-  border: 1px solid #ccc;
-  padding: 6px;
-  margin-bottom: 0.5em;
-}
-
-.product-image-frame img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
-
-.product-brand {
-  font-weight: bold;
-  color: #666;
-}
-
-.barcode-display {
-  font-size: 0.9em;
-  color: #888;
-}
-
-/* Toggle button style for "View Sources" */
-.toggle-btn {
-  background-color: #1a5276; /* site's accent color */
-  color: #fff;
-  border: none;
-  padding: 8px 12px;
-  margin-top: 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9em;
-}
-.toggle-btn:hover {
-  background-color: #16425e;
-}
-
-/* Minimal styling for the sources list */
-.sources-list, .parent-sources-list {
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-
-.source-item {
-  margin-bottom: 5px;
-}
-
-/* Tag styling for product tags */
-.tag {
-  display: inline-block;
-  background: #eee;
-  color: #333;
-  padding: 3px 8px;
-  margin: 3px;
-  border-radius: 3px;
-  font-size: 0.85em;
-}
-
-/* Alternative brand items spacing */
-.alt-item h5 {
-  margin-bottom: 2px; /* reduce space below the title */
-}
-
-.alt-item p {
-  margin-top: 2px;    /* optional, reduce space above the description */
-  margin-bottom: 6px; /* or remove this if no bottom margin is desired */
 }
 
 /* ==========================================================================
@@ -1039,14 +965,14 @@ hr {
 @media (max-width: 992px) {
     /* Team rows on medium screens */
     .team-row {
-        flex-wrap: wrap;
         justify-content: center;
+        gap: 20px;
     }
 
     .team-member {
-        width: calc(50% - 15px);
-        max-width: 250px;
-        margin-bottom: 30px;
+        min-width: 0;
+        width: calc(50% - 20px);
+        max-width: 280px;
     }
 }
 
@@ -1076,7 +1002,20 @@ hr {
         justify-content: center;
     }
 
-    /* Product info display */
+    /* Team section adjustments for better mobile display */
+    .team-row {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .team-member {
+        width: 100%;
+        max-width: 320px;
+        margin-bottom: 15px;
+    }
+
+    /* Manufacturing info display */
     .manufacturing-header,
     .parent-company-header {
         flex-direction: column;
@@ -1120,8 +1059,16 @@ hr {
 
     /* Layout adjustments */
     .team-member {
-        width: 100%;
-        max-width: 300px;
+        max-width: 280px;
+        padding: 15px;
+    }
+
+    .team-member h4 {
+        font-size: 1.1rem;
+    }
+
+    .team-member p.role {
+        font-size: 0.9rem;
     }
 
     .lookup-container {
