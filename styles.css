@@ -321,24 +321,24 @@ h3 {
 /* ==========================================================================
    10. Team/Contact Section
    ========================================================================== */
-/* Ensures container is properly centered */
+/* Team section container centering */
 #contact .container {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-/* Team rows for 3x3 layout */
+/* Team rows with 3 members */
 .team-row {
     display: flex;
     justify-content: center;
     gap: 30px;
     margin-bottom: 30px;
     width: 100%;
-    max-width: 1200px;
+    max-width: 1050px;
 }
 
-/* Team member cards */
+/* Team member cards with equal width */
 .team-member {
     background-color: var(--white);
     border-radius: 8px;
@@ -346,9 +346,9 @@ h3 {
     box-shadow: var(--medium-shadow);
     transition: transform var(--transition-speed) ease;
     text-align: center;
-    width: calc(33.33% - 20px);
-    max-width: 350px;
     flex: 1;
+    min-width: 0;
+    max-width: 300px;
 }
 
 .team-member:hover {
@@ -1040,10 +1040,12 @@ hr {
     /* Team rows on medium screens */
     .team-row {
         flex-wrap: wrap;
+        justify-content: center;
     }
 
     .team-member {
         width: calc(50% - 15px);
+        max-width: 250px;
         margin-bottom: 30px;
     }
 }
@@ -1119,7 +1121,7 @@ hr {
     /* Layout adjustments */
     .team-member {
         width: 100%;
-        max-width: 350px;
+        max-width: 300px;
     }
 
     .lookup-container {
