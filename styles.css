@@ -321,9 +321,10 @@ h3 {
 /* ==========================================================================
    10. Team/Contact Section
    ========================================================================== */
+/* Team grid - updated to enforce 3 columns */
 .team-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 30px;
     margin-top: 30px;
 }
@@ -651,7 +652,7 @@ footer {
 
 /* Toggle button style for "View Sources" */
 .toggle-btn {
-  background-color: #1a5276; /* site’s accent color */
+  background-color: #1a5276; /* site's accent color */
   color: #fff;
   border: none;
   padding: 8px 12px;
@@ -1024,6 +1025,13 @@ hr {
 /* ==========================================================================
    17. Media Queries
    ========================================================================== */
+@media (max-width: 992px) {
+    /* Team grid - 2 columns on medium screens */
+    .team-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 @media (max-width: 768px) {
     /* Text sizing */
     .hero h1 {
@@ -1036,7 +1044,6 @@ hr {
 
     /* Layout adjustments */
     .team-grid {
-        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
         gap: 15px;
     }
 
@@ -1081,7 +1088,7 @@ hr {
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 576px) {
     /* Font sizes */
     .section-header h2 {
         font-size: 1.5rem;
