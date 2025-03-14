@@ -1,7 +1,5 @@
-<!--barcode.html-->
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <!-- Meta Information -->
     <meta charset="UTF-8">
@@ -25,7 +23,6 @@
     <!-- Favicon -->
     <link rel="icon" href="images/onlyleaf.png" type="image/png">
 </head>
-
 <body>
     <!-- Navigation Bar -->
     <header class="nav-bar">
@@ -65,7 +62,7 @@
                 <form id="barcode-form" class="barcode-form">
                     <div class="form-group">
                         <label for="barcode">Enter Barcode Number:</label>
-                        <input type="text" id="barcode" name="barcode" placeholder="Example: 0064200116695" required>
+                        <input type="text" id="barcode" name="barcode" placeholder="e.g. 069000149171" required>
                     </div>
                     <button type="submit" class="lookup-button">Look Up Product</button>
                 </form>
@@ -81,16 +78,15 @@
 
                 <!-- Results Container -->
                 <div class="result-container" id="result-container">
-                    <!-- Product information will be inserted here via JavaScript -->
+                    <!-- Product information is inserted here via JavaScript -->
                 </div>
 
                 <!-- Example Barcodes Section -->
                 <div class="examples">
-                    <h3>Example Barcodes to Try:</h3>
+                    <h3>Try These Barcodes:</h3>
                     <ul>
-                        <li class="example-barcode" data-barcode="0064200116695">Catelli Pasta (0064200116695)</li>
-                        <li class="example-barcode" data-barcode="0620213063019">Maple Syrup (0620213063019)</li>
-                        <li class="example-barcode" data-barcode="0628915540036">Canadian Bread (0628915540036)</li>
+                        <li class="example-barcode" data-barcode="5449000133328">Coca Cola 1L (5449000133328)</li>
+                        <li class="example-barcode" data-barcode="0066676375996">Maple Syrup (0066676375996)</li>
                     </ul>
                 </div>
             </div>
@@ -123,13 +119,21 @@
             <div class="footer-column">
                 <h3>Connect</h3>
                 <ul>
-                    <li><a href="https://mail.google.com/mail/?view=cm&fs=1&to=buycanadianapp@gmail.com" target="_blank" rel="noopener noreferrer">Email Us</a></li>
-                    <li><a href="https://www.instagram.com/BuyCanApp" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+                    <li>
+                        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=buycanadianapp@gmail.com" target="_blank" rel="noopener noreferrer">
+                            Email Us
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.instagram.com/BuyCanApp" target="_blank" rel="noopener noreferrer">
+                            Instagram
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
 
-        <!-- Copyright Information -->
+        <!-- Copyright -->
         <div class="copyright">
             <p>&copy; 2025 BuyCan. All rights reserved.</p>
         </div>
@@ -137,7 +141,14 @@
 
     <!-- Back to Top Button -->
     <a href="#" class="back-to-top" aria-label="Back to top">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg xmlns="http://www.w3.org/2000/svg"
+             width="24" height="24"
+             viewBox="0 0 24 24"
+             fill="none"
+             stroke="white"
+             stroke-width="2"
+             stroke-linecap="round"
+             stroke-linejoin="round">
             <polyline points="18 15 12 9 6 15"></polyline>
         </svg>
     </a>
@@ -148,5 +159,4 @@
     <!-- Barcode-specific functionality -->
     <script src="barcode.js"></script>
 </body>
-
 </html>

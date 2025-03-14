@@ -612,16 +612,112 @@ footer {
     opacity: 0.8;
 }
 
+
+/* Align name, brand, and barcode nicely, stacked with minimal spacing */
+.product-header {
+  margin-bottom: 1em;
+}
+
+/* Larger name with a distinct color or style if you wish */
+.product-name {
+  font-size: 1.4em;
+  margin-bottom: 0.5em;
+  color: #1a5276; /* example color */
+}
+
+/* Frame for the product image */
+.product-image-frame {
+  max-width: 200px; /* or whatever you prefer */
+  border: 1px solid #ccc;
+  padding: 6px;
+  margin-bottom: 0.5em;
+}
+
+.product-image-frame img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.product-brand {
+  font-weight: bold;
+  color: #666;
+}
+
+.barcode-display {
+  font-size: 0.9em;
+  color: #888;
+}
+
+/* Toggle button style for "View Sources" */
+.toggle-btn {
+  background-color: #1a5276; /* site’s accent color */
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  margin-top: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+.toggle-btn:hover {
+  background-color: #16425e;
+}
+
+/* Minimal styling for the sources list */
+.sources-list, .parent-sources-list {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.source-item {
+  margin-bottom: 5px;
+}
+
+/* Tag styling for product tags */
+.tag {
+  display: inline-block;
+  background: #eee;
+  color: #333;
+  padding: 3px 8px;
+  margin: 3px;
+  border-radius: 3px;
+  font-size: 0.85em;
+}
+
+/* Alternative brand items spacing */
+.alt-item h5 {
+  margin-bottom: 2px; /* reduce space below the title */
+}
+
+.alt-item p {
+  margin-top: 2px;    /* optional, reduce space above the description */
+  margin-bottom: 6px; /* or remove this if no bottom margin is desired */
+}
+
+
+
 /* ==========================================================================
    14. Product Information Display
    ========================================================================== */
 /* Product header */
 .product-header {
-    display: flex;
-    align-items: flex-start;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-    gap: 20px;
+  /* Make the container flex-based */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* optional: gap, padding, or margins */
+  gap: 1em;
+  /* If you want text (like brand/barcode) aligned in the center too */
+  text-align: center;
+}
+
+/* Since you want brand & barcode stacked,
+   you can keep .product-details block-based if you like */
+.product-details {
+  display: block;     /* was flex before */
+  margin-bottom: 0.5em; /* optional spacing */
+  text-align: center;  /* center text content */
 }
 
 .product-title {

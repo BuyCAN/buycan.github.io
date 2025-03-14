@@ -1,303 +1,262 @@
-//barcode.js
-/**
- * BuyCan Barcode Lookup Tool
- * JavaScript for handling barcode lookups and displaying product information
- *
- * This file contains functionality specific to the barcode lookup page:
- * - Form submission handling
- * - Barcode example click handling
- * - API response simulation
- * - Product information display
- */
-
 document.addEventListener('DOMContentLoaded', function() {
-    // ======================================================
-    // ELEMENT SELECTION
-    // ======================================================
-    // Get reference to UI elements
-    const barcodeForm = document.getElementById('barcode-form');
-    const loadingIndicator = document.getElementById('loading');
-    const resultContainer = document.getElementById('result-container');
-    const errorMessage = document.getElementById('error-message');
-    const exampleBarcodes = document.querySelectorAll('.example-barcode');
+  // ======================================================
+  // ELEMENT SELECTION
+  // ======================================================
+  const barcodeForm      = document.getElementById('barcode-form');
+  const loadingIndicator = document.getElementById('loading');
+  const resultContainer  = document.getElementById('result-container');
+  const errorMessage     = document.getElementById('error-message');
+  const exampleBarcodes  = document.querySelectorAll('.example-barcode');
 
-    // ======================================================
-    // EVENT LISTENERS
-    // ======================================================
+  // Hard-coded auth token & log type
+  const AUTH_TOKEN = 'PEEPEEPOOPOODOODOOKAKA';
+  const LOG_TYPE   = 'view';
 
-    /**
-     * Form submission handler
-     * Processes barcode lookup when the form is submitted
-     */
-    barcodeForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const barcodeInput = document.getElementById('barcode').value.trim();
+  // ======================================================
+  // EVENT LISTENERS
+  // ======================================================
 
-        if (barcodeInput) {
-            // Show loading indicator and hide other UI elements
-            loadingIndicator.style.display = 'block';
-            resultContainer.style.display = 'none';
-            errorMessage.style.display = 'none';
+  // Handle form submission
+  barcodeForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const barcodeInput = document.getElementById('barcode').value.trim();
+    if (!barcodeInput) return;
 
-            // Simulate API call with setTimeout (1.5 second delay)
-            setTimeout(function() {
-                lookupBarcode(barcodeInput);
-            }, 1500);
-        }
+    showLoading(true);
+    clearUI();
+    fetchBarcodeData(barcodeInput);
+  });
+
+  // Handle example barcode clicks
+  exampleBarcodes.forEach(function(example) {
+    example.addEventListener('click', function() {
+      const barcode = this.getAttribute('data-barcode');
+      document.getElementById('barcode').value = barcode;
+
+      showLoading(true);
+      clearUI();
+      fetchBarcodeData(barcode);
     });
+  });
 
-    /**
-     * Example barcode click handler
-     * Allows users to select from predefined example barcodes
-     */
-    exampleBarcodes.forEach(function(example) {
-        example.addEventListener('click', function() {
-            // Get barcode from data attribute
-            const barcode = this.getAttribute('data-barcode');
+  // ======================================================
+  // CORE FUNCTIONS
+  // ======================================================
 
-            // Set the barcode in the input field
-            document.getElementById('barcode').value = barcode;
+  async function fetchBarcodeData(barcode) {
+    try {
+      const url = `https://buycanadian.onrender.com/get-by-barcode/${barcode}?auth_token=${AUTH_TOKEN}&log_type=${LOG_TYPE}`;
+      const response = await fetch(url);
 
-            // Show loading indicator and hide other UI elements
-            loadingIndicator.style.display = 'block';
-            resultContainer.style.display = 'none';
-            errorMessage.style.display = 'none';
+      if (!response.ok) {
+        throw new Error('Network response was not ok.');
+      }
 
-            // Simulate API call with setTimeout (1.5 second delay)
-            setTimeout(function() {
-                lookupBarcode(barcode);
-            }, 1500);
-        });
-    });
+      const data = await response.json();
+      showLoading(false);
 
-    // ======================================================
-    // CORE FUNCTIONS
-    // ======================================================
+      // If product does not exist, show not found
+      if (!data?.metadata?.exists) {
+        displayError('Product Not Found');
+        return;
+      }
 
-    /**
-     * Barcode lookup function
-     * Handles the lookup request and displays the result
-     *
-     * @param {string} barcode - The barcode number to look up
-     */
-    function lookupBarcode(barcode) {
-        // Sample data for demonstration
-        // In a production environment, this would be replaced with an API call
-        const sampleData = {
-            '0064200116695': {
-                name: 'Catelli Pasta - Spaghettini',
-                brand: 'Catelli',
-                manufacturingCountry: 'Canada',
-                canadianPercent: 92,
-                confidence: 'high',
-                parentCompany: 'Barilla Group',
-                parentCompanyCountry: 'Italy',
-                tags: ['Food', 'Pasta', 'Dry Goods'],
-                alternatives: [
-                    { name: 'Primo Pasta', parentCompany: 'Primo Foods (Canadian Owned)' },
-                    { name: 'Italpasta', parentCompany: 'Italpasta Limited (Canadian Owned)' }
-                ],
-                sources: [
-                    'https://www.catelli.ca/en/about-us/',
-                    'https://www.barilla.com/en-us/brands'
-                ]
-            },
-            '0620213063019': {
-                name: 'Pure Maple Syrup - Medium Grade',
-                brand: 'Canadian Heritage',
-                manufacturingCountry: 'Canada',
-                canadianPercent: 100,
-                confidence: 'high',
-                parentCompany: 'Maple Lodge Farms',
-                parentCompanyCountry: 'Canada',
-                tags: ['Food', 'Sweetener', 'Breakfast'],
-                alternatives: [
-                    { name: 'President\'s Choice Maple Syrup', parentCompany: 'Loblaw Companies (Canadian Owned)' },
-                    { name: 'Kirkland Signature Maple Syrup', parentCompany: 'Costco (American Owned)' }
-                ],
-                sources: [
-                    'https://maplefarms.ca/about-us/',
-                    'https://www.maplesyrupworld.com/producers'
-                ]
-            },
-            '0628915540036': {
-                name: 'Country Harvest Bread - Whole Grain',
-                brand: 'Country Harvest',
-                manufacturingCountry: 'Canada',
-                canadianPercent: 85,
-                confidence: 'medium',
-                parentCompany: 'Grupo Bimbo',
-                parentCompanyCountry: 'Mexico',
-                tags: ['Food', 'Bread', 'Bakery'],
-                alternatives: [
-                    { name: 'Silver Hills Bread', parentCompany: 'Silver Hills Bakery (Canadian Owned)' },
-                    { name: 'Rudolph\'s Bread', parentCompany: 'Rudolph\'s Bakeries (Canadian Owned)' }
-                ],
-                sources: [
-                    'https://www.grupobimbo.com/en/brands',
-                    'https://www.country-harvest.ca/about-us'
-                ]
-            }
-        };
+      displayProductData(data);
 
-        // Hide loading indicator
-        loadingIndicator.style.display = 'none';
+    } catch (err) {
+      showLoading(false);
+      displayError('Network Error');
+      console.error(err);
+    }
+  }
 
-        // Check if we have data for this barcode
-        if (sampleData[barcode]) {
-            const product = sampleData[barcode];
+  function displayProductData(data) {
+    resultContainer.innerHTML = generateProductHTML(data);
+    resultContainer.style.display = 'block';
+    setupToggleListeners();
+  }
 
-            // Display the product information
-            resultContainer.innerHTML = generateProductHTML(barcode, product);
-            resultContainer.style.display = 'block';
+  // ======================================================
+  // UTILITY FUNCTIONS
+  // ======================================================
+  function showLoading(isLoading) {
+    loadingIndicator.style.display = isLoading ? 'block' : 'none';
+  }
 
-            // Set up interactive elements in the results
-            setupToggleListeners();
+  function clearUI() {
+    resultContainer.innerHTML = '';
+    resultContainer.style.display = 'none';
+    errorMessage.textContent = '';
+    errorMessage.style.display = 'none';
+  }
+
+  function displayError(msg) {
+    errorMessage.textContent = msg;
+    errorMessage.style.display = 'block';
+  }
+
+  /**
+   * Build HTML from the real API data structure
+   */
+  function generateProductHTML(data) {
+  const {
+    barcode,
+    name,
+    brand,
+    tags,
+    alternativeBrands,
+    parentCompany,
+    manufacturingInfo,
+    metadata
+  } = data;
+
+  // Basic info
+  const madeIn       = manufacturingInfo?.label || 'Unknown origin';
+  const explanation  = manufacturingInfo?.labelExplanation || '';
+  const percent      = manufacturingInfo?.percentageCanadian ?? 0;
+  const confidence   = manufacturingInfo?.resultConfidence ?? 'Low';
+
+  // Lists of sources
+  const manufacturingSources = manufacturingInfo?.sources || [];
+  const parentSources        = parentCompany?.sources || [];
+
+  return `
+    <div class="product-data">
+
+        <!-- PRODUCT HEADER -->
+        <div class="product-header">
+          <!-- 1. Name at the top -->
+          <h3 class="product-name">${name || 'Untitled Product'}</h3>
+        
+          <!-- 2. Brand & Barcode below name, stacked -->
+          <div class="product-details">
+            <div class="product-brand">${brand || ''}</div>
+            <div class="barcode-display">Barcode: ${barcode}</div>
+          </div>
+        
+          <!-- 3. Product image below brand and barcode -->
+          ${
+            metadata?.imageURL
+              ? `
+                <div class="product-image-frame">
+                  <img src="${metadata.imageURL}" alt="Product Image">
+                </div>
+              `
+              : ''
+          }
+        </div>
+
+
+      <!-- MANUFACTURING INFO -->
+      <div class="manufacturing-info">
+        <h4>${madeIn}</h4>
+        <p><strong>Confidence:</strong> ${confidence}</p>
+        <div class="percentage-bar-container">
+          <div class="percentage-bar" style="width:${percent}%">
+            <span class="percentage-label">${percent}% Canadian</span>
+          </div>
+        </div>
+        <p class="explanation">${explanation}</p>
+
+        ${
+          manufacturingSources.length
+            ? `
+              <button class="toggle-btn sources-toggle">View Sources</button>
+              <div class="sources-list" style="display:none;">
+                ${manufacturingSources.map(s => `
+                  <div class="source-item">
+                    <a href="${s.url}" target="_blank">${s.name}</a>
+                  </div>
+                `).join('')}
+              </div>
+            `
+            : ''
+        }
+      </div>
+
+      <!-- PARENT COMPANY -->
+      <div class="parent-company">
+        <h4>Parent Company: ${parentCompany?.name || 'Unknown'}</h4>
+        <p>${parentCompany?.description || ''}</p>
+        <p>
+          <strong>Based in:</strong> ${parentCompany?.countryOfRegistration || 'N/A'} 
+          (Confidence: ${parentCompany?.resultConfidence || 'N/A'})
+        </p>
+
+        ${
+          parentSources.length
+            ? `
+              <button class="toggle-btn parent-sources-toggle">View Sources</button>
+              <div class="parent-sources-list" style="display:none;">
+                ${parentSources.map(src => `
+                  <div class="source-item">
+                    <a href="${src.url}" target="_blank">${src.name}</a>
+                  </div>
+                `).join('')}
+              </div>
+            `
+            : ''
+        }
+      </div>
+
+      <!-- PRODUCT TAGS -->
+      <div class="product-tags">
+        <h4>Tags:</h4>
+        ${
+          tags?.length
+            ? tags.map(t => `<span class="tag">${t}</span>`).join('')
+            : '<p>No tags available.</p>'
+        }
+      </div>
+
+      <!-- ALTERNATIVE BRANDS -->
+      <div class="alternative-brands">
+        <h4>Alternative Canadian Brands</h4>
+        ${
+          alternativeBrands?.length
+            ? alternativeBrands.map(alt => `
+              <div class="alt-item">
+                <h5>${alt.brand}</h5>
+                <p>${alt.description || ''}</p>
+              </div>
+            `).join('')
+            : '<p>No alternatives found.</p>'
+        }
+      </div>
+    </div>
+  `;
+  }
+
+
+  function setupToggleListeners() {
+    // For manufacturing info
+    const sourcesToggle = document.querySelector('.sources-toggle');
+    const sourcesList   = document.querySelector('.sources-list');
+    if (sourcesToggle && sourcesList) {
+      sourcesToggle.addEventListener('click', () => {
+        if (sourcesList.style.display === 'none') {
+          sourcesList.style.display = 'block';
+          sourcesToggle.textContent = 'Hide Sources';
         } else {
-            // Show error message for unknown barcodes
-            errorMessage.textContent = 'No information found for this barcode. Please try another one.';
-            errorMessage.style.display = 'block';
+          sourcesList.style.display = 'none';
+          sourcesToggle.textContent = 'View Sources';
         }
+      });
     }
 
-    /**
-     * Generate HTML for product display
-     * Creates the HTML structure for displaying product information
-     *
-     * @param {string} barcode - The barcode number
-     * @param {Object} product - The product data object
-     * @returns {string} HTML string representing the product information
-     */
-    function generateProductHTML(barcode, product) {
-        // Determine confidence class based on product confidence level
-        let confidenceClass = '';
-        if (product.confidence === 'high') {
-            confidenceClass = 'confidence-high';
-        } else if (product.confidence === 'medium') {
-            confidenceClass = 'confidence-medium';
+    // For parent company
+    const parentSourcesToggle = document.querySelector('.parent-sources-toggle');
+    const parentSourcesList   = document.querySelector('.parent-sources-list');
+    if (parentSourcesToggle && parentSourcesList) {
+      parentSourcesToggle.addEventListener('click', () => {
+        if (parentSourcesList.style.display === 'none') {
+          parentSourcesList.style.display = 'block';
+          parentSourcesToggle.textContent = 'Hide Sources';
         } else {
-            confidenceClass = 'confidence-low';
+          parentSourcesList.style.display = 'none';
+          parentSourcesToggle.textContent = 'View Sources';
         }
-
-        // Build and return HTML for the product information display
-        return `
-            <!-- Product Header Section -->
-            <div class="product-header">
-                <div class="product-title">
-                    <h3>${product.name}</h3>
-                    <div class="product-brand">${product.brand}</div>
-                    <div class="barcode-display">Barcode: ${barcode}</div>
-                </div>
-            </div>
-
-            <!-- Manufacturing Information Section -->
-            <div class="manufacturing-info">
-                <div class="manufacturing-header">
-                    <div class="manufacturing-label">Made in ${product.manufacturingCountry}</div>
-                    <div class="confidence-indicator">
-                        Data Confidence:
-                        <span class="confidence-badge ${confidenceClass}">${product.confidence.toUpperCase()}</span>
-                    </div>
-                </div>
-
-                <div>Canadian-made content:</div>
-                <div class="percentage-bar-container">
-                    <div class="percentage-bar" style="width: ${product.canadianPercent}%">
-                        <span class="percentage-label">${product.canadianPercent}%</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Parent Company Information -->
-            <div class="parent-company">
-                <div class="parent-company-header">
-                    <h4>Parent Company: ${product.parentCompany}</h4>
-                    <span class="country-badge">Based in ${product.parentCompanyCountry}</span>
-                </div>
-            </div>
-
-            <!-- Product Categories/Tags -->
-            <div class="tags-container">
-                <div>Categories:</div>
-                ${product.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-            </div>
-
-            <!-- Canadian Alternatives Section -->
-            <div class="alternatives-section">
-                <div class="alternatives-header">
-                    <h4>Canadian-owned Alternatives</h4>
-                </div>
-                <div class="alternatives-grid">
-                    ${product.alternatives.map(alt => `
-                        <div class="alternative-item">
-                            <h5 class="alternative-title">${alt.name}</h5>
-                            <div class="alternative-parent">${alt.parentCompany}</div>
-                        </div>
-                    `).join('')}
-                </div>
-            </div>
-
-            <!-- Data Sources Section (Collapsible) -->
-            <div class="sources-section">
-                <button class="sources-toggle">View Data Sources</button>
-                <div class="sources-list">
-                    ${product.sources.map(source => `
-                        <div class="source-item">
-                            <a href="${source}" target="_blank" rel="noopener noreferrer">${source}</a>
-                        </div>
-                    `).join('')}
-                </div>
-            </div>
-
-            <!-- Raw Data Section (Collapsible) -->
-            <div>
-                <span class="raw-json-toggle">View Raw Data</span>
-                <div class="raw-json-section">
-                    <pre class="json-result">${JSON.stringify(product, null, 2)}</pre>
-                </div>
-            </div>
-        `;
+      });
     }
-
-    /**
-     * Set up toggle listeners for collapsible sections
-     * Adds event listeners to toggle buttons to show/hide content
-     */
-    function setupToggleListeners() {
-        // Sources toggle functionality
-        const sourcesToggle = document.querySelector('.sources-toggle');
-        const sourcesList = document.querySelector('.sources-list');
-
-        if (sourcesToggle) {
-            sourcesToggle.addEventListener('click', function() {
-                if (sourcesList.style.display === 'block') {
-                    // Hide sources list
-                    sourcesList.style.display = 'none';
-                    sourcesToggle.textContent = 'View Data Sources';
-                } else {
-                    // Show sources list
-                    sourcesList.style.display = 'block';
-                    sourcesToggle.textContent = 'Hide Data Sources';
-                }
-            });
-        }
-
-        // Raw JSON toggle functionality
-        const rawJsonToggle = document.querySelector('.raw-json-toggle');
-        const rawJsonSection = document.querySelector('.raw-json-section');
-
-        if (rawJsonToggle) {
-            rawJsonToggle.addEventListener('click', function() {
-                if (rawJsonSection.style.display === 'block') {
-                    // Hide raw JSON data
-                    rawJsonSection.style.display = 'none';
-                    rawJsonToggle.textContent = 'View Raw Data';
-                } else {
-                    // Show raw JSON data
-                    rawJsonSection.style.display = 'block';
-                    rawJsonToggle.textContent = 'Hide Raw Data';
-                }
-            });
-        }
-    }
+  }
 });
