@@ -321,16 +321,6 @@ h3 {
 /* ==========================================================================
    10. Team/Contact Section
    ========================================================================== */
-/* Team grid - updated to enforce 3 columns and center team members */
-.team-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(250px, 1fr));
-    gap: 30px;
-    margin: 30px auto 0;
-    max-width: 1000px;
-    justify-content: center;
-}
-
 /* Ensures container is properly centered */
 #contact .container {
     display: flex;
@@ -338,6 +328,17 @@ h3 {
     align-items: center;
 }
 
+/* Team rows for 3x3 layout */
+.team-row {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 30px;
+    width: 100%;
+    max-width: 1200px;
+}
+
+/* Team member cards */
 .team-member {
     background-color: var(--white);
     border-radius: 8px;
@@ -345,6 +346,9 @@ h3 {
     box-shadow: var(--medium-shadow);
     transition: transform var(--transition-speed) ease;
     text-align: center;
+    width: calc(33.33% - 20px);
+    max-width: 350px;
+    flex: 1;
 }
 
 .team-member:hover {
@@ -705,8 +709,6 @@ footer {
   margin-bottom: 6px; /* or remove this if no bottom margin is desired */
 }
 
-
-
 /* ==========================================================================
    14. Product Information Display
    ========================================================================== */
@@ -1035,10 +1037,14 @@ hr {
    17. Media Queries
    ========================================================================== */
 @media (max-width: 992px) {
-    /* Team grid - 2 columns on medium screens */
-    .team-grid {
-        grid-template-columns: repeat(2, minmax(250px, 1fr));
-        max-width: 700px;
+    /* Team rows on medium screens */
+    .team-row {
+        flex-wrap: wrap;
+    }
+
+    .team-member {
+        width: calc(50% - 15px);
+        margin-bottom: 30px;
     }
 }
 
@@ -1053,10 +1059,6 @@ hr {
     }
 
     /* Layout adjustments */
-    .team-grid {
-        gap: 15px;
-    }
-
     .nav-container {
         flex-direction: column;
         gap: 15px;
@@ -1115,8 +1117,8 @@ hr {
     }
 
     /* Layout adjustments */
-    .team-grid {
-        grid-template-columns: minmax(250px, 1fr);
+    .team-member {
+        width: 100%;
         max-width: 350px;
     }
 
