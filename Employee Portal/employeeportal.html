@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Portal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        
+        .container {
+            text-align: center;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 90%;
+            opacity: 1;
+            transition: opacity 0.8s ease-out;
+        }
+        
+        h1 {
+            color: #333;
+        }
+
+        .fade-out {
+            opacity: 0;
+        }
+        
+        .logout-btn {
+            padding: 8px 16px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Employee Portal</h1>
+        <p>Welcome to the employee portal. More features coming soon.</p>
+        <button id="logoutButton" class="logout-btn">Logout</button>
+    </div>
+    <script>
+        
+        // check if user is authenticated
+        function checkAuthentication() {
+            return true;
+            
+            /* authentication uncomment later
+            const token = localStorage.getItem('authToken');
+            const tokenExpires = localStorage.getItem('tokenExpires');
+            
+            if (!token || !tokenExpires || Date.now() > parseInt(tokenExpires)) {
+                logout();
+                return false;
+            }
+            return true;
+            */
+        }
+
+        // logout function
+        function logout() {
+            window.location.href = 'login.html';
+            /* logout and remove token, uncomment later
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('tokenExpires');
+            window.location.href = 'login.html';
+            */
+        }
+
+        // activity timeout 
+        let inactivityTimeout;
+        const TIMEOUT_DURATION = 30 * 60 * 1000; // 30mins in milliseconds
+
+        // reset the inactivity timer
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimeout);
+            inactivityTimeout = setTimeout(() => {
+                logout();
+            }, TIMEOUT_DURATION);
+        }
+
+        // check authentication on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!checkAuthentication()) return;
+            
+            // start inactivity tracking
+            resetInactivityTimer();
+
+            // reset timer on user activity
+            ['click', 'keypress', 'mousemove', 'touchstart'].forEach(event => {
+                document.addEventListener(event, resetInactivityTimer);
+            });
+        });
+        
+        // direct logout, gonna add pretty animations later
+        document.getElementById('logoutButton').addEventListener('click', function() {
+            logout();  // Direct logout without animations
+        });
+
+        // make sure the checkAuthentication function runs right away
+        if (!checkAuthentication()) {
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>
