@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donation Form</title>
+    <head>
+        <!-- Meta Information -->
+        <meta charset="UTF-8">
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta name="description" content="BuyCan - Barcode Lookup Tool">
+    
+        <!-- Open Graph Tags for Social Media Sharing -->
+        <meta property="og:title" content="Barcode Lookup | BuyCan">
+        <meta property="og:description" content="Look up product information by barcode">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://yourwebsite.com/barcode.html">
+        <meta name="theme-color" content="#1a5276">
+    
+    
+        <!-- Stylesheets -->
+        <link rel="stylesheet" href="styles.css">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    
+        <!-- Favicon -->
+        <link rel="icon" href="images/onlyleaf.png" type="image/png">
+    </head>
+        <!-- Favicon -->
+        <link rel="icon" href="images/onlyleaf.png" type="image/png">
+    </head>
+    <body>
+        <!-- Navigation Bar -->
+        <header class="nav-bar">
+            <div class="nav-container">
+                <!-- Logo and Site Name -->
+                <div class="nav-logo">
+                    <a href="index.html" class="logo-link">
+                        <img src="images/logo2.png" alt="BuyCan Logo" height="40">
+                        <span class="logo-text">BuyCan</span>
+                    </a>
+                </div>
+    
+                <!-- Navigation Links -->
+                <nav class="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="index.html#about">About</a>
+                    <a href="index.html#app-preview">App Preview</a>
+                    <a href="index.html#download">Download</a>
+                    <a href="index.html#contact">Contact</a>
+                    <a href="policy.html">Privacy Policy</a>
+                </nav>
+            </div>
+        </header>
+</head>
+<body>
+    <div class="donation-form">
+        <h2>Support Our Cause</h2>
+        <p>Your donation helps us continue our important work. Thank you for your support!</p>
+        
+        <form id="donationForm">
+            <!-- Donation Amount Selection -->
+            <h3>Select Donation Amount</h3>
+            <div class="amount-options">
+                <button type="button" class="amount-btn" data-amount="5">$5</button>
+                <button type="button" class="amount-btn" data-amount="10">$10</button>
+                <button type="button" class="amount-btn" data-amount="25">$25</button>
+                <button type="button" class="amount-btn" data-amount="50">$50</button>
+                <button type="button" class="amount-btn" data-amount="100">$100</button>
+            </div>
+            
+            <div class="custom-amount">
+                <label for="customAmount">Or enter custom amount:</label>
+                <input type="number" id="customAmount" placeholder="Enter amount" min="1" step="1">
+            </div>
+            
+            <!-- Donor Information -->
+            <div class="donor-info">
+                <h3>Your Information</h3>
+                <input type="text" id="name" placeholder="Full Name" required>
+                <input type="email" id="email" placeholder="Email Address" required>
+            </div>
+            
+            <!-- Payment Methods -->
+            <div class="payment-methods">
+                <h3>Payment Method</h3>
+                <div>
+                    <input type="radio" id="creditCard" name="paymentMethod" value="creditCard" checked>
+                    <label for="creditCard">Credit Card</label>
+                </div>
+                <div>
+                    <input type="radio" id="paypal" name="paymentMethod" value="paypal">
+                    <label for="paypal">PayPal</label>
+                </div>
+            </div>
+            
+            <!-- Submit Button -->
+            <button type="submit" class="submit-btn">Donate Now</button>
+        </form>
+    </div>
+
+    <script>
+        // Handle amount button selection
+        const amountButtons = document.querySelectorAll('.amount-btn');
+        const customAmountInput = document.getElementById('customAmount');
+        let selectedAmount = null;
+
+        amountButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons
+                amountButtons.forEach(btn => btn.classList.remove('active'));
+                
+                // Add active class to clicked button
+                button.classList.add('active');
+                
+                // Set selected amount
+                selectedAmount = parseInt(button.dataset.amount);
+                
+                // Clear custom amount
+                customAmountInput.value = '';
+            });
+        });
+
+        // Handle custom amount input
+        customAmountInput.addEventListener('input', () => {
+            // Remove active class from all buttons
+            amountButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // Set selected amount to custom amount
+            selectedAmount = parseInt(customAmountInput.value) || null;
+        });
+
+        // Handle form submission
+        document.getElementById('donationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const donationAmount = selectedAmount || parseInt(customAmountInput.value) || 0;
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+            
+            if (donationAmount <= 0) {
+                alert('Please select or enter a valid donation amount.');
+                return;
+            }
+            
+            
+            
+            
+            console.log('Processing donation:', {
+                amount: donationAmount,
+                name: name,
+                email: email,
+                paymentMethod: paymentMethod
+            });
+            
+            alert(`Thank you for your donation of $${donationAmount}! In a real implementation, you would now be redirected to complete your payment.`);
+            
+            // Add link to stripe
+            // window.location.href = "https://payment-processor.com/checkout?amount=" + donationAmount;
+        });
+    </script>
+        <!-- Footer -->
+        <footer>
+            <div class="footer-content">
+                <!-- Footer Column 1: About -->
+                <div class="footer-column">
+                    <h3>BuyCan</h3>
+                    <p>Supporting Canadian-made products and local businesses since 2025.</p>
+                </div>
+    
+                <!-- Footer Column 2: Quick Links -->
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="index.html#about">About Us</a></li>
+                        <li><a href="index.html#app-preview">App Preview</a></li>
+                        <li><a href="index.html#download">Download</a></li>
+                        <li><a href="index.html#contact">Contact</a></li>
+                        <li><a href="policy.html">Privacy Policy</a></li>
+                    </ul>
+                </div>
+    
+                <!-- Footer Column 3: Connect -->
+                <div class="footer-column">
+                    <h3>Connect</h3>
+                    <ul>
+                        <li>
+                            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=buycanadianapp@gmail.com" target="_blank" rel="noopener noreferrer">
+                                Email Us
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.instagram.com/BuyCanApp" target="_blank" rel="noopener noreferrer">
+                                Instagram
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+</body>
+</html>
