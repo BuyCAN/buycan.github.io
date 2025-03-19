@@ -319,7 +319,7 @@ h3 {
 }
 
 /* ==========================================================================
-   10. Team/Contact Section - UPDATED for better mobile experience
+   10. Team/Contact Section - UPDATED for 3x3 grid on desktop, alternating pattern on mobile
    ========================================================================== */
 /* Team section container centering */
 #contact .container {
@@ -328,29 +328,30 @@ h3 {
     align-items: center;
 }
 
-/* Team rows with flexible layout */
+/* Team rows with 3x3 grid layout */
 .team-row {
     display: flex;
     justify-content: center;
-    gap: 30px;
-    margin-bottom: 30px;
+    gap: 20px;
+    margin-bottom: 20px;
     width: 100%;
-    max-width: 1050px;
-    flex-wrap: wrap; /* Allow wrapping by default for better responsiveness */
+    max-width: 900px; /* Reduced from 1050px for smaller boxes */
+    flex-wrap: nowrap;
 }
 
-/* Team member cards with improved mobile styling */
+/* Team member cards with smaller sizing */
 .team-member {
     background-color: var(--white);
     border-radius: 8px;
-    padding: 20px;
+    padding: 15px; /* Reduced padding */
     box-shadow: var(--medium-shadow);
     transition: transform var(--transition-speed) ease;
     text-align: center;
     flex: 1;
-    min-width: 300px; /* Ensure cards have enough width for content */
-    max-width: 300px;
-    margin-bottom: 15px; /* Add space between wrapped rows */
+    min-width: 0;
+    max-width: 250px; /* Reduced from 300px */
+    margin: 0;
+    width: calc(33.333% - 14px);
 }
 
 .team-member:hover {
@@ -361,17 +362,18 @@ h3 {
 .team-member h4 {
     color: var(--primary-color);
     margin-bottom: 5px;
-    font-size: 1.2rem;
+    font-size: 1.1rem; /* Slightly reduced font size */
 }
 
 .team-member p.role {
     color: var(--secondary-color);
     font-weight: 600;
     margin-bottom: 10px;
+    font-size: 0.9rem; /* Reduced font size */
 }
 
 .team-member p.contact {
-    font-size: 0.9rem;
+    font-size: 0.85rem; /* Reduced font size */
     margin: 5px 0;
     /* Ensure text wrapping for long URLs */
     word-wrap: break-word;
@@ -606,6 +608,14 @@ footer {
     display: none;
 }
 
+/* Product Image Sizing for Barcode Lookup Results */
+.result-container img {
+    max-width: 150px !important;
+    height: auto !important;
+    display: block !important;
+    margin: 0 auto !important;
+}
+
 /* Example barcodes section */
 .examples {
     margin-top: 30px;
@@ -648,6 +658,13 @@ footer {
   gap: 1em;
   /* If you want text (like brand/barcode) aligned in the center too */
   text-align: center;
+}
+
+/* Product header images */
+.product-header img {
+  max-width: 150px !important;
+  height: auto !important;
+  margin: 0 auto !important;
 }
 
 /* Since you want brand & barcode stacked,
@@ -835,6 +852,14 @@ footer {
     margin-bottom: 10px;
 }
 
+/* Alternative product images */
+.alternative-item img {
+    max-width: 150px !important;
+    height: auto !important;
+    display: block !important;
+    margin: 0 auto !important;
+}
+
 /* Data sources section */
 .sources-section {
     margin-top: 30px;
@@ -963,16 +988,18 @@ hr {
    17. Media Queries
    ========================================================================== */
 @media (max-width: 992px) {
-    /* Team rows on medium screens */
+    /* Team rows on medium screens - still maintain 3 columns */
     .team-row {
-        justify-content: center;
-        gap: 20px;
+        gap: 15px;
     }
 
     .team-member {
-        min-width: 0;
-        width: calc(50% - 20px);
-        max-width: 280px;
+        padding: 12px;
+        font-size: 0.9rem;
+    }
+
+    .team-member h4 {
+        font-size: 1rem;
     }
 }
 
@@ -992,9 +1019,14 @@ hr {
         gap: 15px;
     }
 
+    /* App preview images on mobile */
+    .app-preview {
+        gap: 10px;
+    }
+
     .app-preview img {
-        width: 150px;
-        height: 300px;
+        width: 70px;
+        height: 140px;
     }
 
     .nav-links {
@@ -1002,17 +1034,52 @@ hr {
         justify-content: center;
     }
 
-    /* Team section adjustments for better mobile display */
-    .team-row {
-        flex-direction: column;
-        align-items: center;
-        gap: 20px;
+    /* Team section adjustments for alternating 2-1-2-1-2-1 pattern */
+    #contact .container {
+        padding: 0 10px;
     }
 
-    .team-member {
-        width: 100%;
-        max-width: 320px;
+    .team-row {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
         margin-bottom: 15px;
+    }
+
+    /* First row: 2 items */
+    .team-row:nth-child(2) .team-member {
+        flex: 0 0 calc(50% - 8px);
+        max-width: calc(50% - 8px);
+    }
+
+    /* Second row: 1 item centered */
+    .team-row:nth-child(3) .team-member {
+        flex: 0 0 70%;
+        max-width: 70%;
+    }
+
+    /* Third row: 2 items */
+    .team-row:nth-child(4) .team-member {
+        flex: 0 0 calc(50% - 8px);
+        max-width: calc(50% - 8px);
+    }
+
+    /* Fourth row: 1 item centered */
+    .team-row:nth-child(5) .team-member {
+        flex: 0 0 70%;
+        max-width: 70%;
+    }
+
+    /* Fifth row: 2 items */
+    .team-row:nth-child(6) .team-member {
+        flex: 0 0 calc(50% - 8px);
+        max-width: calc(50% - 8px);
+    }
+
+    /* Sixth row: 1 item centered */
+    .team-row:nth-child(7) .team-member {
+        flex: 0 0 70%;
+        max-width: 70%;
     }
 
     /* Manufacturing info display */
@@ -1027,20 +1094,15 @@ hr {
         margin-top: 5px;
     }
 
-     /* Barcode lookup page images */
+    /* Barcode lookup image sizing for mobile */
     .result-container img,
-    .product-header img {
-        max-width: 25% !important;
-        height: auto !important;
+    .product-header img,
+    .alternative-item img {
+        max-width: 100px !important;
     }
 
     .alternatives-grid {
         grid-template-columns: 1fr;
-    }
-
-    .alternatives-grid img {
-        max-width: 25% !important;
-        height: auto !important;
     }
 
     /* Policy page */
@@ -1059,28 +1121,44 @@ hr {
         font-size: 1.5rem;
     }
 
-    /* Image sizing */
+    /* Image sizing for small screens */
     .app-preview img {
-        width: 120px;
-        height: 240px;
+        width: 60px;
+        height: 120px;
     }
 
     .hero-logo {
         max-width: 100px;
     }
 
-    /* Layout adjustments */
-    .team-member {
-        max-width: 280px;
-        padding: 15px;
+    /* Team member adjustments for alternating pattern on smaller screens */
+    .team-row:nth-child(2) .team-member,
+    .team-row:nth-child(4) .team-member,
+    .team-row:nth-child(6) .team-member {
+        flex: 0 0 calc(50% - 8px);
+        max-width: calc(50% - 8px);
+        padding: 10px;
+    }
+
+    .team-row:nth-child(3) .team-member,
+    .team-row:nth-child(5) .team-member,
+    .team-row:nth-child(7) .team-member {
+        flex: 0 0 80%;
+        max-width: 80%;
     }
 
     .team-member h4 {
-        font-size: 1.1rem;
+        font-size: 0.95rem;
+        margin-bottom: 3px;
     }
 
     .team-member p.role {
-        font-size: 0.9rem;
+        font-size: 0.8rem;
+        margin-bottom: 6px;
+    }
+
+    .team-member p.contact {
+        font-size: 0.75rem;
     }
 
     .lookup-container {
@@ -1090,11 +1168,18 @@ hr {
     .product-title h3 {
         font-size: 20px;
     }
+
+    /* Barcode lookup image sizing for small mobile */
+    .result-container img,
+    .product-header img,
+    .alternative-item img {
+        max-width: 80px !important;
+    }
 }
 
 /* Add an additional media query for extra small devices */
 @media (max-width: 375px) {
-    /* Make app preview images extremely small for very tiny screens */
+    /* App preview images for tiny screens */
     .app-preview {
         gap: 5px;
     }
@@ -1103,5 +1188,38 @@ hr {
         width: 50px;
         height: 100px;
     }
-}
 
+    /* Make team member cards even smaller */
+    .team-row:nth-child(2) .team-member,
+    .team-row:nth-child(4) .team-member,
+    .team-row:nth-child(6) .team-member {
+        flex: 0 0 calc(50% - 5px);
+        max-width: calc(50% - 5px);
+        padding: 8px;
+    }
+
+    .team-row:nth-child(3) .team-member,
+    .team-row:nth-child(5) .team-member,
+    .team-row:nth-child(7) .team-member {
+        flex: 0 0 90%;
+        max-width: 90%;
+    }
+
+    .team-member h4 {
+        font-size: 0.9rem;
+    }
+
+    .team-member p.role {
+        font-size: 0.75rem;
+    }
+
+    .team-member p.contact {
+        font-size: 0.7rem;
+    }
+
+    /* Barcode lookup image sizing for extra small mobile */
+    .result-container img,
+    .product-header img,
+    .alternative-item img {
+        max-width: 60px !important;
+    }
