@@ -45,28 +45,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
   async function fetchBarcodeData(barcode) {
     try {
-      const url = `https://buycanadian.onrender.com/get-by-barcode/${barcode}?log_type=${LOG_TYPE}`;
+      const url = `http://127.0.0.1:5000/get-by-barcode/${barcode}?log_type=${LOG_TYPE}`;
       const response = await fetch(url, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${AUTH_TOKEN}`,
-          'Content-Type': 'application/json'
+          'Accept': 'application/json'
         }
       });
   
       if (!response.ok) {
+        const errorText = await response.text();        
         if (response.status === 401) {
           throw new Error('Authentication required');
         } else if (response.status === 403) {
           throw new Error('Invalid authentication token');
         }
-        throw new Error('Network response was not ok.');
+        throw new Error(`Network response was not ok: ${response.status} ${errorText}`);
       }
   
       const data = await response.json();
       showLoading(false);
-
-      // If product does not exist, show not found
+      
       if (!data?.metadata?.exists) {
         displayError('Product Not Found');
         return;
