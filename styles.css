@@ -1178,100 +1178,118 @@ hr {
         padding-top: 10px;
     }
 
-    /* Team section for 2-1 pattern on mobile only */
-    @media (max-width: 768px) {
-        #contact .container {
-            width: 100%;
-            max-width: 100%;
-            padding: 0 10px;
-        }
+    /* ========== TEAM SECTION - 2-1 PATTERN ========== */
+    /* First, reset all team row and member styles */
+    #contact .team-row {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 0 5px 0 !important;
+        padding: 0 !important;
+        text-align: center !important;
+        clear: both !important;
+        position: static !important;
+    }
 
-        /* Reset team layout for mobile */
-        .team-row {
-            display: none; /* Hide original rows */
-        }
+    #contact .team-member {
+        background-color: var(--white) !important;
+        border-radius: 8px !important;
+        padding: 12px !important;
+        box-shadow: var(--medium-shadow) !important;
+        text-align: center !important;
+        box-sizing: border-box !important;
+        position: static !important;
+        min-height: 140px !important;
+    }
 
-        /* Show mobile team rows instead */
-        .team-row:nth-child(1),
-        .team-row:nth-child(2),
-        .team-row:nth-child(3),
-        .team-row:nth-child(4),
-        .team-row:nth-child(5),
-        .team-row:nth-child(6) {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 8px;
-            width: 100%;
-        }
+    /* =========== ROW 1: NICHOLAS & VICKY (side by side) =========== */
+    #contact .team-row:nth-of-type(1) .team-member:nth-child(1),
+    #contact .team-row:nth-of-type(1) .team-member:nth-child(2) {
+        display: inline-block !important;
+        width: 45% !important;
+        max-width: 45% !important;
+        margin: 0 5px 15px 5px !important;
+        vertical-align: top !important;
+        float: none !important;
+    }
 
-        /* For 2-column rows - two members side by side */
-        .team-row:nth-child(odd) {
-            width: 100%;
-        }
+    /* =========== ROW 2: BENJAMIN (centered) =========== */
+    #contact .team-row:nth-of-type(1) .team-member:nth-child(3) {
+        display: block !important;
+        width: 45% !important;
+        max-width: 45% !important;
+        margin: 0 auto 25px auto !important;
+        float: none !important;
+    }
 
-        .team-row:nth-child(odd) .team-member {
-            width: calc(50% - 4px);
-            max-width: calc(50% - 4px);
-            min-width: calc(50% - 4px);
-            flex: 0 0 calc(50% - 4px);
-            min-height: 160px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
+    /* =========== ROW 3: GIULIA & DANIEL (side by side) =========== */
+    #contact .team-row:nth-of-type(2) .team-member:nth-child(1),
+    #contact .team-row:nth-of-type(2) .team-member:nth-child(2) {
+        display: inline-block !important;
+        width: 45% !important;
+        max-width: 45% !important;
+        margin: 0 5px 15px 5px !important;
+        vertical-align: top !important;
+        float: none !important;
+    }
 
-        /* For single member rows - centered and wider */
-        .team-row:nth-child(even) .team-member {
-            width: 80%;
-            max-width: 80%;
-            min-width: 80%;
-            flex: 0 0 80%;
-            margin: 0 auto 8px auto;
-            min-height: 160px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
+    /* =========== ROW 4: NEEL (centered) =========== */
+    #contact .team-row:nth-of-type(2) .team-member:nth-child(3) {
+        display: block !important;
+        width: 45% !important;
+        max-width: 45% !important;
+        margin: 0 auto 25px auto !important;
+        float: none !important;
+    }
 
-        /* Consistent styling for all team members */
-        .team-member {
-            background-color: var(--white);
-            border-radius: 8px;
-            padding: 10px;
-            box-shadow: var(--medium-shadow);
-            text-align: center;
-            box-sizing: border-box;
-        }
+    /* =========== ROW 5: JUSTIN & DEAN (side by side) =========== */
+    /* Updated selector targeting for better browser compatibility */
+    #contact .team-row:nth-of-type(3) .team-member:nth-child(1),
+    #contact .team-row:nth-of-type(3) .team-member:nth-child(2) {
+        display: inline-block !important;
+        width: 45% !important;
+        max-width: 45% !important;
+        margin: 0 5px 15px 5px !important;
+        vertical-align: top !important;
+        float: none !important;
+        position: static !important;
+    }
 
-        .team-member h4 {
-            font-size: 1rem;
-            margin-bottom: 5px;
-        }
+    /* =========== ROW 6: CORINA (centered) =========== */
+    /* Updated selector targeting for better browser compatibility */
+    #contact .team-row:nth-of-type(3) .team-member:nth-child(3) {
+        display: block !important;
+        width: 45% !important;
+        max-width: 45% !important;
+        margin: 0 auto 25px auto !important;
+        float: none !important;
+        position: static !important;
+        clear: both !important;
+    }
 
-        .team-member p.role {
-            font-size: 0.85rem;
-            margin-bottom: 6px;
-        }
+    /* Fix for third row container */
+    #contact .team-row:nth-of-type(3) {
+        text-align: center !important;
+        width: 100% !important;
+        display: block !important;
+        position: static !important;
+        margin-bottom: 0 !important;
+    }
 
-        .team-member p.contact {
-            font-size: 0.8rem;
-            word-break: break-word;
-        }
+    /* Mobile text sizing */
+    #contact .team-member h4 {
+        font-size: 0.95rem !important;
+        margin-bottom: 4px !important;
+    }
 
-        /* Hide the third team member in each row on mobile */
-        .team-row:nth-child(1) .team-member:nth-child(3),
-        .team-row:nth-child(2) .team-member:nth-child(2),
-        .team-row:nth-child(2) .team-member:nth-child(3),
-        .team-row:nth-child(3) .team-member:nth-child(3),
-        .team-row:nth-child(4) .team-member:nth-child(2),
-        .team-row:nth-child(4) .team-member:nth-child(3),
-        .team-row:nth-child(5) .team-member:nth-child(3),
-        .team-row:nth-child(6) .team-member:nth-child(2),
-        .team-row:nth-child(6) .team-member:nth-child(3) {
-            display: none;
-        }
+    #contact .team-member p.role {
+        font-size: 0.85rem !important;
+        margin-bottom: 6px !important;
+    }
+
+    #contact .team-member p.contact {
+        font-size: 0.8rem !important;
+        word-break: break-word !important;
     }
 }
 
@@ -1296,29 +1314,24 @@ hr {
         max-width: 100px;
     }
 
-    /* Team member adjustments for smaller screens */
-    .team-row:nth-child(odd) .team-member {
-        min-height: 140px;
+    /* Team member size adjustments for smaller screens */
+    #contact .team-member {
+        min-height: 130px !important;
+        padding: 10px !important;
     }
 
-    .team-row:nth-child(even) .team-member {
-        width: 85%;
-        max-width: 85%;
-        min-height: 140px;
+    #contact .team-member h4 {
+        font-size: 0.9rem !important;
+        margin-bottom: 3px !important;
     }
 
-    .team-member h4 {
-        font-size: 0.95rem;
-        margin-bottom: 3px;
+    #contact .team-member p.role {
+        font-size: 0.8rem !important;
+        margin-bottom: 5px !important;
     }
 
-    .team-member p.role {
-        font-size: 0.8rem;
-        margin-bottom: 5px;
-    }
-
-    .team-member p.contact {
-        font-size: 0.75rem;
+    #contact .team-member p.contact {
+        font-size: 0.75rem !important;
     }
 
     .lookup-container {
@@ -1368,27 +1381,24 @@ hr {
         height: 100px;
     }
 
-    /* Make team member cards even smaller */
-    .team-row:nth-child(odd) .team-member {
-        min-height: 120px;
+    /* Make team member cards even smaller but maintain the same width ratio */
+    #contact .team-member {
+        min-height: 120px !important;
+        padding: 8px !important;
     }
 
-    .team-row:nth-child(even) .team-member {
-        width: 90%;
-        max-width: 90%;
-        min-height: 120px;
+    #contact .team-member h4 {
+        font-size: 0.85rem !important;
+        margin-bottom: 2px !important;
     }
 
-    .team-member h4 {
-        font-size: 0.9rem;
+    #contact .team-member p.role {
+        font-size: 0.75rem !important;
+        margin-bottom: 4px !important;
     }
 
-    .team-member p.role {
-        font-size: 0.75rem;
-    }
-
-    .team-member p.contact {
-        font-size: 0.7rem;
+    #contact .team-member p.contact {
+        font-size: 0.7rem !important;
     }
 
     /* Barcode lookup image sizing for extra small mobile */
@@ -1444,7 +1454,7 @@ hr {
 
 @media (max-width: 768px) {
     .footer-content {
-        gap: 5px !important;
+        gap: 15px !important;
     }
 
     .footer-column {
@@ -1471,5 +1481,43 @@ hr {
     .footer-column ul {
         padding-left: 0 !important;
         margin: 0 !important;
+    }
+}
+
+/* ===== FINAL FIX FOR JUSTIN, DEAN AND CORINA ===== */
+@media (max-width: 768px) {
+    /* Direct selectors for Justin & Dean to force side-by-side */
+    /* This override will be applied last and should fix the issue */
+    #contact .team-row:last-child .team-member:nth-child(1),
+    #contact .team-row:last-child .team-member:nth-child(2) {
+        display: inline-block !important;
+        width: 45% !important;
+        max-width: 45% !important;
+        margin: 0 5px 15px 5px !important;
+        vertical-align: top !important;
+        float: none !important;
+        position: static !important;
+    }
+
+    /* Direct selector for Corina to center her */
+    #contact .team-row:last-child .team-member:nth-child(3) {
+        display: block !important;
+        width: 45% !important;
+        max-width: 45% !important;
+        margin: 0 auto 25px auto !important;
+        clear: both !important;
+        float: none !important;
+        position: static !important;
+    }
+
+    /* Force last row container to behave */
+    #contact .team-row:last-child {
+        display: block !important;
+        text-align: center !important;
+        width: 100% !important;
+        clear: both !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        position: static !important;
     }
 }
