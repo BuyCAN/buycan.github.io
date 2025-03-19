@@ -118,6 +118,13 @@
       margin-top: 20px;
     }
 
+    .card canvas {
+  max-width: 250px; /* or whatever size you prefer */
+  max-height: 250px;
+  margin: 0 auto;   /* centers the canvas within the card */
+}
+
+
     .card {
       background: var(--medium-gray);
       border-radius: 5px;
@@ -199,13 +206,24 @@
 </div>
 
 <script>
-  // Auto-populate the date input with today's date
+  // Helper: Returns a "YYYY-MM-DD" string for a given Date, computed in EST
+  function getESTDateString(date) {
+    // Convert the given date to a string in the EST time zone
+    const estString = date.toLocaleString('en-US', { timeZone: 'America/New_York' });
+    const estDate = new Date(estString);
+    const year = estDate.getFullYear();
+    const month = String(estDate.getMonth() + 1).padStart(2, '0');
+    const day = String(estDate.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  // Auto-populate the date input with today's date in EST
   window.addEventListener('DOMContentLoaded', function() {
     const today = new Date();
-    document.getElementById('date').value = today.toISOString().split('T')[0];
+    document.getElementById('date').value = getESTDateString(today);
   });
 
-  // Helper to format date strings to EST with AM/PM
+  // Helper to format date strings to EST with AM/PM for display
   function formatESTDate(dateString) {
     const dateObj = new Date(dateString);
     return dateObj.toLocaleString('en-US', { timeZone: 'America/New_York', hour12: true });
@@ -227,10 +245,12 @@
       return;
     }
 
-    const selectedDate = new Date(dateValue);
-    const year = selectedDate.getFullYear();
-    const month = selectedDate.getMonth() + 1;
-    const day = selectedDate.getDate();
+    // Since the date input value is in "YYYY-MM-DD" format (representing EST),
+    // we can split it to get the correct year, month, and day.
+    const parts = dateValue.split("-");
+    const year = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10);
+    const day = parseInt(parts[2], 10);
 
     // Build the URL
     const url = `https://buycanadian.onrender.com/get-product-statistics?auth_token=${encodeURIComponent(authToken)}&year=${year}&month=${month}&day=${day}`;
@@ -327,14 +347,14 @@
   document.getElementById('fetchYesterdayBtn').addEventListener('click', function() {
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
-    document.getElementById('date').value = yesterday.toISOString().split('T')[0];
+    document.getElementById('date').value = getESTDateString(yesterday);
     fetchData();
   });
 
   // Button to fetch today's data
   document.getElementById('fetchTodayBtn').addEventListener('click', function() {
     const today = new Date();
-    document.getElementById('date').value = today.toISOString().split('T')[0];
+    document.getElementById('date').value = getESTDateString(today);
     fetchData();
   });
 </script>
