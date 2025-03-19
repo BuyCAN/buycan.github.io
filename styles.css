@@ -993,8 +993,8 @@ hr {
     }
 
     .app-preview img {
-        width: 150px;
-        height: 300px;
+        width: 120px;
+        height: 240px;
     }
 
     .nav-links {
@@ -1049,8 +1049,8 @@ hr {
 
     /* Image sizing */
     .app-preview img {
-        width: 120px;
-        height: 240px;
+        width: 100px;
+        height: 200px;
     }
 
     .hero-logo {
@@ -1077,5 +1077,18 @@ hr {
 
     .product-title h3 {
         font-size: 20px;
+    }
+}
+
+/* Add an additional media query for extra small devices */
+@media (max-width: 375px) {
+    /* Make app preview images even smaller for very tiny screens */
+    .app-preview {
+        gap: 10px;
+    }
+
+    .app-preview img {
+        width: 80px;
+        height: 160px;
     }
 }
