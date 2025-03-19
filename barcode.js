@@ -259,4 +259,49 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
   }
+
+  // ======================================================
+  // DROPDOWN NAVIGATION FUNCTIONALITY
+  // ======================================================
+  const dropdownBtn = document.querySelector('.dropdown-btn');
+  const dropdownContent = document.querySelector('.dropdown-content');
+
+  // Add dropdown functionality if elements exist
+  if (dropdownBtn && dropdownContent) {
+    // For mobile: toggle dropdown manually for better touch experience
+    if (window.innerWidth <= 768) {
+      // Prevent default hover behavior on mobile
+      dropdownBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        // Toggle display of dropdown content
+        if (dropdownContent.style.display === 'block') {
+          dropdownContent.style.display = 'none';
+          document.querySelector('.dropdown-arrow').style.transform = 'rotate(0deg)';
+        } else {
+          dropdownContent.style.display = 'block';
+          document.querySelector('.dropdown-arrow').style.transform = 'rotate(180deg)';
+        }
+      });
+
+      // Close dropdown when clicking elsewhere on the page
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.dropdown-nav')) {
+          dropdownContent.style.display = 'none';
+          document.querySelector('.dropdown-arrow').style.transform = 'rotate(0deg)';
+        }
+      });
+    }
+
+    // Close dropdown when a link is clicked
+    const dropdownLinks = document.querySelectorAll('.dropdown-content a');
+    dropdownLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        if (window.innerWidth <= 768) {
+          dropdownContent.style.display = 'none';
+          document.querySelector('.dropdown-arrow').style.transform = 'rotate(0deg)';
+        }
+      });
+    });
+  }
 });

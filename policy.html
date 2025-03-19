@@ -40,14 +40,31 @@
                 </a>
             </div>
 
-            <!-- Navigation Links -->
+            <!-- Navigation Links - Restructured -->
             <nav class="nav-links">
-                <a href="index.html">Home</a>
-                <a href="index.html#about">About</a>
-                <a href="index.html#app-preview">App Preview</a>
-                <a href="index.html#download">Download</a>
-                <a href="index.html#contact">Our Team</a>
-                <a href="barcode.html">Barcode Lookup</a>
+                <!-- Left side static links -->
+                <div class="static-links">
+                    <a href="barcode.html">Barcode Lookup</a>
+                </div>
+
+                <!-- Right side dropdown -->
+                <div class="dropdown-nav">
+                    <button class="dropdown-btn">
+                        Home
+                        <span class="dropdown-arrow">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </span>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="index.html">Home Page</a>
+                        <a href="index.html#about">About</a>
+                        <a href="index.html#app-preview">App Preview</a>
+                        <a href="index.html#download">Download</a>
+                        <a href="index.html#contact">Our Team</a>
+                    </div>
+                </div>
             </nav>
         </div>
     </header>
@@ -189,6 +206,49 @@
             window.scrollTo({
                 top: 0,
                 behavior: 'smooth'
+            });
+        });
+
+        // Navigation dropdown functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get dropdown button
+            const dropdownBtn = document.querySelector('.dropdown-btn');
+            const dropdownContent = document.querySelector('.dropdown-content');
+
+            // For mobile: toggle dropdown manually for better touch experience
+            if (window.innerWidth <= 768) {
+                // Prevent default hover behavior on mobile
+                dropdownBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    // Toggle display of dropdown content
+                    if (dropdownContent.style.display === 'block') {
+                        dropdownContent.style.display = 'none';
+                        document.querySelector('.dropdown-arrow').style.transform = 'rotate(0deg)';
+                    } else {
+                        dropdownContent.style.display = 'block';
+                        document.querySelector('.dropdown-arrow').style.transform = 'rotate(180deg)';
+                    }
+                });
+
+                // Close dropdown when clicking elsewhere on the page
+                document.addEventListener('click', function(e) {
+                    if (!e.target.closest('.dropdown-nav')) {
+                        dropdownContent.style.display = 'none';
+                        document.querySelector('.dropdown-arrow').style.transform = 'rotate(0deg)';
+                    }
+                });
+            }
+
+            // Close dropdown when a link is clicked
+            const dropdownLinks = document.querySelectorAll('.dropdown-content a');
+            dropdownLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth <= 768) {
+                        dropdownContent.style.display = 'none';
+                        document.querySelector('.dropdown-arrow').style.transform = 'rotate(0deg)';
+                    }
+                });
             });
         });
     </script>
