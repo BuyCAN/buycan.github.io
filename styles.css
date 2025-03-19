@@ -986,7 +986,12 @@ hr {
         font-size: 1.8rem;
     }
 
-    /* Layout adjustments */
+    .app-preview img {
+    width: 70px;
+    height: 140px
+    }
+
+    /* Layout adjustments
     .nav-container {
         flex-direction: column;
         gap: 15px;
@@ -995,7 +1000,7 @@ hr {
     .app-preview img {
         width: 120px;
         height: 240px;
-    }
+    }*/
 
     .nav-links {
         flex-wrap: wrap;
@@ -1049,8 +1054,8 @@ hr {
 
     /* Image sizing */
     .app-preview img {
-        width: 100px;
-        height: 200px;
+        width: 60px;
+        height: 120px;
     }
 
     .hero-logo {
@@ -1084,11 +1089,11 @@ hr {
 @media (max-width: 375px) {
     /* Make app preview images even smaller for very tiny screens */
     .app-preview {
-        gap: 10px;
+        gap: 5px;
     }
 
     .app-preview img {
-        width: 80px;
-        height: 160px;
+        width: 50px;
+        height: 100px;
     }
 }
