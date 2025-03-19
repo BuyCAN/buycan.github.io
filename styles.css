@@ -986,21 +986,16 @@ hr {
         font-size: 1.8rem;
     }
 
-    .app-preview img {
-    width: 70px;
-    height: 140px
-    }
-
-    /* Layout adjustments
+    /* Layout adjustments */
     .nav-container {
         flex-direction: column;
         gap: 15px;
     }
 
     .app-preview img {
-        width: 120px;
-        height: 240px;
-    }*/
+        width: 150px;
+        height: 300px;
+    }
 
     .nav-links {
         flex-wrap: wrap;
@@ -1032,8 +1027,20 @@ hr {
         margin-top: 5px;
     }
 
+     /* Barcode lookup page images */
+    .result-container img,
+    .product-header img {
+        max-width: 25% !important;
+        height: auto !important;
+    }
+
     .alternatives-grid {
         grid-template-columns: 1fr;
+    }
+
+    .alternatives-grid img {
+        max-width: 25% !important;
+        height: auto !important;
     }
 
     /* Policy page */
@@ -1054,8 +1061,8 @@ hr {
 
     /* Image sizing */
     .app-preview img {
-        width: 60px;
-        height: 120px;
+        width: 120px;
+        height: 240px;
     }
 
     .hero-logo {
@@ -1087,7 +1094,7 @@ hr {
 
 /* Add an additional media query for extra small devices */
 @media (max-width: 375px) {
-    /* Make app preview images even smaller for very tiny screens */
+    /* Make app preview images extremely small for very tiny screens */
     .app-preview {
         gap: 5px;
     }
@@ -1097,3 +1104,4 @@ hr {
         height: 100px;
     }
 }
+
