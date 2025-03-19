@@ -319,7 +319,7 @@ h3 {
 }
 
 /* ==========================================================================
-   10. Team/Contact Section - UPDATED for 3x3 grid on desktop, alternating pattern on mobile
+   10. Team/Contact Section - 3x3 Desktop & 2-1 Mobile Pattern
    ========================================================================== */
 /* Team section container centering */
 #contact .container {
@@ -328,7 +328,7 @@ h3 {
     align-items: center;
 }
 
-/* Team rows with 3x3 grid layout */
+/* Team rows with 3x3 grid layout for desktop */
 .team-row {
     display: flex;
     justify-content: center;
@@ -1004,6 +1004,31 @@ hr {
 }
 
 @media (max-width: 768px) {
+    /* Reduce section padding on mobile */
+    section {
+        padding: 30px 0; /* Reduced from 60px to 30px */
+    }
+
+    /* Reduce margin between section headers */
+    .section-header {
+        margin-bottom: 25px; /* Reduced from 40px */
+    }
+
+    /* Reduce spacing after section header paragraph */
+    .section-header p {
+        margin-bottom: 15px;
+    }
+
+    /* Reduce other vertical spacings */
+    .about-item, .app-preview, .app-store {
+        margin-bottom: 20px;
+    }
+
+    /* Additional spacing adjustments */
+    hr {
+        margin: 20px 0; /* Reduced from 40px */
+    }
+
     /* Text sizing */
     .hero h1 {
         font-size: 2rem;
@@ -1034,7 +1059,7 @@ hr {
         justify-content: center;
     }
 
-    /* Team section adjustments for alternating 2-1-2-1-2-1 pattern */
+    /* Team section adjustments for 2-1 pattern on mobile */
     #contact .container {
         padding: 0 10px;
     }
@@ -1043,43 +1068,41 @@ hr {
         flex-wrap: wrap;
         justify-content: center;
         gap: 15px;
-        margin-bottom: 15px;
+        margin-bottom: 25px; /* Increased to separate the mobile rows */
     }
 
-    /* First row: 2 items */
-    .team-row:nth-child(2) .team-member {
+    /* Every third team member in each row gets special treatment on mobile */
+    .mobile-third {
+        flex: 0 0 70%;
+        max-width: 70%;
+        margin: 15px auto 0; /* Add top margin to create separation */
+        order: 3; /* Make sure it appears last */
+    }
+
+    /* First two members in each row stay side by side */
+    .team-member:not(.mobile-third) {
         flex: 0 0 calc(50% - 8px);
         max-width: calc(50% - 8px);
     }
 
-    /* Second row: 1 item centered */
-    .team-row:nth-child(3) .team-member {
-        flex: 0 0 70%;
-        max-width: 70%;
+    /* Adjust font sizes and padding for better mobile appearance */
+    .team-member {
+        padding: 12px;
     }
 
-    /* Third row: 2 items */
-    .team-row:nth-child(4) .team-member {
-        flex: 0 0 calc(50% - 8px);
-        max-width: calc(50% - 8px);
+    .team-member h4 {
+        font-size: 1rem;
+        margin-bottom: 5px;
     }
 
-    /* Fourth row: 1 item centered */
-    .team-row:nth-child(5) .team-member {
-        flex: 0 0 70%;
-        max-width: 70%;
+    .team-member p.role {
+        font-size: 0.85rem;
+        margin-bottom: 8px;
     }
 
-    /* Fifth row: 2 items */
-    .team-row:nth-child(6) .team-member {
-        flex: 0 0 calc(50% - 8px);
-        max-width: calc(50% - 8px);
-    }
-
-    /* Sixth row: 1 item centered */
-    .team-row:nth-child(7) .team-member {
-        flex: 0 0 70%;
-        max-width: 70%;
+    .team-member p.contact {
+        font-size: 0.8rem;
+        margin: 4px 0;
     }
 
     /* Manufacturing info display */
@@ -1116,6 +1139,11 @@ hr {
 }
 
 @media (max-width: 576px) {
+    /* Further reduce spacing between sections */
+    section {
+        padding: 25px 0;
+    }
+
     /* Font sizes */
     .section-header h2 {
         font-size: 1.5rem;
@@ -1131,20 +1159,16 @@ hr {
         max-width: 100px;
     }
 
-    /* Team member adjustments for alternating pattern on smaller screens */
-    .team-row:nth-child(2) .team-member,
-    .team-row:nth-child(4) .team-member,
-    .team-row:nth-child(6) .team-member {
-        flex: 0 0 calc(50% - 8px);
-        max-width: calc(50% - 8px);
-        padding: 10px;
+    /* Team member adjustments for smaller screens */
+    .mobile-third {
+        flex: 0 0 85%;
+        max-width: 85%;
     }
 
-    .team-row:nth-child(3) .team-member,
-    .team-row:nth-child(5) .team-member,
-    .team-row:nth-child(7) .team-member {
-        flex: 0 0 80%;
-        max-width: 80%;
+    .team-member:not(.mobile-third) {
+        flex: 0 0 calc(50% - 5px);
+        max-width: calc(50% - 5px);
+        padding: 10px;
     }
 
     .team-member h4 {
@@ -1173,7 +1197,7 @@ hr {
     .result-container img,
     .product-header img,
     .alternative-item img {
-        max-width: 80px !important;
+        max-width: 120px !important;
     }
 }
 
@@ -1185,24 +1209,20 @@ hr {
     }
 
     .app-preview img {
-        width: 50px;
-        height: 100px;
+        width: 100px;
+        height: 200px;
     }
 
     /* Make team member cards even smaller */
-    .team-row:nth-child(2) .team-member,
-    .team-row:nth-child(4) .team-member,
-    .team-row:nth-child(6) .team-member {
+    .mobile-third {
+        flex: 0 0 90%;
+        max-width: 90%;
+    }
+
+    .team-member:not(.mobile-third) {
         flex: 0 0 calc(50% - 5px);
         max-width: calc(50% - 5px);
         padding: 8px;
-    }
-
-    .team-row:nth-child(3) .team-member,
-    .team-row:nth-child(5) .team-member,
-    .team-row:nth-child(7) .team-member {
-        flex: 0 0 90%;
-        max-width: 90%;
     }
 
     .team-member h4 {
@@ -1221,5 +1241,6 @@ hr {
     .result-container img,
     .product-header img,
     .alternative-item img {
-        max-width: 60px !important;
+        max-width: 80px !important;
     }
+}
