@@ -996,6 +996,7 @@ hr {
     .team-member {
         padding: 12px;
         font-size: 0.9rem;
+        min-height: 170px; /* Consistent height */
     }
 
     .team-member h4 {
@@ -1069,39 +1070,36 @@ hr {
         flex-wrap: wrap;
         justify-content: center;
         gap: 10px; /* Reduced from 15px */
-        margin-bottom: 5px; /* Reduced significantly */
+        margin-bottom: 10px; /* Consistent spacing */
         width: 100%;
     }
 
-    /* Reset all styles to ensure consistency */
+    /* Reset team member styles for consistent sizing */
     .team-member {
-        margin: 0 0 10px 0; /* Add consistent bottom margin */
-        flex: 0 0 calc(50% - 5px); /* Default 2-column layout */
+        margin: 0 0 10px 0;
+        flex: 0 0 calc(50% - 5px);
         max-width: calc(50% - 5px);
         width: calc(50% - 5px);
         padding: 10px;
-        height: auto; /* Ensure height is based on content */
-        min-height: 0; /* Reset min-height */
+        min-height: 150px; /* Fixed height for consistency */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
 
-    /* Style for the third item in each row */
-    .mobile-third {
+    /* Style for every third team member (1st, 4th, 7th, etc.) */
+    .team-row .team-member:nth-child(3n) {
         flex: 0 0 70%;
         max-width: 70%;
         width: 70%;
-        margin-bottom: 15px; /* Add more space after the centered item */
-        order: 1; /* Reset order to default */
-        clear: both; /* Ensure it starts on a new line */
+        margin: 0 auto 15px auto;
+        clear: both;
     }
 
-    /* Force flex order for proper display */
-    .team-row .team-member:nth-child(1),
-    .team-row .team-member:nth-child(2) {
-        order: 0;
-    }
-
-    .team-row .team-member:nth-child(3) {
-        order: 1;
+    /* Force 2-1 pattern with flex order */
+    .team-row .team-member:nth-child(3n-2),
+    .team-row .team-member:nth-child(3n-1) {
+        margin-bottom: 5px;
     }
 
     /* Manufacturing info display */
@@ -1120,7 +1118,7 @@ hr {
     .result-container img,
     .product-header img,
     .alternative-item img {
-        max-width: 100px !important;
+        max-width: 150px !important;
     }
 
     .alternatives-grid {
@@ -1142,12 +1140,18 @@ hr {
     }
 
     .footer-content {
-        gap: 15px; /* Reduced from 30px */
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 10px; /* Reduced from 30px to 10px */
+        text-align: left;
+        padding: 0 20px;
         margin-bottom: 15px; /* Add a bottom margin to bring content closer to copyright */
     }
 
     .footer-column {
-        margin-bottom: 0; /* Remove any bottom margin */
+        margin-bottom: 8px; /* Ensure consistent spacing */
     }
 
     .footer-column h3 {
@@ -1156,9 +1160,6 @@ hr {
     }
 
     .footer-column ul li {
-        margin-bottom: 8px; /*
-
-.footer-column ul li {
         margin-bottom: 8px; /* Reduced from 10px */
     }
 
@@ -1191,16 +1192,17 @@ hr {
     }
 
     /* Team member adjustments for smaller screens */
-    .mobile-third {
+    .team-row .team-member:nth-child(3n) {
         flex: 0 0 85%;
         max-width: 85%;
         width: 85%;
     }
 
-    .team-member:not(.mobile-third) {
+    .team-member {
         flex: 0 0 calc(50% - 5px);
         max-width: calc(50% - 5px);
         padding: 10px;
+        min-height: 130px; /* Slightly reduced height for smaller screens */
     }
 
     .team-member h4 {
@@ -1229,12 +1231,12 @@ hr {
     .result-container img,
     .product-header img,
     .alternative-item img {
-        max-width: 80px !important;
+        max-width: 100px !important;
     }
 
     /* Further compress footer on smaller screens */
     .footer-content {
-        gap: 10px; /* Further reduced */
+        gap: 8px; /* Further reduced */
     }
 
     .footer-column h3 {
@@ -1265,16 +1267,17 @@ hr {
     }
 
     /* Make team member cards even smaller */
-    .mobile-third {
+    .team-row .team-member:nth-child(3n) {
         flex: 0 0 90%;
         max-width: 90%;
         width: 90%;
     }
 
-    .team-member:not(.mobile-third) {
+    .team-member {
         flex: 0 0 calc(50% - 5px);
         max-width: calc(50% - 5px);
         padding: 8px;
+        min-height: 120px; /* Even smaller height for tiny screens */
     }
 
     .team-member h4 {
@@ -1293,12 +1296,12 @@ hr {
     .result-container img,
     .product-header img,
     .alternative-item img {
-        max-width: 60px !important;
+        max-width: 100px !important;
     }
 
     /* Extra tiny footer spacing */
     .footer-content {
-        gap: 8px;
+        gap: 5px; /* Minimal gap for smallest screens */
     }
 
     .footer-column h3 {
