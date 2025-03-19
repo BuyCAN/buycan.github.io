@@ -1308,29 +1308,34 @@ hr {
     }
 
     .nav-links {
-        flex-direction: column;
-        width: 100%;
+        flex-direction: row !important;
+        justify-content: center !important;
+        align-items: center !important;
+        flex-wrap: nowrap !important;
+        width: 100% !important;
+        gap: 10px !important;
     }
 
     .static-links {
-        display: flex;
-        justify-content: center;
-        width: 100%;
-        margin-bottom: 10px;
+        width: auto !important;
+        margin-bottom: 0 !important;
+        gap: 5px !important;
     }
 
     .dropdown-nav {
-        width: 100%;
+        width: auto;
+    }
+
+    .static-links a {
+        font-size: 0.85rem !important;
+        padding: 5px 8px !important;
+        white-space: nowrap !important;
     }
 
     .dropdown-btn {
-        width: 100%;
-        justify-content: center;
-        padding: 8px 0;
-        /* Consistent styling */
-        background-color: var(--white);
-        color: var(--text-color);
-        border-radius: 4px;
+        font-size: 0.85rem !important;
+        padding: 5px 8px !important;
+        white-space: nowrap !important;
     }
 
     .dropdown-arrow svg {
@@ -1602,6 +1607,31 @@ hr {
     }
 }
 
+@media (max-width: 400px) {
+    .nav-links {
+        gap: 5px !important;
+    }
+
+    .static-links {
+        gap: 3px !important;
+    }
+
+    .static-links a {
+        font-size: 0.75rem !important;
+        padding: 4px 5px !important;
+    }
+
+    .dropdown-btn {
+        font-size: 0.75rem !important;
+        padding: 4px 5px !important;
+    }
+
+    /* Add more spacing between arrow and text */
+    .dropdown-arrow {
+        margin-left: 2px !important;
+    }
+}
+
 /* Extra small devices */
 @media (max-width: 375px) {
     /* App preview images for tiny screens */
@@ -1830,3 +1860,115 @@ hr {
     }
 }
 */
+
+/*
+   Improved Navigation for Mobile Devices
+   - Puts all navigation elements on one line
+   - Uses appropriate text size
+   - Fixes dropdown size
+
+   Add this at the very end of your CSS file
+*/
+
+/* Fix for mobile devices - single line navigation with better sizing */
+@media (max-width: 768px) {
+    /* Force horizontal layout */
+    .nav-links {
+        flex-direction: row !important;
+        justify-content: center !important;
+        align-items: center !important;
+        flex-wrap: nowrap !important;
+        width: 100% !important;
+        gap: 15px !important; /* More space between items */
+    }
+
+    /* Adjust static links */
+    .static-links {
+        width: auto !important;
+        margin-bottom: 0 !important;
+        gap: 15px !important; /* More space between links */
+    }
+
+    /* Adjust dropdown nav */
+    .dropdown-nav {
+        width: auto !important;
+    }
+
+    /* Better sized text - not too small */
+    .static-links a {
+        font-size: 0.95rem !important; /* Larger text */
+        padding: 5px 10px !important;
+        white-space: nowrap !important;
+    }
+
+    .dropdown-btn {
+        font-size: 0.95rem !important; /* Larger text */
+        padding: 5px 10px !important;
+        white-space: nowrap !important;
+    }
+
+    /* Fix dropdown sizing */
+    .dropdown-content {
+        width: auto !important;
+        min-width: 160px !important;
+        right: 0 !important;
+        left: auto !important;
+        position: absolute !important;
+        box-shadow: var(--medium-shadow) !important;
+        background-color: var(--white) !important;
+    }
+
+    .dropdown-content a {
+        font-size: 0.95rem !important;
+        padding: 10px 16px !important;
+        text-align: left !important;
+    }
+}
+
+/* For medium-small mobile devices */
+@media (max-width: 480px) {
+    .nav-links {
+        gap: 10px !important;
+    }
+
+    .static-links {
+        gap: 10px !important;
+    }
+
+    .static-links a {
+        font-size: 0.9rem !important;
+        padding: 5px 8px !important;
+    }
+
+    .dropdown-btn {
+        font-size: 0.9rem !important;
+        padding: 5px 8px !important;
+    }
+}
+
+/* For very small devices - maintain readability while fitting on one line */
+@media (max-width: 360px) {
+    .nav-links {
+        gap: 8px !important;
+    }
+
+    .static-links {
+        gap: 8px !important;
+    }
+
+    .static-links a {
+        font-size: 0.85rem !important;
+        padding: 4px 6px !important;
+    }
+
+    .dropdown-btn {
+        font-size: 0.85rem !important;
+        padding: 4px 6px !important;
+    }
+
+    /* Still maintain good readability in dropdown */
+    .dropdown-content a {
+        font-size: 0.9rem !important;
+        padding: 10px 14px !important;
+    }
+}
