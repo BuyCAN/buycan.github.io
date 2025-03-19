@@ -263,6 +263,10 @@ section {
 
 /* Responsive styles for navigation */
 @media (max-width: 768px) {
+    .nav-bar .nav-links > a {
+        display: none !important;
+    }
+
     .nav-container {
         flex-direction: column;
         gap: 15px;
@@ -287,6 +291,13 @@ section {
         width: 100%;
         justify-content: center;
         padding: 8px 0;
+        background-color: var(--primary-color);
+        color: var(--white);
+        border-radius: 4px;
+    }
+
+    .dropdown-arrow svg {
+        stroke: var(--white);
     }
 
     .dropdown-content {
@@ -464,7 +475,7 @@ h3 {
 }
 
 /* ==========================================================================
-   10. Team/Contact Section - 3x3 Desktop & 2-1 Mobile Pattern
+   10. Team/Contact Section - 2-1 PATTERN FOR MOBILE
    ========================================================================== */
 /* Team section container centering */
 #contact .container {
@@ -1130,72 +1141,82 @@ hr {
 }
 
 /* ==========================================================================
-   17. Media Queries
+   17. Media Queries - CLEAN UNIFIED APPROACH
    ========================================================================== */
 
-/* Desktop team layout - 3x3 grid */
-.team-row {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-bottom: 20px;
-    width: 100%;
-    max-width: 900px;
-    flex-wrap: wrap;
+/* Desktop layout defaults - 3x3 grid for team */
+@media (min-width: 881px) {
+    /* Team Layout */
+    .team-row {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 20px;
+        width: 100%;
+        max-width: 900px;
+        flex-wrap: nowrap;
+    }
+
+    .team-member {
+        background-color: var(--white);
+        border-radius: 8px;
+        padding: 15px;
+        box-shadow: var(--medium-shadow);
+        transition: transform var(--transition-speed) ease;
+        text-align: center;
+        flex: 1;
+        min-width: 0;
+        max-width: 250px;
+        margin: 0;
+        width: calc(33.333% - 14px);
+    }
+
+    .team-member:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--heavy-shadow);
+    }
+
+    /* Footer style */
+    .footer-content {
+        max-width: 1000px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        gap: 30px;
+        text-align: center;
+        padding: 0;
+    }
+
+    .footer-column {
+        flex: 1;
+        width: 33.333%;
+        min-width: 0;
+        box-sizing: border-box;
+        padding: 0 20px;
+    }
+
+    .footer-column h3::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .footer-column ul {
+        padding-left: 0;
+        margin: 0;
+        list-style-type: none;
+        text-align: center;
+    }
+
+    /* First footer column text width */
+    .footer-column:first-child p {
+        max-width: 220px;
+        margin: 0 auto;
+        line-height: 1.5;
+    }
 }
 
-.team-member {
-    background-color: var(--white);
-    border-radius: 8px;
-    padding: 15px;
-    box-shadow: var(--medium-shadow);
-    transition: transform var(--transition-speed) ease;
-    text-align: center;
-    flex: 1;
-    min-width: 0;
-    max-width: 250px;
-    margin: 0;
-    width: calc(33.333% - 14px);
-}
-
-.team-member:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--heavy-shadow);
-}
-
-/* Footer default (desktop) layout - UPDATED FOR CENTERING */
-.footer-content {
-    max-width: 1000px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    gap: 30px;
-    text-align: center;
-    padding: 0;
-}
-
-.footer-column {
-    flex: 1;
-    width: 33.333%;
-    min-width: 0;
-    box-sizing: border-box;
-    padding: 0 20px;
-}
-
-.footer-column h3::after {
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-.footer-column ul {
-    padding-left: 0;
-    margin: 0;
-    list-style-type: none;
-    text-align: center;
-}
-
-/* Media Queries */
-@media (max-width: 992px) {
+/* Laptop and large tablet styles */
+@media (max-width: 992px) and (min-width: 769px) {
     /* Team rows on medium screens */
     .team-row {
         gap: 15px;
@@ -1209,8 +1230,42 @@ hr {
     .team-member h4 {
         font-size: 1rem;
     }
+
+    /* Navigation stays consistent */
+    .dropdown-btn {
+        background-color: var(--white);
+        color: var(--text-color);
+    }
+
+    .dropdown-arrow svg {
+        stroke: currentColor;
+    }
 }
 
+/* Special overrides for laptop half-screen */
+@media (max-width: 880px) and (min-width: 769px) {
+    /* Half-screen specific footer adjustments */
+    .footer-content {
+        max-width: 96%;
+        gap: 15px;
+    }
+
+    .footer-column {
+        padding: 0 15px;
+    }
+
+    /* Team layout stays 3x3 but with tighter spacing */
+    .team-row {
+        gap: 10px;
+        max-width: 95%;
+    }
+
+    .team-member {
+        padding: 10px;
+    }
+}
+
+/* Mobile styles - 2-1 pattern for team */
 @media (max-width: 768px) {
     /* Reduce section padding on mobile */
     section {
@@ -1246,10 +1301,51 @@ hr {
         font-size: 1.8rem;
     }
 
-    /* Layout adjustments */
+    /* Navigation Layout */
     .nav-container {
         flex-direction: column;
         gap: 15px;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .static-links {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .dropdown-nav {
+        width: 100%;
+    }
+
+    .dropdown-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 8px 0;
+        /* Consistent styling */
+        background-color: var(--white);
+        color: var(--text-color);
+        border-radius: 4px;
+    }
+
+    .dropdown-arrow svg {
+        stroke: currentColor;
+    }
+
+    .dropdown-content {
+        width: 100%;
+        position: relative;
+        box-shadow: none;
+        background-color: var(--light-gray);
+    }
+
+    .dropdown-content a {
+        text-align: center;
     }
 
     /* App preview images on mobile */
@@ -1260,32 +1356,6 @@ hr {
     .app-preview img {
         width: 70px;
         height: 140px;
-    }
-
-    .nav-links {
-        flex-direction: column;
-        width: 100%
-    }
-
-    .static-links {
-        display: flex;
-        justify-content: center;
-        width: 100%;
-        margin-bottom: 10px;
-    }
-    .dropdown-nav {
-        width: 100%;
-    }
-
-    .dropdown-btn {
-        width: 100%;
-        justify-content: center;
-        padding: 8px 0;
-    }
-
-    .dropdown-content {
-        width: 100%;
-        position: relative;
     }
 
     /* Manufacturing info display */
@@ -1304,7 +1374,7 @@ hr {
     .result-container img,
     .product-header img,
     .alternative-item img {
-        max-width: 100px !important;
+        max-width: 100px;
     }
 
     .alternatives-grid {
@@ -1320,7 +1390,7 @@ hr {
         padding: 60px 0;
     }
 
-    /* Footer layout for mobile - UPDATED FOR CENTERING */
+    /* Footer layout for mobile */
     footer {
         padding: 20px 0 10px;
     }
@@ -1348,121 +1418,74 @@ hr {
         padding-top: 10px;
     }
 
-    /* ========== TEAM SECTION - 2-1 PATTERN ========== */
-    /* First, reset all team row and member styles */
+    /* First footer column text width */
+    .footer-column:first-child p {
+        max-width: 180px;
+        margin: 0 auto;
+        line-height: 1.4;
+    }
+
+    /* ===== TEAM SECTION - 2-1 PATTERN ===== */
+    /* Master reset for all team rows */
     #contact .team-row {
-        display: block !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 0 0 5px 0 !important;
-        padding: 0 !important;
-        text-align: center !important;
-        clear: both !important;
-        position: static !important;
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        margin: 0 auto 10px auto;
+        padding: 0;
+        text-align: center;
+        clear: both;
     }
 
     #contact .team-member {
-        background-color: var(--white) !important;
-        border-radius: 8px !important;
-        padding: 12px !important;
-        box-shadow: var(--medium-shadow) !important;
-        text-align: center !important;
-        box-sizing: border-box !important;
-        position: static !important;
-        min-height: 140px !important;
+        background-color: var(--white);
+        border-radius: 8px;
+        padding: 12px;
+        box-shadow: var(--medium-shadow);
+        text-align: center;
+        box-sizing: border-box;
+        min-height: 140px;
     }
 
-    /* =========== ROW 1: NICHOLAS & VICKY (side by side) =========== */
-    #contact .team-row:nth-of-type(1) .team-member:nth-child(1),
-    #contact .team-row:nth-of-type(1) .team-member:nth-child(2) {
-        display: inline-block !important;
-        width: 45% !important;
-        max-width: 45% !important;
-        margin: 0 5px 15px 5px !important;
-        vertical-align: top !important;
-        float: none !important;
+    /* First two members in each row - side by side */
+    #contact .team-row .team-member:nth-child(1),
+    #contact .team-row .team-member:nth-child(2) {
+        display: inline-block;
+        width: 45%;
+        max-width: 45%;
+        margin: 0 5px 15px 5px;
+        vertical-align: top;
+        float: none;
     }
 
-    /* =========== ROW 2: BENJAMIN (centered) =========== */
-    #contact .team-row:nth-of-type(1) .team-member:nth-child(3) {
-        display: block !important;
-        width: 45% !important;
-        max-width: 45% !important;
-        margin: 0 auto 25px auto !important;
-        float: none !important;
+    /* Third member in each row - centered */
+    #contact .team-row .team-member:nth-child(3) {
+        display: block;
+        width: 45%;
+        max-width: 45%;
+        margin: 0 auto 25px auto;
+        clear: both;
+        float: none;
     }
 
-    /* =========== ROW 3: GIULIA & DANIEL (side by side) =========== */
-    #contact .team-row:nth-of-type(2) .team-member:nth-child(1),
-    #contact .team-row:nth-of-type(2) .team-member:nth-child(2) {
-        display: inline-block !important;
-        width: 45% !important;
-        max-width: 45% !important;
-        margin: 0 5px 15px 5px !important;
-        vertical-align: top !important;
-        float: none !important;
-    }
-
-    /* =========== ROW 4: NEEL (centered) =========== */
-    #contact .team-row:nth-of-type(2) .team-member:nth-child(3) {
-        display: block !important;
-        width: 45% !important;
-        max-width: 45% !important;
-        margin: 0 auto 25px auto !important;
-        float: none !important;
-    }
-
-    /* =========== ROW 5: JUSTIN & DEAN (side by side) =========== */
-    /* Updated selector targeting for better browser compatibility */
-    #contact .team-row:nth-of-type(3) .team-member:nth-child(1),
-    #contact .team-row:nth-of-type(3) .team-member:nth-child(2) {
-        display: inline-block !important;
-        width: 45% !important;
-        max-width: 45% !important;
-        margin: 0 5px 15px 5px !important;
-        vertical-align: top !important;
-        float: none !important;
-        position: static !important;
-    }
-
-    /* =========== ROW 6: CORINA (centered) =========== */
-    /* Updated selector targeting for better browser compatibility */
-    #contact .team-row:nth-of-type(3) .team-member:nth-child(3) {
-        display: block !important;
-        width: 45% !important;
-        max-width: 45% !important;
-        margin: 0 auto 25px auto !important;
-        float: none !important;
-        position: static !important;
-        clear: both !important;
-    }
-
-    /* Fix for third row container */
-    #contact .team-row:nth-of-type(3) {
-        text-align: center !important;
-        width: 100% !important;
-        display: block !important;
-        position: static !important;
-        margin-bottom: 0 !important;
-    }
-
-    /* Mobile text sizing */
+    /* Text styling for all team members */
     #contact .team-member h4 {
-        font-size: 0.95rem !important;
-        margin-bottom: 4px !important;
+        font-size: 0.95rem;
+        margin-bottom: 4px;
     }
 
     #contact .team-member p.role {
-        font-size: 0.85rem !important;
-        margin-bottom: 6px !important;
+        font-size: 0.85rem;
+        margin-bottom: 6px;
     }
 
     #contact .team-member p.contact {
-        font-size: 0.8rem !important;
-        word-break: break-word !important;
+        font-size: 0.8rem;
+        word-break: break-word;
     }
 }
 
+/* Small mobile styles */
 @media (max-width: 576px) {
     /* Further reduce spacing between sections */
     section {
@@ -1474,71 +1497,7 @@ hr {
         font-size: 1.5rem;
     }
 
-    /* Image sizing for small screens */
-    .app-preview img {
-        width: 60px;
-        height: 120px;
-    }
-
-    .hero-logo {
-        max-width: 100px;
-    }
-
-    /* Team member size adjustments for smaller screens */
-    #contact .team-member {
-        min-height: 130px !important;
-        padding: 10px !important;
-    }
-
-    #contact .team-member h4 {
-        font-size: 0.9rem !important;
-        margin-bottom: 3px !important;
-    }
-
-    #contact .team-member p.role {
-        font-size: 0.8rem !important;
-        margin-bottom: 5px !important;
-    }
-
-    #contact .team-member p.contact {
-        font-size: 0.75rem !important;
-    }
-
-    .lookup-container {
-        padding: 15px;
-    }
-
-    .product-title h3 {
-        font-size: 20px;
-    }
-
-    /* Barcode lookup image sizing for small mobile */
-    .result-container img,
-    .product-header img,
-    .alternative-item img {
-        max-width: 80px !important;
-    }
-
-    /* Footer adjustments for small screens */
-    .footer-column {
-        margin-bottom: 8px;
-        padding: 0 5px;
-    }
-
-    .footer-column h3 {
-        margin-bottom: 6px;
-        padding-bottom: 4px;
-    }
-
-    .footer-column ul li {
-        margin-bottom: 4px;
-    }
-
-    .copyright {
-        margin-top: 8px;
-        padding-top: 8px;
-    }
-
+    /* Navigation layout for small screens */
     .nav-links {
         flex-direction: row;
         flex-wrap: wrap;
@@ -1566,9 +1525,84 @@ hr {
         padding: 5px;
         font-size: 0.9rem;
     }
+
+    .dropdown-content {
+        right: 0;
+        left: auto;
+        width: auto;
+        min-width: 160px;
+        position: absolute;
+        box-shadow: var(--medium-shadow);
+        background-color: var(--white);
+    }
+
+    /* Image sizing for small screens */
+    .app-preview img {
+        width: 60px;
+        height: 120px;
+    }
+
+    .hero-logo {
+        max-width: 100px;
+    }
+
+    /* Team member size adjustments for smaller screens */
+    #contact .team-member {
+        min-height: 130px;
+        padding: 10px;
+    }
+
+    #contact .team-member h4 {
+        font-size: 0.9rem;
+        margin-bottom: 3px;
+    }
+
+    #contact .team-member p.role {
+        font-size: 0.8rem;
+        margin-bottom: 5px;
+    }
+
+    #contact .team-member p.contact {
+        font-size: 0.75rem;
+    }
+
+    .lookup-container {
+        padding: 15px;
+    }
+
+    .product-title h3 {
+        font-size: 20px;
+    }
+
+    /* Barcode lookup image sizing for small mobile */
+    .result-container img,
+    .product-header img,
+    .alternative-item img {
+        max-width: 80px;
+    }
+
+    /* Footer adjustments for small screens */
+    .footer-column {
+        margin-bottom: 8px;
+        padding: 0 5px;
+    }
+
+    .footer-column h3 {
+        margin-bottom: 6px;
+        padding-bottom: 4px;
+    }
+
+    .footer-column ul li {
+        margin-bottom: 4px;
+    }
+
+    .copyright {
+        margin-top: 8px;
+        padding-top: 8px;
+    }
 }
 
-/* Add an additional media query for extra small devices */
+/* Extra small devices */
 @media (max-width: 375px) {
     /* App preview images for tiny screens */
     .app-preview {
@@ -1580,31 +1614,50 @@ hr {
         height: 100px;
     }
 
+    /* Navigation for tiny screens */
+    .nav-links {
+        gap: 5px;
+    }
+
+    .static-links {
+        gap: 5px;
+    }
+
+    .static-links a, .dropdown-btn {
+        padding: 4px;
+        font-size: 0.85rem;
+    }
+
+    .dropdown-content a {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
+
     /* Make team member cards even smaller but maintain the same width ratio */
     #contact .team-member {
-        min-height: 120px !important;
-        padding: 8px !important;
+        min-height: 120px;
+        padding: 8px;
     }
 
     #contact .team-member h4 {
-        font-size: 0.85rem !important;
-        margin-bottom: 2px !important;
+        font-size: 0.85rem;
+        margin-bottom: 2px;
     }
 
     #contact .team-member p.role {
-        font-size: 0.75rem !important;
-        margin-bottom: 4px !important;
+        font-size: 0.75rem;
+        margin-bottom: 4px;
     }
 
     #contact .team-member p.contact {
-        font-size: 0.7rem !important;
+        font-size: 0.7rem;
     }
 
     /* Barcode lookup image sizing for extra small mobile */
     .result-container img,
     .product-header img,
     .alternative-item img {
-        max-width: 60px !important;
+        max-width: 60px;
     }
 
     /* Extra tiny footer spacing */
@@ -1632,26 +1685,14 @@ hr {
         padding-top: 5px;
     }
 
-    .nav-links {
-        gap: 5px;
-    }
-
-    .static-links {
-        gap: 5px;
-    }
-
-    .static-links a, .dropdown-btn {
-        padding: 4px;
-        font-size: 0.85rem;
-    }
-
-    .dropdown-content a {
-        padding: 8px 12px;
+    /* First footer column text width */
+    .footer-column:first-child p {
+        max-width: 150px;
         font-size: 0.85rem;
     }
 }
 
-/* Override footer styles for all screen sizes - UPDATED FOR CENTERING */
+/* Ensure our footer is consistent across all screens */
 .footer-content {
     max-width: 1000px !important;
     margin: 0 auto !important;
@@ -1683,97 +1724,67 @@ hr {
     text-align: center !important;
 }
 
-/* Special overrides for laptop half-screen */
-@media (max-width: 880px) and (min-width: 769px) {
-    /* Half-screen specific footer adjustments */
-    .footer-content {
-        max-width: 96% !important;
-        gap: 15px !important;
-    }
+/*
+   Special fix for Justin, Dean, and Corina in the last row
+   This addresses the split-screen laptop view specifically
+   Add this at the very end of your CSS file
+*/
 
-    .footer-column {
-        padding: 0 15px !important;
-    }
-}
-
-@media (max-width: 768px) {
-    /* Mobile footer adjustments */
-    .footer-content {
+/* Special override just for the last row (3rd row) */
+@media (min-width: 769px) and (max-width: 880px) {
+    /* Force 3-column desktop layout even on split screen */
+    #contact .team-row:nth-of-type(3) {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        justify-content: center !important;
         gap: 10px !important;
+        max-width: 95% !important;
     }
 
-    .footer-column {
-        padding: 0 10px !important;
-    }
-
-    .footer-column p,
-    .footer-column a {
-        font-size: 0.85rem !important;
-    }
-}
-
-/* ===== FINAL FIX FOR JUSTIN, DEAN AND CORINA ===== */
-@media (max-width: 768px) {
-    /* Direct selectors for Justin & Dean to force side-by-side */
-    /* This override will be applied last and should fix the issue */
-    #contact .team-row:last-child .team-member:nth-child(1),
-    #contact .team-row:last-child .team-member:nth-child(2) {
-        display: inline-block !important;
-        width: 45% !important;
-        max-width: 45% !important;
-        margin: 0 5px 15px 5px !important;
-        vertical-align: top !important;
-        float: none !important;
-        position: static !important;
-    }
-
-    /* Direct selector for Corina to center her */
-    #contact .team-row:last-child .team-member:nth-child(3) {
-        display: block !important;
-        width: 45% !important;
-        max-width: 45% !important;
-        margin: 0 auto 25px auto !important;
-        clear: both !important;
-        float: none !important;
-        position: static !important;
-    }
-
-    /* Force last row container to behave */
-    #contact .team-row:last-child {
-        display: block !important;
-        text-align: center !important;
-        width: 100% !important;
-        clear: both !important;
+    #contact .team-row:nth-of-type(3) .team-member {
+        flex: 1 1 0 !important;
+        width: 30% !important;
+        max-width: 30% !important;
         margin: 0 !important;
-        padding: 0 !important;
-        position: static !important;
+        padding: 10px !important;
+        min-height: 0 !important;
     }
 }
 
-/* Footer First Column Width Fix - Add to the end of your CSS file */
-
-@media (min-width: 769px) {
-  /* Target first footer column specifically */
-  .footer-column:first-child p {
-    max-width: 220px !important; /* Limit text width */
-    margin: 0 auto !important; /* Center the narrower text block */
-    line-height: 1.5 !important; /* Improve readability */
-  }
+/* For very small devices, adjust 2-1 pattern spacing */
+@media (max-width: 360px) {
+    #contact .team-row .team-member:nth-child(1),
+    #contact .team-row .team-member:nth-child(2) {
+        width: 47% !important;
+        max-width: 47% !important;
+        margin: 0 1% 15px 1% !important;
+    }
 }
 
+/* Ensure consistent dropdown button styling across ALL screen sizes */
+.dropdown-btn {
+    background-color: var(--white) !important;
+    color: var(--text-color) !important;
+    border: none !important;
+    font-family: 'Open Sans', sans-serif !important;
+    font-weight: 600 !important;
+}
+
+.dropdown-arrow svg {
+    stroke: currentColor !important;
+}
+
+/* Consistent hover style */
+.dropdown-btn:hover {
+    color: var(--primary-color) !important;
+}
+
+/* Mobile specific adjustments while maintaining white background */
 @media (max-width: 768px) {
-  /* For mobile, use a bit more width */
-  .footer-column:first-child p {
-    max-width: 180px !important;
-    margin: 0 auto !important;
-    line-height: 1.4 !important;
-  }
-}
-
-/* For extra small screens */
-@media (max-width: 375px) {
-  .footer-column:first-child p {
-    max-width: 150px !important;
-    font-size: 0.85rem !important;
-  }
+    .dropdown-btn {
+        width: 100% !important;
+        justify-content: center !important;
+        padding: 8px 0 !important;
+        border-radius: 4px !important;
+    }
 }
