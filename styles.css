@@ -1972,3 +1972,168 @@ hr {
         padding: 10px 14px !important;
     }
 }
+
+/*
+   Mobile Layout Fixes for BuyCan Website
+
+   Fixes:
+   1. Nav bar centering on mobile
+   2. Footer columns alignment
+   3. Dropdown toggle functionality
+*/
+
+/* ==========================================================================
+   1. Fix for Nav Bar Centering on Mobile
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* Fix the nav container structure */
+  .nav-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 10px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Center the logo */
+  .nav-logo {
+    align-self: center;
+    margin: 0 auto;
+  }
+
+  /* Fix the nav links container */
+  .nav-links {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+    margin: 10px 0;
+    flex-wrap: nowrap !important;
+    padding: 0 5px;
+    box-sizing: border-box;
+  }
+
+  /* Fix static links positioning */
+  .static-links {
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 5px;
+    white-space: nowrap;
+  }
+
+  /* Ensure links have enough padding to be clickable */
+  .static-links a {
+    padding: 5px 8px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Extra small screens need more adjustment */
+@media (max-width: 375px) {
+  .nav-links {
+    padding: 0;
+  }
+
+  .static-links a {
+    padding: 5px 5px;
+    font-size: 0.85rem;
+  }
+
+  .dropdown-btn {
+    padding: 5px 5px;
+    font-size: 0.85rem;
+  }
+}
+
+/* ==========================================================================
+   2. Fix for Footer Columns Alignment
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* Reset the footer content layout */
+  .footer-content {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 10px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Fix column sizing and spacing */
+  .footer-column {
+    flex: 1 !important;
+    width: 33.333% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    padding: 0 5px !important;
+    margin: 0 !important;
+    height: auto !important;
+  }
+
+  /* Make text smaller for better fit */
+  .footer-column h3 {
+    font-size: 1.1rem !important;
+    margin-bottom: 10px !important;
+  }
+
+  .footer-column p,
+  .footer-column a,
+  .footer-column li {
+    font-size: 0.85rem !important;
+    margin-bottom: 5px !important;
+  }
+
+  /* Ensure links have enough padding to be clickable */
+  .footer-column a {
+    padding: 2px 0 !important;
+    display: inline-block !important;
+  }
+}
+
+/* Smaller screens need smaller text */
+@media (max-width: 375px) {
+  .footer-column h3 {
+    font-size: 1rem !important;
+  }
+
+  .footer-column p,
+  .footer-column a,
+  .footer-column li {
+    font-size: 0.8rem !important;
+  }
+}
+
+/* ==========================================================================
+   3. Fix for Dropdown Toggle Functionality
+   ========================================================================== */
+
+/* Make dropdown button explicitly toggleable */
+.dropdown-btn {
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Style adjustments for focus state */
+.dropdown-btn:focus {
+  outline: none;
+}
+
+/* Fix for arrow rotation and visibility */
+.dropdown-arrow {
+  display: inline-flex;
+  transition: transform 0.3s ease;
+  margin-left: 3px;
+}
+
+/* Adding a class to use with JavaScript for toggling */
+.dropdown-open .dropdown-arrow {
+  transform: rotate(180deg) !important;
+}
+
+/* Ensure dropdown content is visible when open */
+.dropdown-open .dropdown-content {
+  display: block !important;
+}

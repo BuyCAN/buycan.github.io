@@ -1,5 +1,49 @@
 document.addEventListener('DOMContentLoaded', function() {
   // ======================================================
+  // DROPDOWN NAVIGATION FUNCTIONALITY
+  // ======================================================
+  const dropdownBtn = document.querySelector('.dropdown-btn');
+  const dropdownNav = document.querySelector('.dropdown-nav');
+  const dropdownContent = document.querySelector('.dropdown-content');
+
+  if (dropdownBtn && dropdownContent) {
+    // Replace hover-based dropdown with click-based for all screen sizes
+    // This ensures consistent behavior across devices
+    dropdownBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      // Toggle the dropdown open class
+      dropdownNav.classList.toggle('dropdown-open');
+
+      // Update accessible attributes
+      const expanded = dropdownNav.classList.contains('dropdown-open');
+      dropdownBtn.setAttribute('aria-expanded', expanded);
+    });
+
+    // Close dropdown when clicking anywhere else on the page
+    document.addEventListener('click', function(e) {
+      if (!dropdownNav.contains(e.target)) {
+        dropdownNav.classList.remove('dropdown-open');
+        dropdownBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // Close dropdown when a link inside is clicked
+    dropdownContent.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', function() {
+        dropdownNav.classList.remove('dropdown-open');
+        dropdownBtn.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    // Add accessibility attributes
+    dropdownBtn.setAttribute('aria-haspopup', 'true');
+    dropdownBtn.setAttribute('aria-expanded', 'false');
+    dropdownContent.setAttribute('aria-label', 'Navigation menu');
+  }
+
+  // ======================================================
   // ELEMENT SELECTION
   // ======================================================
   const barcodeForm      = document.getElementById('barcode-form');
@@ -17,15 +61,17 @@ document.addEventListener('DOMContentLoaded', function() {
   // ======================================================
 
   // Handle form submission
-  barcodeForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    const barcodeInput = document.getElementById('barcode').value.trim();
-    if (!barcodeInput) return;
+  if (barcodeForm) {
+    barcodeForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const barcodeInput = document.getElementById('barcode').value.trim();
+      if (!barcodeInput) return;
 
-    showLoading(true);
-    clearUI();
-    fetchBarcodeData(barcodeInput);
-  });
+      showLoading(true);
+      clearUI();
+      fetchBarcodeData(barcodeInput);
+    });
+  }
 
   // Handle example barcode clicks
   exampleBarcodes.forEach(function(example) {
@@ -53,9 +99,9 @@ document.addEventListener('DOMContentLoaded', function() {
           'Accept': 'application/json'
         }
       });
-  
+
       if (!response.ok) {
-        const errorText = await response.text();        
+        const errorText = await response.text();
         if (response.status === 401) {
           throw new Error('Authentication required');
         } else if (response.status === 403) {
@@ -63,10 +109,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         throw new Error(`Network response was not ok: ${response.status} ${errorText}`);
       }
-  
+
       const data = await response.json();
       showLoading(false);
-      
+
       if (!data?.metadata?.exists) {
         displayError('Product Not Found');
         return;
@@ -138,13 +184,13 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="product-header">
           <!-- 1. Name at the top -->
           <h3 class="product-name">${name || 'Untitled Product'}</h3>
-        
+
           <!-- 2. Brand & Barcode below name, stacked -->
           <div class="product-details">
             <div class="product-brand">${brand || ''}</div>
             <div class="barcode-display">Barcode: ${barcode}</div>
           </div>
-        
+
           <!-- 3. Product image below brand and barcode -->
           ${
             metadata?.imageURL
@@ -190,7 +236,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <h4>Parent Company: ${parentCompany?.name || 'Unknown'}</h4>
         <p>${parentCompany?.description || ''}</p>
         <p>
-          <strong>Based in:</strong> ${parentCompany?.countryOfRegistration || 'N/A'} 
+          <strong>Based in:</strong> ${parentCompany?.countryOfRegistration || 'N/A'}
           (Confidence: ${parentCompany?.resultConfidence || 'N/A'})
         </p>
 
@@ -269,50 +315,5 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       });
     }
-  }
-
-  // ======================================================
-  // DROPDOWN NAVIGATION FUNCTIONALITY
-  // ======================================================
-  const dropdownBtn = document.querySelector('.dropdown-btn');
-  const dropdownContent = document.querySelector('.dropdown-content');
-
-  // Add dropdown functionality if elements exist
-  if (dropdownBtn && dropdownContent) {
-    // For mobile: toggle dropdown manually for better touch experience
-    if (window.innerWidth <= 768) {
-      // Prevent default hover behavior on mobile
-      dropdownBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-
-        // Toggle display of dropdown content
-        if (dropdownContent.style.display === 'block') {
-          dropdownContent.style.display = 'none';
-          document.querySelector('.dropdown-arrow').style.transform = 'rotate(0deg)';
-        } else {
-          dropdownContent.style.display = 'block';
-          document.querySelector('.dropdown-arrow').style.transform = 'rotate(180deg)';
-        }
-      });
-
-      // Close dropdown when clicking elsewhere on the page
-      document.addEventListener('click', function(e) {
-        if (!e.target.closest('.dropdown-nav')) {
-          dropdownContent.style.display = 'none';
-          document.querySelector('.dropdown-arrow').style.transform = 'rotate(0deg)';
-        }
-      });
-    }
-
-    // Close dropdown when a link is clicked
-    const dropdownLinks = document.querySelectorAll('.dropdown-content a');
-    dropdownLinks.forEach(link => {
-      link.addEventListener('click', function() {
-        if (window.innerWidth <= 768) {
-          dropdownContent.style.display = 'none';
-          document.querySelector('.dropdown-arrow').style.transform = 'rotate(0deg)';
-        }
-      });
-    });
   }
 });
