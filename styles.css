@@ -1788,3 +1788,44 @@ hr {
         border-radius: 4px !important;
     }
 }
+
+@media (max-width: 768px) {
+    /* Target 2nd member in the 3rd row (Dean Loevsky) with very specific selector */
+    #contact .team-row:nth-of-type(3) .team-member:nth-child(2) {
+        width: 45% !important;
+        max-width: 45% !important;
+        height: auto !important;
+        min-height: 140px !important; /* Match other team members */
+        box-sizing: border-box !important;
+        display: inline-block !important;
+        vertical-align: top !important;
+    }
+
+    /* Ensure all team members have consistent box-sizing and dimensions */
+    #contact .team-member {
+        box-sizing: border-box !important;
+        height: auto !important;
+        min-height: 140px !important;
+    }
+}
+
+/* Additional adjustment for small phones */
+@media (max-width: 375px) {
+    #contact .team-row:nth-of-type(3) .team-member:nth-child(2) {
+        min-height: 120px !important;
+    }
+
+    #contact .team-member {
+        min-height: 120px !important;
+    }
+}
+
+/* Force all team members to have the same width and max-width */
+@media (max-width: 768px) {
+    #contact .team-row .team-member:nth-child(1),
+    #contact .team-row .team-member:nth-child(2),
+    #contact .team-row .team-member:nth-child(3) {
+        width: 45% !important;
+        max-width: 45% !important;
+    }
+}
