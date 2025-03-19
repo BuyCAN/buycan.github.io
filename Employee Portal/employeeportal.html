@@ -25,7 +25,7 @@
             max-width: 800px;
             width: 90%;
             opacity: 1;
-            transition: opacity 0.8s ease-out;
+            transition: opacity 0.5s ease-out;
         }
         
         h1 {
@@ -72,12 +72,17 @@
 
         // logout function
         function logout() {
-            window.location.href = 'login.html';
-            /* logout and remove token, uncomment later
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('tokenExpires');
-            window.location.href = 'login.html';
-            */
+            const container = document.querySelector('.container');
+            container.classList.add('fade-out');
+            
+            
+            setTimeout(() => {
+                /* Uncomment later for token removal
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('tokenExpires');
+                */
+                window.location.href = 'login.html';
+            }, 500); // Match this with CSS transition duration
         }
 
         // activity timeout 
