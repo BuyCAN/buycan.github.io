@@ -26,6 +26,57 @@
 
     <!-- Favicon -->
     <link rel="icon" href="images/onlyleaf.png" type="image/png">
+
+    <!-- Additional CSS for Dropdown Fix -->
+    <style>
+    /* Ensure the dropdown arrow is visible on all screen sizes */
+    .dropdown-arrow {
+      display: inline-flex !important;
+      align-items: center !important;
+      margin-left: 5px !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+
+    /* On smaller screens, adjust spacing but keep visible */
+    @media (max-width: 768px) {
+      /* Dropdown button with arrow */
+      .dropdown-btn {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        white-space: nowrap !important;
+        background-color: var(--white) !important;
+        color: var(--text-color) !important;
+      }
+
+      /* Arrow specific styling for mobile */
+      .dropdown-arrow {
+        margin-left: 4px !important;
+        display: inline-flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+      }
+    }
+
+    /* Ensure dropdown menu ONLY appears when clicked, not on hover */
+    .dropdown-nav:hover .dropdown-content {
+      display: none !important;
+    }
+
+    .dropdown-nav:hover .dropdown-arrow {
+      transform: none !important;
+    }
+
+    /* It will only show when the dropdown-open class is applied */
+    .dropdown-nav.dropdown-open .dropdown-content {
+      display: block !important;
+    }
+
+    .dropdown-nav.dropdown-open .dropdown-arrow {
+      transform: rotate(180deg) !important;
+    }
+    </style>
 </head>
 
 <body>
@@ -352,6 +403,108 @@
 
     <!-- JavaScript -->
     <script src="script.js"></script>
+
+    <!-- Dropdown Menu Fix Script -->
+    <script>
+    /**
+     * BuyCan Website Dropdown Fix
+     * This script handles the dropdown menu functionality
+     */
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get the dropdown button and content
+      const dropdownBtn = document.querySelector('.dropdown-btn');
+      const dropdownNav = document.querySelector('.dropdown-nav');
+      const dropdownContent = document.querySelector('.dropdown-content');
+      const dropdownArrow = document.querySelector('.dropdown-arrow');
+
+      // Only proceed if elements exist
+      if (dropdownBtn && dropdownContent) {
+        // Initialize as closed
+        let isOpen = false;
+
+        // Ensure the arrow is visible
+        if (dropdownArrow) {
+          dropdownArrow.style.display = 'inline-flex';
+        }
+
+        // Disable all hover functionality
+        dropdownNav.addEventListener('mouseenter', function(e) {
+          // Do nothing - prevent default hover behavior
+          e.preventDefault();
+          e.stopPropagation();
+          return false;
+        });
+
+        dropdownNav.addEventListener('mouseleave', function(e) {
+          // Do nothing - prevent default hover behavior
+          e.preventDefault();
+          e.stopPropagation();
+          return false;
+        });
+
+        // Toggle dropdown on button click
+        dropdownBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          isOpen = !isOpen;
+
+          if (isOpen) {
+            dropdownNav.classList.add('dropdown-open');
+            dropdownContent.style.display = 'block';
+          } else {
+            dropdownNav.classList.remove('dropdown-open');
+            dropdownContent.style.display = 'none';
+          }
+        });
+
+        // Make arrow clickable too
+        if (dropdownArrow) {
+          dropdownArrow.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            // Trigger same behavior as button click
+            isOpen = !isOpen;
+
+            if (isOpen) {
+              dropdownNav.classList.add('dropdown-open');
+              dropdownContent.style.display = 'block';
+            } else {
+              dropdownNav.classList.remove('dropdown-open');
+              dropdownContent.style.display = 'none';
+            }
+          });
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+          if (isOpen && !dropdownNav.contains(e.target)) {
+            isOpen = false;
+            dropdownNav.classList.remove('dropdown-open');
+            dropdownContent.style.display = 'none';
+          }
+        });
+
+        // Close dropdown when clicking a link
+        const dropdownLinks = dropdownContent.querySelectorAll('a');
+        dropdownLinks.forEach(link => {
+          link.addEventListener('click', function() {
+            isOpen = false;
+            dropdownNav.classList.remove('dropdown-open');
+            dropdownContent.style.display = 'none';
+          });
+        });
+
+        // Ensure dropdown is closed initially
+        dropdownContent.style.display = 'none';
+
+        console.log('Dropdown script initialized successfully');
+      } else {
+        console.error('Dropdown elements not found');
+      }
+    });
+    </script>
 </body>
 
 </html>
