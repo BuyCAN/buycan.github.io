@@ -1,0 +1,44 @@
+/* ==========================================================================
+   5. Hero Section
+   ========================================================================== */
+
+.hero {
+    background-color: var(--primary-color);
+    color: var(--white);
+    padding: 60px 0;
+    text-align: center;
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: var(--white);
+}
+
+.hero p {
+    font-size: 1.2rem;
+    max-width: 800px;
+    margin: 0 auto 30px;
+    color: var(--white)
+}
+
+.hero-logo {
+    max-width: 150px;
+    margin: 0 auto 30px;
+}
+
+/* Call to action button */
+.cta-button {
+    display: inline-block;
+    background-color: var(--secondary-color);
+    color: var(--white);
+    padding: 12px 30px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color var(--transition-speed) ease;
+}
+
+.cta-button:hover {
+    background-color: #c0392b;
+}

@@ -1,0 +1,27 @@
+/* ==========================================================================
+   1. Variables & Global Settings
+   ========================================================================== */
+:root {
+    /* Color Palette */
+    --primary-color: #1a5276; /* Deep blue - professional */
+    --secondary-color: #fa3939; /* Accent color for CTAs */
+    --text-color: #333333;
+    --light-gray: #f8f9fa;
+    --medium-gray: #e9ecef;
+    --dark-gray: #495057;
+    --white: #ffffff;
+
+    /* Color Semantics */
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --muted-color: #6c757d;
+
+    /* Shadows */
+    --light-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    --medium-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    --heavy-shadow: 0 6px 12px rgba(0,0,0,0.1);
+
+    /* Transitions */
+    --transition-speed: 0.3s;
+}

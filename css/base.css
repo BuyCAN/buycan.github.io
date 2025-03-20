@@ -1,0 +1,28 @@
+/* ==========================================================================
+   2. Base Elements
+   ========================================================================== */
+body {
+    font-family: 'Open Sans', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--light-gray);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+a {
+    text-decoration: none;
+    transition: all var(--transition-speed) ease;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+/* Paragraph default styling */
+p {
+    margin-bottom: 1rem;
+    color: var(--dark-gray);
+}

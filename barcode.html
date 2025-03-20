@@ -17,14 +17,13 @@
     <title>Barcode Lookup | BuyCan</title>
 
     <!-- Stylesheets -->
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/index.css">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 
     <!-- Favicon -->
     <link rel="icon" href="images/onlyleaf.png" type="image/png">
 </head>
 <body>
-    <!-- Navigation Bar -->
     <header class="nav-bar">
         <div class="nav-container">
             <!-- Logo and Site Name -->
@@ -35,17 +34,33 @@
                 </a>
             </div>
 
-            <!-- Navigation Links -->
+            <!-- Navigation Links - Restructured for better mobile display -->
             <nav class="nav-links">
-                <a href="index.html">Home</a>
-                <a href="index.html#about">About</a>
+                <!-- Left side static links -->
+                <div class="static-links">
+                    <a href="support-us.html">Support Us</a>
+                    <a href="barcode.html">Barcode Lookup</a>
+                </div>
 
-                <a href="index.html#download">Download</a>
-                <a href="index.html#contact">Contact</a>
-
-                <a href="barcode.html">Barcode Lookup</a>
-
-                <a href="support-us.html">Support Us</a>
+                <!-- Right side dropdown -->
+                <div class="dropdown-nav">
+                    <button class="dropdown-btn">
+                        Home
+                        <span class="dropdown-arrow">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </span>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="index.html">Home Page</a>
+                        <a href="index.html#about">About Us</a>
+                        <a href="index.html#app-preview">App Preview</a>
+                        <a href="index.html#download">Download</a>
+                        <a href="index.html#contact">Our Team</a>
+                        <a href="policy.html">Privacy Policy</a>
+                    </div>
+                </div>
             </nav>
         </div>
     </header>
@@ -109,11 +124,6 @@
             <div class="footer-column">
                 <h3>Quick Links</h3>
                 <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="index.html#about">About Us</a></li>
-                    <li><a href="index.html#app-preview">App Preview</a></li>
-                    <li><a href="index.html#download">Download</a></li>
-                    <li><a href="index.html#contact">Contact</a></li>
                     <li><a href="policy.html">Privacy Policy</a></li>
                 </ul>
             </div>
@@ -156,10 +166,8 @@
         </svg>
     </a>
 
-    <!-- Scripts -->
-    <!-- Common site functionality -->
-    <script src="script.js"></script>
-    <!-- Barcode-specific functionality -->
-    <script src="barcode.js"></script>
+    <!-- JavaScript -->
+    <script src="js/script.js"></script>
+    <script src="js/barcode.js"></script>
 </body>
 </html>
