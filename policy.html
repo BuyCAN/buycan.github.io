@@ -1,3 +1,4 @@
+<!--policy.html-->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -39,31 +40,15 @@
                 </a>
             </div>
 
-            <!-- Navigation Links - Restructured -->
+            <!-- Navigation Links -->
             <nav class="nav-links">
-                <!-- Left side static links -->
-                <div class="static-links">
-                    <a href="barcode.html">Barcode Lookup</a>
-                </div>
-
-                <!-- Right side dropdown -->
-                <div class="dropdown-nav">
-                    <button class="dropdown-btn">
-                        Home
-                        <span class="dropdown-arrow">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </span>
-                    </button>
-                    <div class="dropdown-content">
-                        <a href="index.html">Home Page</a>
-                        <a href="index.html#about">About</a>
-                        <a href="index.html#app-preview">App Preview</a>
-                        <a href="index.html#download">Download</a>
-                        <a href="index.html#contact">Our Team</a>
-                    </div>
-                </div>
+                <a href="index.html">Home</a>
+                
+                
+                <a href="index.html#download">Download</a>
+                <a href="index.html#contact">Our Team</a>
+                <a href="barcode.html">Barcode Lookup</a>
+                <a href="support-us.html">Donations</a>
             </nav>
         </div>
     </header>
@@ -151,6 +136,10 @@
                 <h3>Quick Links</h3>
                 <ul>
                     <li><a href="index.html">Home</a></li>
+                    <li><a href="index.html#about">About Us</a></li>
+                    <li><a href="index.html#app-preview">App Preview</a></li>
+                    <li><a href="index.html#download">Download</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
                     <li><a href="barcode.html">Barcode Lookup</a></li>
                 </ul>
             </div>
@@ -179,7 +168,31 @@
     </a>
 
     <!-- JavaScript -->
-    <script src="script.js"></script>
+    <script>
+        /**
+         * Back to Top Button Functionality
+         * Shows/hides the back-to-top button based on scroll position
+         */
+        window.onscroll = function() {
+            const backToTopButton = document.querySelector('.back-to-top');
+
+            // Show button when scrolled down, hide when at the top
+            if (window.scrollY > 300 || document.documentElement.scrollTop > 300) {
+                backToTopButton.classList.add('visible');
+            } else {
+                backToTopButton.classList.remove('visible');
+            }
+        };
+
+        // Scroll to top when back-to-top button is clicked
+        document.querySelector('.back-to-top').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
 </body>
 
 </html>

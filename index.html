@@ -1,3 +1,4 @@
+<!--index.html-->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -26,60 +27,10 @@
 
     <!-- Favicon -->
     <link rel="icon" href="images/onlyleaf.png" type="image/png">
-
-    <!-- Additional CSS for Dropdown Fix -->
-    <style>
-    /* Ensure the dropdown arrow is visible on all screen sizes */
-    .dropdown-arrow {
-      display: inline-flex !important;
-      align-items: center !important;
-      margin-left: 5px !important;
-      visibility: visible !important;
-      opacity: 1 !important;
-    }
-
-    /* On smaller screens, adjust spacing but keep visible */
-    @media (max-width: 768px) {
-      /* Dropdown button with arrow */
-      .dropdown-btn {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        white-space: nowrap !important;
-        background-color: var(--white) !important;
-        color: var(--text-color) !important;
-      }
-
-      /* Arrow specific styling for mobile */
-      .dropdown-arrow {
-        margin-left: 4px !important;
-        display: inline-flex !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-      }
-    }
-
-    /* Ensure dropdown menu ONLY appears when clicked, not on hover */
-    .dropdown-nav:hover .dropdown-content {
-      display: none !important;
-    }
-
-    .dropdown-nav:hover .dropdown-arrow {
-      transform: none !important;
-    }
-
-    /* It will only show when the dropdown-open class is applied */
-    .dropdown-nav.dropdown-open .dropdown-content {
-      display: block !important;
-    }
-
-    .dropdown-nav.dropdown-open .dropdown-arrow {
-      transform: rotate(180deg) !important;
-    }
-    </style>
 </head>
 
 <body>
+    <!-- Navigation Bar -->
     <header class="nav-bar">
         <div class="nav-container">
             <!-- Logo and Site Name -->
@@ -90,33 +41,15 @@
                 </a>
             </div>
 
-            <!-- Navigation Links - Restructured for better mobile display -->
-            <!-- Navigation Links for all pages -->
+            <!-- Navigation Links -->
             <nav class="nav-links">
-                <!-- Left side static links -->
-                <div class="static-links">
-                    <a href="policy.html">Privacy Policy</a>
-                    <a href="barcode.html">Barcode Lookup</a>
-                </div>
+                <a href="#about">About</a>
 
-                <!-- Right side dropdown -->
-                <div class="dropdown-nav">
-                    <button class="dropdown-btn">
-                        Home
-                        <span class="dropdown-arrow">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </span>
-                    </button>
-                    <div class="dropdown-content">
-                        <a href="index.html">Home Page</a>
-                        <a href="index.html#about">About</a>
-                        <a href="index.html#app-preview">App Preview</a>
-                        <a href="index.html#download">Download</a>
-                        <a href="index.html#contact">Our Team</a>
-                    </div>
-                </div>
+                <a href="#download">Download</a>
+                <a href="#contact">Our Team</a>
+
+                <a href="barcode.html">Barcode Lookup</a>
+                <a href="support-us.html">Support Us</a>
             </nav>
         </div>
     </header>
@@ -205,7 +138,7 @@
         </div>
     </section>
 
-    <!-- Team/Contact Section with restructured rows -->
+    <!-- Team/Contact Section - UPDATED for better mobile display -->
     <section id="contact" class="section-dark">
         <div class="container">
             <!-- Section Header -->
@@ -214,11 +147,11 @@
                 <p>Meet the people behind BuyCan</p>
             </div>
 
-            <!-- First Row -->
+            <!-- First Row: Nicholas, Vicky, and Benjamin -->
             <div class="team-row">
                 <div class="team-member">
                     <h4>Nicholas Afonin</h4>
-                    <p class="role">Founder & Full-Stack Developer</p>
+                    <p class="role">Founder and Developer</p>
                     <p class="contact">
                         <a href="https://www.linkedin.com/in/nicholas-afonin/" target="_blank" rel="noopener noreferrer">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 5px;">
@@ -233,7 +166,7 @@
 
                 <div class="team-member">
                     <h4>Vicky Sirkovich</h4>
-                    <p class="role">Outreach & Web Developer</p>
+                    <p class="role">Outreach and Web Developer</p>
                     <p class="contact">
                         <a href="https://www.linkedin.com/in/vicky-sirkovich/" target="_blank" rel="noopener noreferrer">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 5px;">
@@ -248,11 +181,11 @@
 
                 <div class="team-member">
                     <h4>Benjamin Gavriely</h4>
-                    <p class="role">Android & Backend Developer</p>
+                    <p class="role">Android and Backend Developer</p>
                     <p class="contact">
                         <a href="https://www.linkedin.com/in/benjamin-gavriely/" target="_blank" rel="noopener noreferrer">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 5px;">
-                                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2a2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
                                 <rect x="2" y="9" width="4" height="12"></rect>
                                 <circle cx="4" cy="4" r="2"></circle>
                             </svg>
@@ -262,7 +195,7 @@
                 </div>
             </div>
 
-            <!-- Second Row -->
+            <!-- Second Row: Giulia, Daniel, and Neel -->
             <div class="team-row">
                 <div class="team-member">
                     <h4>Giulia Khoja</h4>
@@ -270,7 +203,7 @@
                     <p class="contact">
                         <a href="https://www.linkedin.com/in/giulia-khoja-53b57923a/" target="_blank" rel="noopener noreferrer">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 5px;">
-                                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2a2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
                                 <rect x="2" y="9" width="4" height="12"></rect>
                                 <circle cx="4" cy="4" r="2"></circle>
                             </svg>
@@ -285,7 +218,7 @@
                     <p class="contact">
                         <a href="https://www.linkedin.com/in/daniel-kostenko-9ab8bb252/" target="_blank" rel="noopener noreferrer">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 5px;">
-                                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2a2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
                                 <rect x="2" y="9" width="4" height="12"></rect>
                                 <circle cx="4" cy="4" r="2"></circle>
                             </svg>
@@ -300,7 +233,7 @@
                     <p class="contact">
                         <a href="https://www.linkedin.com/in/neel-jagatia/" target="_blank" rel="noopener noreferrer">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 5px;">
-                                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2a2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
                                 <rect x="2" y="9" width="4" height="12"></rect>
                                 <circle cx="4" cy="4" r="2"></circle>
                             </svg>
@@ -310,15 +243,15 @@
                 </div>
             </div>
 
-            <!-- Third Row -->
+            <!-- Third Row: Justin, Dean, and Corina -->
             <div class="team-row">
                 <div class="team-member">
                     <h4>Justin Tran</h4>
-                    <p class="role">Head of Graphics & UI</p>
+                    <p class="role">Head of Graphics and UI</p>
                     <p class="contact">
                         <a href="https://www.linkedin.com/in/justin-kyle-tran/" target="_blank" rel="noopener noreferrer">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 5px;">
-                                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2a2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
                                 <rect x="2" y="9" width="4" height="12"></rect>
                                 <circle cx="4" cy="4" r="2"></circle>
                             </svg>
@@ -333,7 +266,7 @@
                     <p class="contact">
                         <a href="https://www.linkedin.com/in/dean-loevsky/" target="_blank" rel="noopener noreferrer">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 5px;">
-                                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2a2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
                                 <rect x="2" y="9" width="4" height="12"></rect>
                                 <circle cx="4" cy="4" r="2"></circle>
                             </svg>
@@ -348,7 +281,7 @@
                     <p class="contact">
                         <a href="https://www.linkedin.com/in/corilungu/" target="_blank" rel="noopener noreferrer">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 5px;">
-                                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2a2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
                                 <rect x="2" y="9" width="4" height="12"></rect>
                                 <circle cx="4" cy="4" r="2"></circle>
                             </svg>
@@ -402,108 +335,55 @@
     </a>
 
     <!-- JavaScript -->
-    <script src="script.js"></script>
-
-    <!-- Dropdown Menu Fix Script -->
     <script>
-    /**
-     * BuyCan Website Dropdown Fix
-     * This script handles the dropdown menu functionality
-     */
-    document.addEventListener('DOMContentLoaded', function() {
-      // Get the dropdown button and content
-      const dropdownBtn = document.querySelector('.dropdown-btn');
-      const dropdownNav = document.querySelector('.dropdown-nav');
-      const dropdownContent = document.querySelector('.dropdown-content');
-      const dropdownArrow = document.querySelector('.dropdown-arrow');
+        /**
+         * Back to Top Button Functionality
+         * Shows/hides the back-to-top button based on scroll position
+         */
+        window.onscroll = function() {
+            const backToTopButton = document.querySelector('.back-to-top');
 
-      // Only proceed if elements exist
-      if (dropdownBtn && dropdownContent) {
-        // Initialize as closed
-        let isOpen = false;
-
-        // Ensure the arrow is visible
-        if (dropdownArrow) {
-          dropdownArrow.style.display = 'inline-flex';
-        }
-
-        // Disable all hover functionality
-        dropdownNav.addEventListener('mouseenter', function(e) {
-          // Do nothing - prevent default hover behavior
-          e.preventDefault();
-          e.stopPropagation();
-          return false;
-        });
-
-        dropdownNav.addEventListener('mouseleave', function(e) {
-          // Do nothing - prevent default hover behavior
-          e.preventDefault();
-          e.stopPropagation();
-          return false;
-        });
-
-        // Toggle dropdown on button click
-        dropdownBtn.addEventListener('click', function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-
-          isOpen = !isOpen;
-
-          if (isOpen) {
-            dropdownNav.classList.add('dropdown-open');
-            dropdownContent.style.display = 'block';
-          } else {
-            dropdownNav.classList.remove('dropdown-open');
-            dropdownContent.style.display = 'none';
-          }
-        });
-
-        // Make arrow clickable too
-        if (dropdownArrow) {
-          dropdownArrow.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-
-            // Trigger same behavior as button click
-            isOpen = !isOpen;
-
-            if (isOpen) {
-              dropdownNav.classList.add('dropdown-open');
-              dropdownContent.style.display = 'block';
+            // Show button when scrolled down, hide when at the top
+            if (window.scrollY > 300 || document.documentElement.scrollTop > 300) {
+                backToTopButton.classList.add('visible');
             } else {
-              dropdownNav.classList.remove('dropdown-open');
-              dropdownContent.style.display = 'none';
+                backToTopButton.classList.remove('visible');
             }
-          });
-        }
+        };
 
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(e) {
-          if (isOpen && !dropdownNav.contains(e.target)) {
-            isOpen = false;
-            dropdownNav.classList.remove('dropdown-open');
-            dropdownContent.style.display = 'none';
-          }
+        // Scroll to top when back-to-top button is clicked
+        document.querySelector('.back-to-top').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
         });
 
-        // Close dropdown when clicking a link
-        const dropdownLinks = dropdownContent.querySelectorAll('a');
-        dropdownLinks.forEach(link => {
-          link.addEventListener('click', function() {
-            isOpen = false;
-            dropdownNav.classList.remove('dropdown-open');
-            dropdownContent.style.display = 'none';
-          });
+        /**
+         * Smooth Scrolling for Internal Links
+         * Provides smooth scrolling behavior for any in-page links
+         */
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                // Skip the back-to-top button as it has its own handler
+                if (this.classList.contains('back-to-top')) return;
+
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+
+                // Skip empty anchors
+                if (targetId === "#") return;
+
+                // Scroll to the target element smoothly
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
         });
-
-        // Ensure dropdown is closed initially
-        dropdownContent.style.display = 'none';
-
-        console.log('Dropdown script initialized successfully');
-      } else {
-        console.error('Dropdown elements not found');
-      }
-    });
     </script>
 </body>
 
