@@ -1,4 +1,3 @@
-<!--policy.html-->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -152,10 +151,6 @@
                 <h3>Quick Links</h3>
                 <ul>
                     <li><a href="index.html">Home</a></li>
-                    <!--<li><a href="index.html#about">About Us</a></li>
-                    <li><a href="index.html#app-preview">App Preview</a></li>
-                    <li><a href="index.html#download">Download</a></li>
-                    <li><a href="index.html#contact">Contact</a></li>-->
                     <li><a href="barcode.html">Barcode Lookup</a></li>
                 </ul>
             </div>
@@ -184,74 +179,7 @@
     </a>
 
     <!-- JavaScript -->
-    <script>
-        /**
-         * Back to Top Button Functionality
-         * Shows/hides the back-to-top button based on scroll position
-         */
-        window.onscroll = function() {
-            const backToTopButton = document.querySelector('.back-to-top');
-
-            // Show button when scrolled down, hide when at the top
-            if (window.scrollY > 300 || document.documentElement.scrollTop > 300) {
-                backToTopButton.classList.add('visible');
-            } else {
-                backToTopButton.classList.remove('visible');
-            }
-        };
-
-        // Scroll to top when back-to-top button is clicked
-        document.querySelector('.back-to-top').addEventListener('click', function(e) {
-            e.preventDefault();
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
-
-        // Navigation dropdown functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            // Get dropdown button
-            const dropdownBtn = document.querySelector('.dropdown-btn');
-            const dropdownContent = document.querySelector('.dropdown-content');
-
-            // For mobile: toggle dropdown manually for better touch experience
-            if (window.innerWidth <= 768) {
-                // Prevent default hover behavior on mobile
-                dropdownBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-
-                    // Toggle display of dropdown content
-                    if (dropdownContent.style.display === 'block') {
-                        dropdownContent.style.display = 'none';
-                        document.querySelector('.dropdown-arrow').style.transform = 'rotate(0deg)';
-                    } else {
-                        dropdownContent.style.display = 'block';
-                        document.querySelector('.dropdown-arrow').style.transform = 'rotate(180deg)';
-                    }
-                });
-
-                // Close dropdown when clicking elsewhere on the page
-                document.addEventListener('click', function(e) {
-                    if (!e.target.closest('.dropdown-nav')) {
-                        dropdownContent.style.display = 'none';
-                        document.querySelector('.dropdown-arrow').style.transform = 'rotate(0deg)';
-                    }
-                });
-            }
-
-            // Close dropdown when a link is clicked
-            const dropdownLinks = document.querySelectorAll('.dropdown-content a');
-            dropdownLinks.forEach(link => {
-                link.addEventListener('click', function() {
-                    if (window.innerWidth <= 768) {
-                        dropdownContent.style.display = 'none';
-                        document.querySelector('.dropdown-arrow').style.transform = 'rotate(0deg)';
-                    }
-                });
-            });
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 
 </html>

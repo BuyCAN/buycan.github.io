@@ -1,4 +1,3 @@
-<!--index.html-->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -41,29 +40,30 @@
             </div>
 
             <!-- Navigation Links - Restructured for better mobile display -->
+            <!-- Navigation Links for all pages -->
             <nav class="nav-links">
-                <!-- Left side static links with shorter text -->
+                <!-- Left side static links -->
                 <div class="static-links">
                     <a href="policy.html">Privacy Policy</a>
                     <a href="barcode.html">Barcode Lookup</a>
                 </div>
 
-                <!-- Right side dropdown with shorter text -->
+                <!-- Right side dropdown -->
                 <div class="dropdown-nav">
                     <button class="dropdown-btn">
                         Home
                         <span class="dropdown-arrow">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <polyline points="6 9 12 15 18 9"></polyline>
                             </svg>
                         </span>
                     </button>
                     <div class="dropdown-content">
                         <a href="index.html">Home Page</a>
-                        <a href="#about">About</a>
-                        <a href="#app-preview">App Preview</a>
-                        <a href="#download">Download</a>
-                        <a href="#contact">Our Team</a>
+                        <a href="index.html#about">About</a>
+                        <a href="index.html#app-preview">App Preview</a>
+                        <a href="index.html#download">Download</a>
+                        <a href="index.html#contact">Our Team</a>
                     </div>
                 </div>
             </nav>
@@ -351,56 +351,7 @@
     </a>
 
     <!-- JavaScript -->
-    <script>
-        /**
-         * Back to Top Button Functionality
-         * Shows/hides the back-to-top button based on scroll position
-         */
-        window.onscroll = function() {
-            const backToTopButton = document.querySelector('.back-to-top');
-
-            // Show button when scrolled down, hide when at the top
-            if (window.scrollY > 300 || document.documentElement.scrollTop > 300) {
-                backToTopButton.classList.add('visible');
-            } else {
-                backToTopButton.classList.remove('visible');
-            }
-        };
-
-        // Scroll to top when back-to-top button is clicked
-        document.querySelector('.back-to-top').addEventListener('click', function(e) {
-            e.preventDefault();
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
-
-        /**
-         * Smooth Scrolling for Internal Links
-         * Provides smooth scrolling behavior for any in-page links
-         */
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                // Skip the back-to-top button as it has its own handler
-                if (this.classList.contains('back-to-top')) return;
-
-                e.preventDefault();
-                const targetId = this.getAttribute('href');
-
-                // Skip empty anchors
-                if (targetId === "#") return;
-
-                // Scroll to the target element smoothly
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    targetElement.scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 
 </html>
