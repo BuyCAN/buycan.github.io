@@ -57,8 +57,16 @@ footer {
     text-decoration: underline;
 }
 
+.footer-column p {
+    color: var(--white);
+}
+
 .copyright {
     margin-top: 30px;
     padding-top: 20px;
     border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.copyright p{
+    color: var(--white);
 }
