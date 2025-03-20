@@ -1,0 +1,145 @@
+/* ==========================================================================
+   4. Navigation
+   ========================================================================== */
+
+/* Nav bar container */
+.nav-bar {
+    background-color: var(--white);
+    box-shadow: var(--light-shadow);
+    padding: 15px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Logo styling */
+.nav-logo {
+    display: flex;
+    align-items: center;
+}
+
+.nav-logo a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.nav-logo img {
+    height: 40px;
+    margin-right: 10px;
+}
+
+.logo-text {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+/* Hide old h1 styling that was previously used */
+.nav-logo h1 {
+    display: none;
+}
+
+/* Navigation links (includes static links + dropdown) */
+.nav-links {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 20px;
+}
+
+/* Left Side Static Links */
+.static-links {
+    display: flex;
+    gap: 20px;
+}
+
+.static-links a {
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: 600;
+    transition: color var(--transition-speed) ease;
+    padding: 5px 10px;
+}
+
+.static-links a:hover {
+    color: var(--primary-color);
+}
+
+/* Right Side Dropdown */
+.dropdown-nav {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--white);
+    color: var(--text-color);
+    font-weight: 600;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: color var(--transition-speed) ease;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1rem;
+}
+
+.dropdown-btn:hover {
+    color: var(--primary-color);
+}
+
+.dropdown-arrow {
+    display: inline-flex;
+    align-items: center;
+    transition: transform 0.3s ease;
+}
+
+.dropdown-nav:hover .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+.dropdown-content {
+    position: absolute;
+    right: 0;
+    background-color: var(--white);
+    min-width: 160px;
+    box-shadow: var(--medium-shadow);
+    border-radius: 4px;
+    padding: 8px 0;
+    z-index: 1;
+    display: none;
+}
+
+.dropdown-content a {
+    color: var(--text-color);
+    padding: 10px 16px;
+    text-decoration: none;
+    display: block;
+    font-weight: 600;
+    transition: background-color var(--transition-speed) ease;
+    text-align: left;
+}
+
+.dropdown-content a:hover {
+    background-color: var(--light-gray);
+    color: var(--primary-color);
+}
+
+.dropdown-nav:hover .dropdown-content {
+    display: block;
+}
+
+/* Additional improved navigation for mobile devices was in the original file.
+   The final hover vs. click toggling is handled in the media queries or in JS. */
