@@ -47,7 +47,7 @@ section {
 }
 
 .section-header p {
-    color: var(--light-gray);
+    color: var(--dark-gray);
     max-width: 600px;
     margin: 0 auto;
 }
