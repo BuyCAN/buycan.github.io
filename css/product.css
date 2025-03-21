@@ -369,6 +369,16 @@
     overflow-y: auto;
 }
 
+.parent-sources-list {
+    display: none;
+    margin-top: 15px;
+    padding: 15px;
+    background-color: var(--light-gray);
+    border-radius: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
 .source-item {
     margin-bottom: 10px;
 }
