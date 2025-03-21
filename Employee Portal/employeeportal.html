@@ -56,18 +56,15 @@
         
         // check if user is authenticated
         function checkAuthentication() {
-            return true;
-            
-            /* authentication uncomment later
+
             const token = localStorage.getItem('authToken');
             const tokenExpires = localStorage.getItem('tokenExpires');
-            
+
             if (!token || !tokenExpires || Date.now() > parseInt(tokenExpires)) {
                 logout();
                 return false;
             }
             return true;
-            */
         }
 
         // logout function
@@ -77,10 +74,8 @@
             
             
             setTimeout(() => {
-                /* Uncomment later for token removal
                 localStorage.removeItem('authToken');
                 localStorage.removeItem('tokenExpires');
-                */
                 window.location.href = 'login.html';
             }, 500); // Match this with CSS transition duration
         }
