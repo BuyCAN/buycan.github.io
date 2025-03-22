@@ -34,12 +34,12 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
         if (data.success) {
             // store auth token locally, gotten from api
             if (data.token) {
-                //  tokeen and time expirration
+                //  token and time expiration
                 const expirationTime = Date.now() + (30 * 60 * 1000); // 30 mins in milliseconds
                 localStorage.setItem('authToken', data.token);
                 localStorage.setItem('tokenExpires', expirationTime);
             }
-            window.location.href = 'index.html';
+            window.location.href = 'home/index.html';
         } else {
             document.getElementById('errorMessage').style.display = 'block';
             button.textContent = originalText;

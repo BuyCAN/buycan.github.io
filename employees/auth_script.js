@@ -1,28 +1,28 @@
-    // // check if user is authenticated
-    // function checkAuthentication() {
-    //
-    //     const token = localStorage.getItem('authToken');
-    //     const tokenExpires = localStorage.getItem('tokenExpires');
-    //
-    //     if (!token || !tokenExpires || Date.now() > parseInt(tokenExpires)) {
-    //         logout();
-    //         return false;
-    //     }
-    //     return true;
-    // }
-    //
-    // // logout function
-    // function logout() {
-    //     const container = document.querySelector('.container');
-    //     container.classList.add('fade-out');
-    //
-    //
-    //     setTimeout(() => {
-    //         localStorage.removeItem('authToken');
-    //         localStorage.removeItem('tokenExpires');
-    //         window.location.href = 'index.html';
-    //     }, 500); // Match this with CSS transition duration
-    // }
+    // check if user is authenticated
+    function checkAuthentication() {
+
+        const token = localStorage.getItem('authToken');
+        const tokenExpires = localStorage.getItem('tokenExpires');
+
+        if (!token || !tokenExpires || Date.now() > parseInt(tokenExpires)) {
+            logout();
+            return false;
+        }
+        return true;
+    }
+
+    // logout function
+    function logout() {
+        const container = document.querySelector('.container');
+        container.classList.add('fade-out');
+
+
+        setTimeout(() => {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('tokenExpires');
+            window.location.href = '../index.html';
+        }, 500); // Match this with CSS transition duration
+    }
 
     // activity timeout
     let inactivityTimeout;
@@ -56,5 +56,5 @@
 
     // make sure the checkAuthentication function runs right away
     if (!checkAuthentication()) {
-        window.location.href = 'index.html';
+        window.location.href = '../index.html';
     }
