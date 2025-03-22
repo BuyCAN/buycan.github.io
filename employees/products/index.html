@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>BuyCAN: 3-Column Layout + Partial Update + Alternative Images</title>
+  <style>
+    /* Basic Reset */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      color: #333;
+    }
+    header {
+      background: #b30000; /* Canadian red */
+      color: #fff;
+      padding: 1em;
+      text-align: center;
+    }
+
+    /* 3-column container */
+    .container {
+      display: flex;
+      height: calc(100vh - 70px);
+    }
+
+    /* Left column: ~20% for search UI */
+    .left-col {
+      width: 20%;
+      min-width: 200px;
+      background: #fff;
+      border-right: 1px solid #ddd;
+      padding: 1em;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between; /* So we can place the big Search button at the bottom */
+    }
+
+    .left-col-content {
+      /* This container holds the search fields & sort section,
+         leaving space at bottom for the big search button. */
+    }
+
+    /* Middle column: ~40% for product results */
+    .middle-col {
+      width: 40%;
+      background: #fff;
+      border-right: 1px solid #ddd;
+      padding: 1em;
+      overflow-y: auto;
+    }
+
+    /* Right column: ~40% for product editor */
+    .right-col {
+      flex: 1; /* fill remaining space (~40%) */
+      padding: 1em;
+      overflow-y: auto;
+    }
+
+    /* Search Section */
+    .search-section label {
+      display: block;
+      margin-bottom: 0.25em;
+      font-weight: bold;
+    }
+    .search-section input[type="text"],
+    .search-section select {
+      width: 100%;
+      padding: 0.4em;
+      margin-bottom: 0.75em;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    /* "Other" label input, hidden by default */
+    #label-other-container {
+      display: none;
+      margin-bottom: 0.75em;
+    }
+
+    /* Sort Section */
+    .sort-section {
+      display: flex;
+      gap: 0.5em;
+      margin-bottom: 1em;
+    }
+    .sort-section select {
+      flex: 1;
+    }
+
+    /* Big search button at the bottom */
+    #search-button {
+      width: 100%;
+      padding: 1em;
+      background: #b30000;
+      color: #fff;
+      font-size: 1.1em;
+      font-weight: bold;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    /* Loading text or animation area */
+    #search-loading {
+      margin-top: 1em;
+      font-size: 0.9em;
+      color: #888;
+      min-height: 20px; /* Reserve space even when empty */
+    }
+
+    /* Product List */
+    .product-list {
+      margin-bottom: 1em;
+    }
+    .product-item {
+      display: flex;
+      align-items: center;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-bottom: 0.75em;
+      padding: 0.5em;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .product-item:hover {
+      background: #f0f0f0;
+    }
+    .product-item.selected {
+      background: #e6e6e6;
+    }
+    .product-item img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 4px;
+      margin-right: 0.75em;
+    }
+    .product-details {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3em;
+    }
+    .product-details .top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .product-details .row-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      font-size: 0.9em;
+    }
+    /* Large display for % Canadian, on the right side */
+    .product-percentage {
+      margin-left: auto;
+      font-weight: bold;
+      font-size: 1.3em;
+      color: #333;
+    }
+
+    /* Load More button */
+    #load-more {
+      display: none; /* hidden by default; shown if more results exist */
+      width: 100%;
+      padding: 0.75em;
+      background: #b30000;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 0.5em;
+    }
+
+    /* Form Styling */
+    form {
+      background: #fff;
+      padding: 1em;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+    }
+    form section {
+      margin-bottom: 1em;
+      padding-bottom: 1em;
+      border-bottom: 1px solid #ccc;
+    }
+    form section:last-child {
+      border-bottom: none;
+    }
+    form h2 {
+      margin-bottom: 0.5em;
+      color: #b30000;
+      font-size: 1.2em;
+    }
+    form label {
+      display: block;
+      margin-bottom: 0.5em;
+      font-weight: bold;
+    }
+    form input[type="text"],
+    form input[type="number"],
+    form textarea {
+      width: 100%;
+      padding: 0.5em;
+      margin-top: 0.25em;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+    form input[type="checkbox"] {
+      margin-right: 0.5em;
+    }
+    form button[type="submit"] {
+      background: #b30000;
+      color: #fff;
+      border: none;
+      padding: 0.75em 1.5em;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1em;
+    }
+
+    /* Highlight changed fields */
+    .field-changed {
+      background: #fff8c4; /* pale yellow */
+    }
+
+    #message {
+      margin-top: 1em;
+      font-weight: bold;
+    }
+
+    /* Alternative Images */
+    .alt-images {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5em;
+      margin-bottom: 1em;
+    }
+    .alt-images img {
+      width: 70px;
+      height: 70px;
+      object-fit: cover;
+      border-radius: 4px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: border 0.2s;
+    }
+    .alt-images img:hover {
+      border-color: #999;
+    }
+    .alt-images img.primary {
+      border-color: #b30000; /* highlight current primary */
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>BuyCAN Product Browser & Editor</h1>
+  </header>
+
+  <div class="container">
+    <!-- LEFT COL: Filters & big Search button at bottom -->
+    <div class="left-col">
+      <div class="left-col-content">
+        <div class="search-section">
+          <!-- Product Name -->
+          <label for="search-product">Search by Product Name (fuzzy):</label>
+          <input type="text" id="search-product" placeholder="e.g. Bubly Lime" />
+
+          <!-- Brand -->
+          <label for="search-brand">Search by Brand (exact):</label>
+          <input type="text" id="search-brand" placeholder="e.g. Bubly" />
+
+          <!-- Parent Company -->
+          <label for="search-parent">Search by Parent Company (exact):</label>
+          <input type="text" id="search-parent" placeholder="e.g. PepsiCo" />
+
+          <!-- Verified -->
+          <label>
+            <input type="checkbox" id="search-verified" />
+            Verified Only
+          </label>
+
+          <!-- Sponsored -->
+          <label>
+            <input type="checkbox" id="search-sponsored" />
+            Sponsored Only
+          </label>
+
+
+          <!-- Label (exact) -->
+          <label for="search-label">Label (exact):</label>
+          <select id="search-label">
+            <option value="">Any</option>
+            <option value="Product of Canada">Product of Canada</option>
+            <option value="Made in Canada">Made in Canada</option>
+            <option value="100% Canadian">100% Canadian</option>
+            <option value="Packaged in Canada">Packaged in Canada</option>
+            <option value="Prepared in Canada">Prepared in Canada</option>
+            <option value="Local">Local</option>
+            <option value="Imported">Imported</option>
+            <option value="Canned in Canada">Canned in Canada</option>
+            <option value="Processed in Canada">Processed in Canada</option>
+            <option value="Distilled in Canada">Distilled in Canada</option>
+            <option value="other">Other (Custom)...</option>
+          </select>
+          <!-- If "Other (Custom)" is selected, we show this container -->
+          <div id="label-other-container">
+            <label for="search-label-other">Enter custom label:</label>
+            <input type="text" id="search-label-other" placeholder="e.g. Bottled in Canada" />
+          </div>
+
+          <!-- Result Confidence -->
+          <label for="search-result-confidence">Result Confidence:</label>
+          <select id="search-result-confidence">
+            <option value="">Any</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </select>
+
+          <!-- Country of Registration -->
+          <label for="search-country">Country of Registration (exact):</label>
+          <input type="text" id="search-country" placeholder="e.g. United States" />
+
+          <!-- Sort Section -->
+          <div class="sort-section">
+            <select id="sort-by">
+              <option value="">No Sort</option>
+              <option value="date_added">Date Added</option>
+              <option value="positive_ratings">Positive Ratings</option>
+              <option value="negative_ratings">Negative Ratings</option>
+              <option value="num_scans">Num Scans</option>
+              <option value="percentage_canadian">% Canadian</option>
+              <option value="generation_cost">Generation Cost</option>
+              <option value="generation_time">Generation Time</option>
+              <option value="verified">Verified</option>
+              <option value="sponsored">Sponsored</option>
+            </select>
+            <select id="sort-order">
+              <option value="desc">Descending</option>
+              <option value="asc">Ascending</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Big Search button at bottom -->
+      <button id="search-button">Search</button>
+      <!-- Loading text/animation placeholder -->
+      <div id="search-loading"></div>
+    </div>
+
+    <!-- MIDDLE COL: Product Results -->
+    <div class="middle-col">
+      <div class="product-list" id="product-list"></div>
+      <button id="load-more">Load More</button>
+    </div>
+
+    <!-- RIGHT COL: Product Editing Form -->
+    <div class="right-col">
+      <form id="product-form">
+        <div class="alt-images" id="alt-images-container"></div>
+
+        <!-- Product Info Section -->
+        <section>
+          <h2>Product Info</h2>
+          <label>Barcode:
+            <input type="text" id="product-barcode" readonly />
+          </label>
+          <label>Product Name:
+            <input type="text" id="product-name" />
+          </label>
+          <label>Brand:
+            <input type="text" id="product-brand" />
+          </label>
+          <label>Product Tags (comma-separated):
+            <input type="text" id="product-tags" />
+          </label>
+        </section>
+
+        <!-- Parent Company Section -->
+        <section>
+          <h2>Parent Company Info</h2>
+          <label>Parent Company Name:
+            <input type="text" id="parent-company-name" />
+          </label>
+          <label>Parent Company Description:
+            <textarea id="parent-company-description"></textarea>
+          </label>
+          <label>Country of Registration:
+            <input type="text" id="parent-company-country" />
+          </label>
+          <label>Country Code:
+            <input type="text" id="parent-company-code" />
+          </label>
+          <label>Result Confidence:
+            <input type="text" id="parent-company-confidence" />
+          </label>
+          <label>Explanation:
+            <textarea id="parent-company-explanation"></textarea>
+          </label>
+          <label>Company Tags (comma-separated):
+            <input type="text" id="company-tags" />
+          </label>
+        </section>
+
+        <!-- Manufacturing Info Section -->
+        <section>
+          <h2>Manufacturing Info</h2>
+          <label>Percentage Canadian:
+            <input type="number" id="percentage-canadian" />
+          </label>
+          <label>Label:
+            <input type="text" id="label" />
+          </label>
+          <label>Label Description:
+            <textarea id="label-description"></textarea>
+          </label>
+          <label>Manufacturing Result Confidence:
+            <input type="text" id="manufacturing-confidence" />
+          </label>
+          <label>Label Explanation:
+            <textarea id="label-explanation"></textarea>
+          </label>
+        </section>
+
+        <!-- Metadata Section -->
+        <section>
+          <h2>Metadata</h2>
+          <label>Image URL (Primary):
+            <input type="text" id="image-url" />
+          </label>
+          <label>
+            <input type="checkbox" id="verified" />
+            Verified
+          </label>
+          <label>
+            <input type="checkbox" id="sponsored" />
+            Sponsored
+          </label>
+          <label>Positive Ratings:
+            <input type="number" id="positive-ratings" />
+          </label>
+          <label>Negative Ratings:
+            <input type="number" id="negative-ratings" />
+          </label>
+        </section>
+
+        <!-- Read-Only System Metadata Section -->
+        <section>
+          <h2>System Metadata (Read-Only)</h2>
+          <label>Num Scans:
+            <input type="text" id="num-scans" readonly />
+          </label>
+          <label>Product Exists:
+            <input type="text" id="product-exists" readonly />
+          </label>
+          <label>Date Generated:
+            <input type="text" id="date-generated" readonly />
+          </label>
+          <label>Cost To Generate:
+            <input type="text" id="cost-to-generate" readonly />
+          </label>
+          <label>Time To Generate:
+            <input type="text" id="time-to-generate" readonly />
+          </label>
+          <label>Feedback:
+            <textarea id="feedback" readonly></textarea>
+          </label>
+        </section>
+
+        <button type="submit">Submit Changes</button>
+      </form>
+      <div id="message"></div>
+    </div>
+  </div>
+
+  <script>
+    /*
+      Key points:
+      - We load 30 results at a time (LIMIT=30).
+      - Positive/negative ratings are always set exactly to what the user typed.
+      - Verified/Sponsored checkboxes each directly map to booleans:
+          if the user changes them, the partial update includes the new boolean value.
+      - The big search button is at the bottom left, and we show a "loading" text each time it's clicked.
+      - The product list items show:
+          - Verified (with ✔️ if verified)
+          - Ratings (thumbs up/down)
+          - Number of scans (🔍 #)
+          - Percentage Canadian (large on the right)
+          - A dollar sign 💲 if the product is sponsored
+      - We pass ?test=true in the get-by-barcode call
+      - The alternative images appear at the top of the form, with the primary image highlighted
+        and clicking any alt image sets it as the new primary (and updates highlight).
+    */
+
+    const AUTH_TOKEN = "Bearer PEEPEEPOOPOODOODOOKAKA";
+
+    const LIMIT = 30;
+    let offset = 0;
+    let originalValues = {};
+
+    // DOM references
+    const productList = document.getElementById('product-list');
+    const loadMoreBtn = document.getElementById('load-more');
+    const messageEl = document.getElementById('message');
+    const searchLoadingEl = document.getElementById('search-loading');
+
+    // Search fields
+    const productInput = document.getElementById('search-product');
+    const brandInput = document.getElementById('search-brand');
+    const parentInput = document.getElementById('search-parent');
+    const verifiedSelect = document.getElementById('search-verified');
+    const sponsoredSelect = document.getElementById('search-sponsored');
+    const labelSelect = document.getElementById('search-label');
+    const labelOtherContainer = document.getElementById('label-other-container');
+    const labelOtherInput = document.getElementById('search-label-other');
+    const resultConfidenceSelect = document.getElementById('search-result-confidence');
+    const countryInput = document.getElementById('search-country');
+    const sortBySelect = document.getElementById('sort-by');
+    const sortOrderSelect = document.getElementById('sort-order');
+    const searchButton = document.getElementById('search-button');
+
+    // Form fields
+    const altImagesContainer = document.getElementById('alt-images-container');
+    const productBarcode = document.getElementById('product-barcode');
+    const productName = document.getElementById('product-name');
+    const productBrand = document.getElementById('product-brand');
+    const productTags = document.getElementById('product-tags');
+
+    const parentCompanyName = document.getElementById('parent-company-name');
+    const parentCompanyDescription = document.getElementById('parent-company-description');
+    const parentCompanyCountry = document.getElementById('parent-company-country');
+    const parentCompanyCode = document.getElementById('parent-company-code');
+    const parentCompanyConfidence = document.getElementById('parent-company-confidence');
+    const parentCompanyExplanation = document.getElementById('parent-company-explanation');
+    const companyTags = document.getElementById('company-tags');
+
+    const percentageCanadian = document.getElementById('percentage-canadian');
+    const labelField = document.getElementById('label');
+    const labelDescription = document.getElementById('label-description');
+    const manufacturingConfidence = document.getElementById('manufacturing-confidence');
+    const labelExplanation = document.getElementById('label-explanation');
+
+    const imageURL = document.getElementById('image-url');
+    const verifiedCheckbox = document.getElementById('verified');
+    const sponsoredCheckbox = document.getElementById('sponsored');
+    const positiveRatings = document.getElementById('positive-ratings');
+    const negativeRatings = document.getElementById('negative-ratings');
+
+    const numScans = document.getElementById('num-scans');
+    const productExists = document.getElementById('product-exists');
+    const dateGenerated = document.getElementById('date-generated');
+    const costToGenerate = document.getElementById('cost-to-generate');
+    const timeToGenerate = document.getElementById('time-to-generate');
+    const feedback = document.getElementById('feedback');
+
+    // Toggle custom label input visibility
+    labelSelect.addEventListener('change', () => {
+      if (labelSelect.value === 'other') {
+        labelOtherContainer.style.display = 'block';
+      } else {
+        labelOtherContainer.style.display = 'none';
+        labelOtherInput.value = '';
+      }
+    });
+
+    // MAIN: fetch product previews
+    function fetchProducts(append = false) {
+      // Show "Loading..." text
+      searchLoadingEl.textContent = "Loading results...";
+
+      const filters = {};
+
+      // brand
+      if (brandInput.value.trim()) {
+        filters.brand = brandInput.value.trim();
+      }
+      // parent
+      if (parentInput.value.trim()) {
+        filters.parent_company_name = parentInput.value.trim();
+      }
+
+      // verified
+      if (verifiedSelect.checked) {
+        filters.verified = true
+      }
+
+      // sponsored
+      if (sponsoredSelect.checked) {
+        filters.sponsored = true;
+      }
+
+      // label
+      let selectedLabel = labelSelect.value;
+      if (selectedLabel === 'other' && labelOtherInput.value.trim()) {
+        selectedLabel = labelOtherInput.value.trim();
+      }
+      if (selectedLabel) {
+        filters.label = selectedLabel;
+      }
+
+      if (resultConfidenceSelect.value) {
+        filters.result_confidence = resultConfidenceSelect.value;
+      }
+      if (countryInput.value.trim()) {
+        filters.country_of_registration = countryInput.value.trim();
+      }
+
+      const body = {
+        preview_type: "web",
+        query: productInput.value.trim(),
+        filters: filters,
+        limit: LIMIT,
+        offset: offset,
+        sort_by: sortBySelect.value || null,
+        sort_order: sortOrderSelect.value || null
+      };
+
+      fetch("https://buycanadian.onrender.com/search-product-database", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": AUTH_TOKEN
+        },
+        body: JSON.stringify(body)
+      })
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`Search error: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then(data => {
+        // Clear the "Loading..." text
+        searchLoadingEl.textContent = "";
+
+        if (!append) {
+          productList.innerHTML = "";
+          offset = 0; // reset offset if new search
+        }
+
+        data.forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'product-item';
+          div.dataset.barcode = item.barcode;
+
+          const imgSrc = item.metadata?.imageURL || 'https://via.placeholder.com/80';
+
+          // Verified check (only show if verified == true)
+          const verifiedIcon = item.metadata?.verified ? "✔️" : "";
+
+          // Sponsored icon (💲 if sponsored)
+          const sponsoredIcon = item.metadata?.sponsored ? "💲" : "";
+
+          // Thumbs up / down
+          const pos = item.metadata?.positiveRatings ?? 0;
+          const neg = item.metadata?.negativeRatings ?? 0;
+          const thumbs = `<span style="color:green;">👍 ${pos}</span> <span style="color:red;">👎 ${neg}</span>`;
+
+          // Confidence & label
+          const conf = item.manufacturingInfo?.result_confidence || "N/A";
+          const lbl = item.manufacturingInfo?.label || "No Label";
+
+          // % Canadian
+          const pct = item.manufacturingInfo?.percentageCanadian ?? "?";
+
+          // numScans
+          const scans = item.metadata?.numScans ?? 0;
+
+          // Build product details
+          div.innerHTML = `
+            <img src="${imgSrc}" alt="image not found">
+            <div class="product-details">
+              <div class="top-row">
+                <strong>${item.name}</strong>
+              </div>
+              <div class="row-info">
+                ${thumbs}
+                <span>🔍 ${scans}</span>
+                <span>${verifiedIcon}</span>
+                <span>${sponsoredIcon}</span>
+              </div>
+              <div class="row-info">
+                <span>Confidence: ${conf}</span>
+                <span>Label: ${lbl}</span>
+              </div>
+            </div>
+            <div class="product-percentage">${pct}%</div>
+          `;
+
+          div.addEventListener('click', () => {
+            document.querySelectorAll('.product-item').forEach(el => el.classList.remove('selected'));
+            div.classList.add('selected');
+            loadProductDetails(item.barcode);
+          });
+
+          productList.appendChild(div);
+        });
+
+        // If we received exactly LIMIT items, it's possible there's more
+        if (data.length === LIMIT) {
+          loadMoreBtn.style.display = "block";
+        } else {
+          loadMoreBtn.style.display = "none";
+        }
+      })
+      .catch(err => {
+        console.error("Search error:", err);
+        searchLoadingEl.textContent = "Error during search.";
+      });
+    }
+
+    // GET product details
+    function loadProductDetails(barcode) {
+      fetch(`https://buycanadian.onrender.com/get-by-barcode/${barcode}?test=true`, {
+        method: "GET",
+        headers: {
+          "Authorization": AUTH_TOKEN
+        }
+      })
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`Details API error: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then(product => {
+        // fill the form
+        productBarcode.value = product.barcode || "";
+        productName.value = product.name || "";
+        productBrand.value = product.brand || "";
+        productTags.value = product.tags?.join(", ") || "";
+
+        parentCompanyName.value = product.parentCompany?.name || "";
+        parentCompanyDescription.value = product.parentCompany?.description || "";
+        parentCompanyCountry.value = product.parentCompany?.countryOfRegistration || "";
+        parentCompanyCode.value = product.parentCompany?.countryCode || "";
+        parentCompanyConfidence.value = product.parentCompany?.resultConfidence || "";
+        parentCompanyExplanation.value = product.parentCompany?.explanation || "";
+        companyTags.value = product.parentCompany?.tags?.join(", ") || "";
+
+        percentageCanadian.value = product.manufacturingInfo?.percentageCanadian || "";
+        labelField.value = product.manufacturingInfo?.label || "";
+        labelDescription.value = product.manufacturingInfo?.labelDescription || "";
+        manufacturingConfidence.value = product.manufacturingInfo?.resultConfidence || "";
+        labelExplanation.value = product.manufacturingInfo?.labelExplanation || "";
+
+        // metadata
+        imageURL.value = product.metadata?.imageURL || "";
+        verifiedCheckbox.checked = !!product.metadata?.verified;
+        sponsoredCheckbox.checked = !!product.metadata?.sponsored;
+        positiveRatings.value = product.metadata?.positiveRatings || "";
+        negativeRatings.value = product.metadata?.negativeRatings || "";
+
+        // read-only
+        numScans.value = product.metadata?.numScans || "";
+        productExists.value = product.metadata?.exists ? "Yes" : "No";
+        dateGenerated.value = product.metadata?.dateGenerated || "";
+        costToGenerate.value = product.metadata?.costToGenerate || "";
+        timeToGenerate.value = product.metadata?.timeToGenerate || "";
+        feedback.value = product.metadata?.feedback || "";
+
+        // handle alternative images
+        displayAlternativeImages(product);
+
+        messageEl.textContent = "";
+        storeOriginalValues(product);
+        document.querySelectorAll('#product-form input, #product-form textarea')
+          .forEach(el => el.classList.remove('field-changed'));
+      })
+      .catch(err => {
+        console.error("Details error:", err);
+        messageEl.textContent = "Error loading product details.";
+        messageEl.style.color = "red";
+      });
+    }
+
+    // Display alt images (plus the primary). Clicking updates primary
+    function displayAlternativeImages(product) {
+      altImagesContainer.innerHTML = "";
+
+      const primaryURL = product.metadata?.imageURL || "";
+      const altList = product.metadata?.alternativeImages || [];
+
+      let imagesToShow = [];
+      if (primaryURL) {
+        imagesToShow.push({ url: primaryURL, isPrimary: true });
+      }
+      altList.forEach(alt => {
+        if (alt && alt !== primaryURL) {
+          imagesToShow.push({ url: alt, isPrimary: false });
+        }
+      });
+
+      if (imagesToShow.length === 0) {
+        return; // no images at all
+      }
+
+      imagesToShow.forEach(item => {
+        const img = document.createElement('img');
+        img.src = item.url;
+        img.className = item.isPrimary ? "primary" : "";
+        altImagesContainer.appendChild(img);
+
+        // On click, set primary image
+        img.addEventListener('click', () => {
+          imageURL.value = item.url;
+          highlightIfChanged(imageURL, imageURL.value);
+
+          // Re-mark the highlight
+          document.querySelectorAll('.alt-images img').forEach(i => {
+            i.classList.remove('primary');
+          });
+          img.classList.add('primary');
+        });
+      });
+    }
+
+    // Store original values for partial update
+    function storeOriginalValues(product) {
+      originalValues = {
+        "product-barcode": product.barcode || "",
+        "product-name": product.name || "",
+        "product-brand": product.brand || "",
+        "product-tags": product.tags?.join(", ") || "",
+
+        "parent-company-name": product.parentCompany?.name || "",
+        "parent-company-description": product.parentCompany?.description || "",
+        "parent-company-country": product.parentCompany?.countryOfRegistration || "",
+        "parent-company-code": product.parentCompany?.countryCode || "",
+        "parent-company-confidence": product.parentCompany?.resultConfidence || "",
+        "parent-company-explanation": product.parentCompany?.explanation || "",
+        "company-tags": product.parentCompany?.tags?.join(", ") || "",
+
+        "percentage-canadian": product.manufacturingInfo?.percentageCanadian || "",
+        "label": product.manufacturingInfo?.label || "",
+        "label-description": product.manufacturingInfo?.labelDescription || "",
+        "manufacturing-confidence": product.manufacturingInfo?.resultConfidence || "",
+        "label-explanation": product.manufacturingInfo?.labelExplanation || "",
+
+        "image-url": product.metadata?.imageURL || "",
+        "verified": !!product.metadata?.verified,
+        "sponsored": !!product.metadata?.sponsored,
+        "positive-ratings": product.metadata?.positiveRatings || "",
+        "negative-ratings": product.metadata?.negativeRatings || "",
+
+        // read-only
+        "num-scans": product.metadata?.numScans || "",
+        "product-exists": product.metadata?.exists ? "Yes" : "No",
+        "date-generated": product.metadata?.dateGenerated || "",
+        "cost-to-generate": product.metadata?.costToGenerate || "",
+        "time-to-generate": product.metadata?.timeToGenerate || "",
+        "feedback": product.metadata?.feedback || ""
+      };
+    }
+
+    // highlightIfChanged
+    function highlightIfChanged(el, newVal) {
+      const oldVal = originalValues[el.id];
+      if (el.type === 'checkbox') {
+        if (newVal !== oldVal) {
+          el.classList.add('field-changed');
+        } else {
+          el.classList.remove('field-changed');
+        }
+      } else {
+        if (String(newVal) !== String(oldVal)) {
+          el.classList.add('field-changed');
+        } else {
+          el.classList.remove('field-changed');
+        }
+      }
+    }
+
+    // Setup watchers for highlighting changes
+    function setupFieldChangeListeners() {
+      const fields = document.querySelectorAll('#product-form input, #product-form textarea');
+      fields.forEach(el => {
+        if (el.type === 'checkbox') {
+          el.addEventListener('change', () => {
+            highlightIfChanged(el, el.checked);
+          });
+        } else {
+          el.addEventListener('input', () => {
+            highlightIfChanged(el, el.value);
+          });
+        }
+      });
+    }
+
+    // Build partial update object
+    function buildPartialUpdate() {
+      const partialData = {};
+
+      // Our "mapping" array: for each form field, specify the key & optional parse logic
+      const mapping = [
+        { id: "product-name",               key: "product_name" },
+        { id: "product-brand",              key: "brand" },
+
+        // Tag fields with a parse function that returns an array:
+        {
+          id: "product-tags",
+          key: "product_tags",
+          parse: (v) => {
+            if (!v.trim()) return [];
+            return v
+              .split(",")                // split on commas
+              .map(x => x.trim())       // trim whitespace
+              .filter(Boolean);         // remove empty entries
+          }
+        },
+
+        { id: "parent-company-name",        key: "new_parent_company_name" },
+        { id: "parent-company-description", key: "parent_company_description" },
+        { id: "parent-company-country",     key: "parent_company_country_of_registration" },
+        { id: "parent-company-code",        key: "parent_company_country_code" },
+        { id: "parent-company-confidence",  key: "parent_company_result_confidence" },
+        { id: "parent-company-explanation", key: "parent_company_explanation" },
+
+        {
+          id: "company-tags",
+          key: "company_tags",
+          parse: (v) => {
+            if (!v.trim()) return [];
+            return v
+              .split(",")
+              .map(x => x.trim())
+              .filter(Boolean);
+          }
+        },
+
+        { id: "percentage-canadian",        key: "percentage_canadian", parse: parseFloat },
+        { id: "label",                      key: "label" },
+        { id: "label-description",          key: "label_description" },
+        { id: "manufacturing-confidence",   key: "manufacturing_result_confidence" },
+        { id: "label-explanation",          key: "label_explanation" },
+
+        { id: "image-url",                  key: "image_url" },
+        { id: "verified",                   key: "verified" },
+        { id: "sponsored",                  key: "sponsored" },
+        { id: "positive-ratings",           key: "positive_ratings", parse: parseInt },
+        { id: "negative-ratings",           key: "negative_ratings", parse: parseInt }
+      ];
+
+      mapping.forEach(({ id, key, parse }) => {
+        const el = document.getElementById(id);
+        if (!el) return; // Safety check in case an ID doesn't exist
+
+        // 1) Get newVal from the form field
+        let newVal;
+        if (el.type === "checkbox") {
+          newVal = el.checked;  // boolean
+        } else {
+          newVal = el.value;    // string from an <input> or <textarea>
+          if (parse) {
+            // 2) If there's a parse function, apply it
+            const parsed = parse(newVal);
+            // If parseFloat/parseInt returns NaN, you might decide to keep it as 0 or fallback, but that’s your choice
+            if (typeof parsed !== "undefined" && parsed !== null) {
+              newVal = parsed;
+            }
+          }
+        }
+
+        // 3) Compare to originalValue: if changed, store the newVal; else store null
+        const oldVal = originalValues[id];
+        if (el.type === "checkbox") {
+          // Compare booleans
+          if (newVal !== oldVal) {
+            partialData[key] = newVal;
+          } else {
+            partialData[key] = null;
+          }
+        } else {
+          // Compare as string
+          if (String(newVal) !== String(oldVal)) {
+            partialData[key] = newVal;
+          } else {
+            partialData[key] = null;
+          }
+        }
+      });
+
+      return partialData;
+    }
+
+
+    // Submit changes
+    document.getElementById('product-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      if (!productBarcode.value) {
+        messageEl.textContent = "No barcode loaded. Please select a product first.";
+        messageEl.style.color = "red";
+        return;
+      }
+
+      const barcode = productBarcode.value.trim();
+      const partialData = buildPartialUpdate();
+
+      // Debug log: check what's in partialData
+      console.log("Final partialData ->", partialData);
+      console.log("JSON stringified ->", JSON.stringify(partialData, null, 2));
+
+      fetch(`https://buycanadian.onrender.com/modify-product/${barcode}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": AUTH_TOKEN
+        },
+        body: JSON.stringify(partialData)
+      })
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`Update error: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then(data => {
+        messageEl.textContent = "Product updated successfully!";
+        messageEl.style.color = "green";
+      })
+      .catch(err => {
+        console.error("Update error:", err);
+        messageEl.textContent = "Error updating product.";
+        messageEl.style.color = "red";
+      });
+    });
+
+    // On load
+    window.addEventListener('DOMContentLoaded', () => {
+      setupFieldChangeListeners();
+      fetchProducts(false); // initial search
+    });
+
+    // Search button
+    searchButton.addEventListener('click', () => {
+      offset = 0;
+      fetchProducts(false);
+    });
+
+    // Load more
+    loadMoreBtn.addEventListener('click', () => {
+      offset += LIMIT;
+      fetchProducts(true);
+    });
+  </script>
+</body>
+</html>
