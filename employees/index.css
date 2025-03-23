@@ -67,6 +67,28 @@ button:hover {
     font-size: 14px;
 }
 
+.password-container {
+    position: relative;
+}
+
+#password {
+    padding-right: 30px; 
+}
+
+#togglePassword {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.fa-eye-slash {
+    content: '\f070';  
+}
+
+
 @media screen and (max-width: 600px) {
     .login-form {
         max-width: 85%;
