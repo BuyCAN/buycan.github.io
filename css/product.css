@@ -349,7 +349,27 @@
     font-size: 14px;
 }
 
+.parent-sources-toggle {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
 .sources-list {
+    display: none;
+    margin-top: 15px;
+    padding: 15px;
+    background-color: var(--light-gray);
+    border-radius: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.parent-sources-list {
     display: none;
     margin-top: 15px;
     padding: 15px;

@@ -15,7 +15,7 @@ footer {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 30px;
-    text-align: left;
+    text-align: center;
     padding: 0 20px;
 }
 
@@ -24,16 +24,18 @@ footer {
     font-size: 1.2rem;
     position: relative;
     padding-bottom: 10px;
+    color: var(--white);
 }
 
 .footer-column h3::after {
     content: '';
     position: absolute;
-    width: 30px;
-    height: 2px;
+    width: 50px;
+    height: 3px;
     background-color: var(--secondary-color);
-    bottom: 0;
-    left: 0;
+    bottom: -3px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .footer-column ul {
