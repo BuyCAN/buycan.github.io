@@ -7,8 +7,128 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="index.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!--Can edit and play around idc im not good at pretty things-->
+    <style>
+        body {
+        font-family: 'Roboto', sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        background-image: url('../images/logo3.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-color: #f4f1f1;
+        }
+
+        .login-form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            margin: 10px auto;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 300;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 400;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #errorMessage {
+            color: rgb(234, 14, 14);
+            display: none;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        #password {
+            padding-right: 30px;
+        }
+
+        #togglePassword {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .fa-eye-slash {
+            content: '\f070';
+        }
+
+
+        @media screen and (max-width: 600px) {
+            .login-form {
+                max-width: 85%;
+                padding: 15px;
+                transform: scale(0.9);
+                margin: 0 auto;
+            }
+
+            h2 {
+                font-size: 1.2em;
+            }
+
+            input {
+                font-size: 14px;
+            }
+
+            button {
+                font-size: 14px;
+            }
+        }
+
+        @media screen and (max-width: 380px) {
+            .login-form {
+                max-width: 90%;
+                transform: scale(0.85);
+                padding: 12px;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -16,15 +136,18 @@
     <h2> Employee Sign In</h2>
     <form id="loginForm">
         <input type="text" id="username" placeholder="Username" required>
-        <input type="password" id="password" placeholder="Password" required>
+        <div class="password-container">
+            <input type="password" id="password" placeholder="Password" required>
+            <span class="fa fa-eye" id="togglePassword"></span>
+        </div>
         <button type="submit">Log In</button>
     </form>
     <div id="errorMessage">Invalid username or password.</div>
 </div>
 
 <!-- JavaScript -->
-<script src="../js/config.js"></script>
-<script src="../js/login.js"></script>
+<script src="/js/config.js"></script>
+<script src="/js/login.js"></script>
 
 </body>
 </html>

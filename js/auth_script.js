@@ -20,7 +20,7 @@
         setTimeout(() => {
             localStorage.removeItem('authToken');
             localStorage.removeItem('tokenExpires');
-            window.location.href = '../index.html';
+            window.location.href = '/employees';
         }, 500); // Match this with CSS transition duration
     }
 

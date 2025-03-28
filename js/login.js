@@ -39,7 +39,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
                 localStorage.setItem('authToken', data.token);
                 localStorage.setItem('tokenExpires', expirationTime);
             }
-            window.location.href = 'home/index.html';
+            window.location.href = 'home';
         } else {
             document.getElementById('errorMessage').style.display = 'block';
             button.textContent = originalText;
@@ -52,4 +52,12 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
         button.disabled = false;
         console.error('Login error:', error);
     });
+});
+
+// view password
+document.getElementById('togglePassword').addEventListener('click', function () {
+    const passwordField = document.getElementById('password');
+    const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordField.setAttribute('type', type);
+    this.classList.toggle('fa-eye-slash');
 });
