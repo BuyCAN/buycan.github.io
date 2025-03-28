@@ -45,8 +45,7 @@
     const day = parseInt(parts[2], 10);
 
     // Build the URL
-    const url = `https://buycanadian.onrender.com/get-product-statistics?auth_token=${encodeURIComponent(authToken)}&year=${year}&month=${month}&day=${day}`;
-
+    const url = `${CONFIG.API_BASE_URL}/get-product-statistics?auth_token=${encodeURIComponent(authToken)}&year=${year}&month=${month}&day=${day}`;
     fetch(url)
       .then(response => {
         if (!response.ok) {

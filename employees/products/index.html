@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>BuyCAN: 3-Column Layout + Partial Update + Alternative Images</title>
+  <title>Products</title>
   <style>
     /* Basic Reset */
     * {
@@ -43,7 +43,7 @@
 
     .left-col-content {
       /* This container holds the search fields & sort section,
-         leaving space at bottom for the big search button. */
+         leaving space at bottom for the big Search button. */
     }
 
     /* Middle column: ~40% for product results */
@@ -295,7 +295,6 @@
             Sponsored Only
           </label>
 
-
           <!-- Label (exact) -->
           <label for="search-label">Label (exact):</label>
           <select id="search-label">
@@ -355,6 +354,8 @@
 
       <!-- Big Search button at bottom -->
       <button id="search-button">Search</button>
+      <button id="add-product-button">Add New Product</button>
+
       <!-- Loading text/animation placeholder -->
       <div id="search-loading"></div>
     </div>
@@ -489,25 +490,17 @@
       Key points:
       - We load 30 results at a time (LIMIT=30).
       - Positive/negative ratings are always set exactly to what the user typed.
-      - Verified/Sponsored checkboxes each directly map to booleans:
-          if the user changes them, the partial update includes the new boolean value.
+      - Verified/Sponsored checkboxes each directly map to booleans.
       - The big search button is at the bottom left, and we show a "loading" text each time it's clicked.
-      - The product list items show:
-          - Verified (with ✔️ if verified)
-          - Ratings (thumbs up/down)
-          - Number of scans (🔍 #)
-          - Percentage Canadian (large on the right)
-          - A dollar sign 💲 if the product is sponsored
-      - We pass ?test=true in the get-by-barcode call
-      - The alternative images appear at the top of the form, with the primary image highlighted
-        and clicking any alt image sets it as the new primary (and updates highlight).
+      - The product list items display verified, ratings, scans, and % Canadian.
+      - Alternative images appear at the top of the form.
     */
 
     const AUTH_TOKEN = "Bearer PEEPEEPOOPOODOODOOKAKA";
-
     const LIMIT = 30;
     let offset = 0;
     let originalValues = {};
+    let isAddingNewProduct = false;  // flag to indicate add mode
 
     // DOM references
     const productList = document.getElementById('product-list');
@@ -529,6 +522,7 @@
     const sortBySelect = document.getElementById('sort-by');
     const sortOrderSelect = document.getElementById('sort-order');
     const searchButton = document.getElementById('search-button');
+    const addProductButton = document.getElementById('add-product-button');
 
     // Form fields
     const altImagesContainer = document.getElementById('alt-images-container');
@@ -579,28 +573,22 @@
       // Show "Loading..." text
       searchLoadingEl.textContent = "Loading results...";
 
+      // Apply all filters -------------------------------------------
       const filters = {};
 
-      // brand
       if (brandInput.value.trim()) {
         filters.brand = brandInput.value.trim();
       }
-      // parent
       if (parentInput.value.trim()) {
         filters.parent_company_name = parentInput.value.trim();
       }
-
-      // verified
       if (verifiedSelect.checked) {
-        filters.verified = true
+        filters.verified = true;
       }
-
-      // sponsored
       if (sponsoredSelect.checked) {
         filters.sponsored = true;
       }
 
-      // label
       let selectedLabel = labelSelect.value;
       if (selectedLabel === 'other' && labelOtherInput.value.trim()) {
         selectedLabel = labelOtherInput.value.trim();
@@ -616,6 +604,7 @@
         filters.country_of_registration = countryInput.value.trim();
       }
 
+      // Create request body -------------------------------------------
       const body = {
         preview_type: "web",
         query: productInput.value.trim(),
@@ -626,6 +615,7 @@
         sort_order: sortOrderSelect.value || null
       };
 
+      // Send request -------------------------------------------
       fetch("https://buycanadian.onrender.com/search-product-database", {
         method: "POST",
         headers: {
@@ -649,6 +639,7 @@
           offset = 0; // reset offset if new search
         }
 
+        // Receive information and generate HTML for items -------------------------------------------
         data.forEach(item => {
           const div = document.createElement('div');
           div.className = 'product-item';
@@ -707,12 +698,7 @@
           productList.appendChild(div);
         });
 
-        // If we received exactly LIMIT items, it's possible there's more
-        if (data.length === LIMIT) {
-          loadMoreBtn.style.display = "block";
-        } else {
-          loadMoreBtn.style.display = "none";
-        }
+        loadMoreBtn.style.display = (data.length === LIMIT) ? "block" : "none";
       })
       .catch(err => {
         console.error("Search error:", err);
@@ -720,8 +706,20 @@
       });
     }
 
-    // GET product details
+    // GET product details (modify mode)
     function loadProductDetails(barcode) {
+      // Cancel add mode if active, remove banner and restore read-only fields
+      isAddingNewProduct = false;
+      const addBanner = document.getElementById('add-banner');
+      if (addBanner) addBanner.remove();
+      productBarcode.setAttribute("readonly", "readonly");
+      numScans.setAttribute("readonly", "readonly");
+      productExists.setAttribute("readonly", "readonly");
+      dateGenerated.setAttribute("readonly", "readonly");
+      costToGenerate.setAttribute("readonly", "readonly");
+      timeToGenerate.setAttribute("readonly", "readonly");
+      feedback.setAttribute("readonly", "readonly");
+
       fetch(`https://buycanadian.onrender.com/get-by-barcode/${barcode}?test=true`, {
         method: "GET",
         headers: {
@@ -752,7 +750,7 @@
         percentageCanadian.value = product.manufacturingInfo?.percentageCanadian || "";
         labelField.value = product.manufacturingInfo?.label || "";
         labelDescription.value = product.manufacturingInfo?.labelDescription || "";
-        manufacturingConfidence.value = product.manufacturingInfo?.resultConfidence || "";
+        manufacturingConfidence.value = product.manufacturingInfo?.result_confidence || "";
         labelExplanation.value = product.manufacturingInfo?.labelExplanation || "";
 
         // metadata
@@ -785,7 +783,7 @@
       });
     }
 
-    // Display alt images (plus the primary). Clicking updates primary
+    // Display alternative images and handle primary image change
     function displayAlternativeImages(product) {
       altImagesContainer.innerHTML = "";
 
@@ -801,11 +799,7 @@
           imagesToShow.push({ url: alt, isPrimary: false });
         }
       });
-
-      if (imagesToShow.length === 0) {
-        return; // no images at all
-      }
-
+      if (imagesToShow.length === 0) return;
       imagesToShow.forEach(item => {
         const img = document.createElement('img');
         img.src = item.url;
@@ -816,11 +810,7 @@
         img.addEventListener('click', () => {
           imageURL.value = item.url;
           highlightIfChanged(imageURL, imageURL.value);
-
-          // Re-mark the highlight
-          document.querySelectorAll('.alt-images img').forEach(i => {
-            i.classList.remove('primary');
-          });
+          document.querySelectorAll('.alt-images img').forEach(i => i.classList.remove('primary'));
           img.classList.add('primary');
         });
       });
@@ -845,7 +835,7 @@
         "percentage-canadian": product.manufacturingInfo?.percentageCanadian || "",
         "label": product.manufacturingInfo?.label || "",
         "label-description": product.manufacturingInfo?.labelDescription || "",
-        "manufacturing-confidence": product.manufacturingInfo?.resultConfidence || "",
+        "manufacturing-confidence": product.manufacturingInfo?.result_confidence || "",
         "label-explanation": product.manufacturingInfo?.labelExplanation || "",
 
         "image-url": product.metadata?.imageURL || "",
@@ -864,41 +854,29 @@
       };
     }
 
-    // highlightIfChanged
+    // Highlight changed fields
     function highlightIfChanged(el, newVal) {
       const oldVal = originalValues[el.id];
       if (el.type === 'checkbox') {
-        if (newVal !== oldVal) {
-          el.classList.add('field-changed');
-        } else {
-          el.classList.remove('field-changed');
-        }
+        el.classList.toggle('field-changed', newVal !== oldVal);
       } else {
-        if (String(newVal) !== String(oldVal)) {
-          el.classList.add('field-changed');
-        } else {
-          el.classList.remove('field-changed');
-        }
+        el.classList.toggle('field-changed', String(newVal) !== String(oldVal));
       }
     }
 
-    // Setup watchers for highlighting changes
+    // Setup change listeners for form fields
     function setupFieldChangeListeners() {
       const fields = document.querySelectorAll('#product-form input, #product-form textarea');
       fields.forEach(el => {
         if (el.type === 'checkbox') {
-          el.addEventListener('change', () => {
-            highlightIfChanged(el, el.checked);
-          });
+          el.addEventListener('change', () => highlightIfChanged(el, el.checked));
         } else {
-          el.addEventListener('input', () => {
-            highlightIfChanged(el, el.value);
-          });
+          el.addEventListener('input', () => highlightIfChanged(el, el.value));
         }
       });
     }
 
-    // Build partial update object
+    // Build partial update for modifying an existing product
     function buildPartialUpdate() {
       const partialData = {};
 
@@ -911,13 +889,7 @@
         {
           id: "product-tags",
           key: "product_tags",
-          parse: (v) => {
-            if (!v.trim()) return [];
-            return v
-              .split(",")                // split on commas
-              .map(x => x.trim())       // trim whitespace
-              .filter(Boolean);         // remove empty entries
-          }
+          parse: (v) => v.trim() ? v.split(",").map(x => x.trim()).filter(Boolean) : []
         },
 
         { id: "parent-company-name",        key: "new_parent_company_name" },
@@ -930,13 +902,7 @@
         {
           id: "company-tags",
           key: "company_tags",
-          parse: (v) => {
-            if (!v.trim()) return [];
-            return v
-              .split(",")
-              .map(x => x.trim())
-              .filter(Boolean);
-          }
+          parse: (v) => v.trim() ? v.split(",").map(x => x.trim()).filter(Boolean) : []
         },
 
         { id: "percentage-canadian",        key: "percentage_canadian", parse: parseFloat },
@@ -954,87 +920,184 @@
 
       mapping.forEach(({ id, key, parse }) => {
         const el = document.getElementById(id);
-        if (!el) return; // Safety check in case an ID doesn't exist
-
-        // 1) Get newVal from the form field
-        let newVal;
-        if (el.type === "checkbox") {
-          newVal = el.checked;  // boolean
-        } else {
-          newVal = el.value;    // string from an <input> or <textarea>
-          if (parse) {
-            // 2) If there's a parse function, apply it
-            const parsed = parse(newVal);
-            // If parseFloat/parseInt returns NaN, you might decide to keep it as 0 or fallback, but that’s your choice
-            if (typeof parsed !== "undefined" && parsed !== null) {
-              newVal = parsed;
-            }
+        if (!el) return;
+        let newVal = el.type === "checkbox" ? el.checked : el.value;
+        if (parse) {
+          const parsed = parse(newVal);
+          if (parsed !== undefined && parsed !== null) {
+            newVal = parsed;
           }
         }
-
-        // 3) Compare to originalValue: if changed, store the newVal; else store null
         const oldVal = originalValues[id];
-        if (el.type === "checkbox") {
-          // Compare booleans
-          if (newVal !== oldVal) {
-            partialData[key] = newVal;
-          } else {
-            partialData[key] = null;
-          }
-        } else {
-          // Compare as string
-          if (String(newVal) !== String(oldVal)) {
-            partialData[key] = newVal;
-          } else {
-            partialData[key] = null;
-          }
-        }
+        partialData[key] = (el.type === "checkbox" ? newVal !== oldVal : String(newVal) !== String(oldVal)) ? newVal : null;
       });
 
       return partialData;
     }
 
+    // Build full new product data (for add mode)
+    function buildNewProductData() {
+      const newData = {};
+      const mapping = [
+        { id: "product-barcode",            key: "barcode" },
+        { id: "product-name",               key: "product_name" },
+        { id: "product-brand",              key: "brand" },
+        { id: "product-tags",               key: "product_tags", parse: (v) => v.trim() ? v.split(",").map(x => x.trim()).filter(Boolean) : [] },
+        { id: "parent-company-name",        key: "new_parent_company_name" },
+        { id: "parent-company-description", key: "parent_company_description" },
+        { id: "parent-company-country",     key: "parent_company_country_of_registration" },
+        { id: "parent-company-code",        key: "parent_company_country_code" },
+        { id: "parent-company-confidence",  key: "parent_company_result_confidence" },
+        { id: "parent-company-explanation", key: "parent_company_explanation" },
+        { id: "company-tags",               key: "company_tags", parse: (v) => v.trim() ? v.split(",").map(x => x.trim()).filter(Boolean) : [] },
+        { id: "percentage-canadian",        key: "percentage_canadian", parse: parseFloat },
+        { id: "label",                      key: "label" },
+        { id: "label-description",          key: "label_description" },
+        { id: "manufacturing-confidence",   key: "manufacturing_result_confidence" },
+        { id: "label-explanation",          key: "label_explanation" },
+        { id: "image-url",                  key: "image_url" },
+        { id: "verified",                   key: "verified" },
+        { id: "sponsored",                  key: "sponsored" },
+        { id: "positive-ratings",           key: "positive_ratings", parse: parseInt },
+        { id: "negative-ratings",           key: "negative_ratings", parse: parseInt },
+        { id: "num-scans",                  key: "num_scans" },
+        { id: "product-exists",             key: "exists" },
+        { id: "date-generated",             key: "date_generated" },
+        { id: "cost-to-generate",           key: "cost_to_generate" },
+        { id: "time-to-generate",           key: "time_to_generate" },
+        { id: "feedback",                   key: "feedback" }
+      ];
 
-    // Submit changes
+      mapping.forEach(({ id, key, parse }) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        let val = el.type === "checkbox" ? el.checked : el.value;
+        if (parse) {
+          const parsed = parse(val);
+          if (parsed !== undefined && parsed !== null) {
+            val = parsed;
+          }
+        }
+        newData[key] = val;
+      });
+      return newData;
+    }
+
+    // Clear form for add mode
+    function clearForm() {
+      document.querySelectorAll('#product-form input, #product-form textarea').forEach(el => {
+        if(el.type === 'checkbox'){
+          el.checked = false;
+        } else {
+          el.value = "";
+        }
+        el.classList.remove('field-changed');
+      });
+      altImagesContainer.innerHTML = "";
+      originalValues = {};
+    }
+
+    // Submit changes / add new product
     document.getElementById('product-form').addEventListener('submit', (e) => {
       e.preventDefault();
 
-      if (!productBarcode.value) {
-        messageEl.textContent = "No barcode loaded. Please select a product first.";
-        messageEl.style.color = "red";
-        return;
-      }
-
-      const barcode = productBarcode.value.trim();
-      const partialData = buildPartialUpdate();
-
-      // Debug log: check what's in partialData
-      console.log("Final partialData ->", partialData);
-      console.log("JSON stringified ->", JSON.stringify(partialData, null, 2));
-
-      fetch(`https://buycanadian.onrender.com/modify-product/${barcode}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": AUTH_TOKEN
-        },
-        body: JSON.stringify(partialData)
-      })
-      .then(res => {
-        if (!res.ok) {
-          throw new Error(`Update error: ${res.status}`);
+      if (isAddingNewProduct) {
+        if (!productBarcode.value) {
+          messageEl.textContent = "Please enter a barcode for the new product.";
+          messageEl.style.color = "red";
+          return;
         }
-        return res.json();
-      })
-      .then(data => {
-        messageEl.textContent = "Product updated successfully!";
-        messageEl.style.color = "green";
-      })
-      .catch(err => {
-        console.error("Update error:", err);
-        messageEl.textContent = "Error updating product.";
-        messageEl.style.color = "red";
-      });
+        const newProductData = buildNewProductData();
+        console.log("New product data ->", newProductData);
+        console.log("JSON stringified ->", JSON.stringify(newProductData, null, 2));
+
+        fetch("${CONFIG.API_BASE_URL}/add-product", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": AUTH_TOKEN
+          },
+          body: JSON.stringify(newProductData)
+        })
+        .then(res => {
+          if (!res.ok) {
+            throw new Error(`Add product error: ${res.status}`);
+          }
+          return res.json();
+        })
+        .then(data => {
+          messageEl.textContent = "Product added successfully!";
+          messageEl.style.color = "green";
+          isAddingNewProduct = false;
+          productBarcode.setAttribute("readonly", "readonly");
+          numScans.setAttribute("readonly", "readonly");
+          productExists.setAttribute("readonly", "readonly");
+          dateGenerated.setAttribute("readonly", "readonly");
+          costToGenerate.setAttribute("readonly", "readonly");
+          timeToGenerate.setAttribute("readonly", "readonly");
+          feedback.setAttribute("readonly", "readonly");
+          const addBanner = document.getElementById('add-banner');
+          if (addBanner) addBanner.remove();
+          fetchProducts(false);
+        })
+        .catch(err => {
+          console.error("Add product error:", err);
+          messageEl.textContent = "Error adding product.";
+          messageEl.style.color = "red";
+        });
+      } else {
+        if (!productBarcode.value) {
+          messageEl.textContent = "No barcode loaded. Please select a product first.";
+          messageEl.style.color = "red";
+          return;
+        }
+        const barcode = productBarcode.value.trim();
+        const partialData = buildPartialUpdate();
+        console.log("Final partialData ->", partialData);
+        console.log("JSON stringified ->", JSON.stringify(partialData, null, 2));
+
+        fetch(`https://buycanadian.onrender.com/modify-product/${barcode}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": AUTH_TOKEN
+          },
+          body: JSON.stringify(partialData)
+        })
+        .then(res => {
+          if (!res.ok) {
+            throw new Error(`Update error: ${res.status}`);
+          }
+          return res.json();
+        })
+        .then(data => {
+          messageEl.textContent = "Product updated successfully!";
+          messageEl.style.color = "green";
+        })
+        .catch(err => {
+          console.error("Update error:", err);
+          messageEl.textContent = "Error updating product.";
+          messageEl.style.color = "red";
+        });
+      }
+    });
+
+    // Add New Product button event listener
+    addProductButton.addEventListener('click', () => {
+      isAddingNewProduct = true;
+      clearForm();
+      // Remove readonly from barcode and system metadata fields so all fields are editable
+      productBarcode.removeAttribute("readonly");
+      numScans.removeAttribute("readonly");
+      productExists.removeAttribute("readonly");
+      dateGenerated.removeAttribute("readonly");
+      costToGenerate.removeAttribute("readonly");
+      timeToGenerate.removeAttribute("readonly");
+      feedback.removeAttribute("readonly");
+      // Display the add mode banner if not already present
+      if (!document.getElementById('add-banner')) {
+        document.querySelector('.right-col').insertAdjacentHTML('afterbegin', '<div id="add-banner" style="background: #e6f4ff; padding: 0.5em; margin-bottom: 1em; border: 1px solid #b30000; text-align: center; font-weight: bold;">You are creating a new product</div>');
+      }
     });
 
     // On load
@@ -1055,6 +1118,7 @@
       fetchProducts(true);
     });
   </script>
-  <script src="../auth_script.js"></script>
+  <script src="../../js/config.js"></script>
+<!--<script src="../../js/auth_script.js"></script>-->
 </body>
 </html>

@@ -14,7 +14,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
     document.getElementById('errorMessage').style.display = 'none';
 
     // locally hosted server API call
-    fetch('https://buycanadian.onrender.com/verify-login', {
+    fetch(`${CONFIG.API_BASE_URL}/verify-login`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

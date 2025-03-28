@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   async function fetchBarcodeData(barcode) {
     try {
-      const url = `https://buycanadian.onrender.com/get-by-barcode/${barcode}?log_type=${LOG_TYPE}`;
+      const url = `${CONFIG.API_BASE_URL}/get-by-barcode/${barcode}?log_type=${LOG_TYPE}`;
       const response = await fetch(url, {
         method: 'GET',
         headers: {
