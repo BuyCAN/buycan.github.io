@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resource Documents</title>
+    <link rel="stylesheet" href="../home/style.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        body {
+            font-family: var(--lato);
+            margin: 0;
+            padding: 0;
+            background-color: var(--grey);
+        }
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 1rem;
+            background: var(--light);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: var(--dark);
+        }
+        .resource-list {
+            list-style: none;
+            padding: 0;
+        }
+        .resource-list li {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: var(--grey);
+            border: 1px solid var(--dark-grey);
+            border-radius: 5px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .resource-list li:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .resource-list a {
+            text-decoration: none;
+            color: var(--blue);
+            font-weight: bold;
+        }
+        .resource-list a:hover {
+            text-decoration: underline;
+        }
+        .admin-hub {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background-color: var(--light);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .admin-hub i {
+            font-size: 1.5rem;
+            color: var(--blue);
+            margin-right: 0.5rem;
+        }
+        .admin-hub a {
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--dark);
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-hub">
+        <i class='bx bx-home-smile'></i>
+        <a href="../home/index.html">Admin Portal</a>
+    </div>
+
+    <div class="container">
+        <h2>Resource Documents</h2>
+        <ul class="resource-list">
+            <li><a href="https://docs.google.com/document/d/1IE5whefkRD5zSQPphfMiWJ-ZGr-UYXst0SSnQfSVrQw/edit?tab=t.0" target="_blank">Technical</a></li>
+            <li><a href="https://docs.google.com/document/d/1lAGlfWEiEvrMlXvr3Xgi35YinmwtRAdAZ50IQb7Dz0M/edit?tab=t.0" target="_blank">Graphics</a></li>
+            <li><a href="https://docs.google.com/document/d/1XV70yTqL1XqyEMcjEOnC7ndVE2fV5HhdUEM3hePhZ_4/edit?tab=t.0" target="_blank">Finances</a></li>
+            <li><a href="https://docs.google.com/document/d/1IYJQNp58S4N5hhaS4KEIQ7Hky_Qd1wfZYBSzsA9ArBM/edit?tab=t.0" target="_blank">Marketing</a></li>
+        </ul>
+    </div>
+</body>
+</html>
