@@ -18,6 +18,27 @@
    - @media (max-width: 375px)
    - etc.
 */
+/* Critical fix for mobile width issues */
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  position: relative;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Base team card styles for all screen sizes - only apply to .team-member */
+.team-member {
+    display: flex;
+    flex-direction: column;
+}
+
+.team-member .contact {
+    margin-top: auto; /* Push contact info to bottom */
+}
 
 /* ============ (1024px Devices) ============ */
 @media (max-width: 1024px) and (min-width: 881px) {
@@ -82,6 +103,7 @@
     .team-member {
         padding: 12px;
         font-size: 0.9rem;
+        min-height: 0;
     }
     .team-member h4 {
         font-size: 1rem;
@@ -212,24 +234,33 @@
         padding: 10px 16px !important; /* Added consistent padding */
     }
 
-    /* App Preview on tablets */
+    /* App Preview on tablets - ADJUSTED TO FIT WITHOUT SCROLLING */
     .app-preview {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 15px;
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        gap: 10px !important;
+        width: 100% !important;
+        padding: 10px 0 !important;
     }
 
     .app-preview img {
-        width: auto;
-        height: 300px;
-        margin: 0;
+        height: 210px !important;
+        width: auto !important;
+        object-fit: contain !important;
+        margin: 0 !important;
     }
 
     /* Team 2-2-2-2-2 pattern using CSS Grid */
     #contact .container {
-        display: block !important;
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        grid-auto-rows: 1fr !important; /* This ensures equal heights */
+        gap: 15px !important;
+        width: 100% !important;
+        max-width: 500px !important;
+        margin: 0 auto !important;
         padding: 0 15px !important;
     }
 
@@ -239,16 +270,6 @@
         margin: 0 !important;
         padding: 0 !important;
         gap: 0 !important;
-    }
-
-    /* Create a grid for all team members */
-    #contact .container {
-        display: grid !important;
-        grid-template-columns: 1fr 1fr !important;
-        gap: 15px !important;
-        width: 100% !important;
-        max-width: 500px !important;
-        margin: 0 auto !important;
     }
 
     /* Force section header to span full width */
@@ -262,13 +283,16 @@
         width: 100% !important;
         max-width: 100% !important;
         margin: 0 !important;
-        min-height: 140px !important;
+        min-height: 0 !important;
+        height: 100% !important;
         background-color: var(--white) !important;
         border-radius: 8px !important;
         padding: 12px !important;
         box-shadow: var(--medium-shadow) !important;
         text-align: center !important;
         box-sizing: border-box !important;
+        display: flex !important;
+        flex-direction: column !important;
     }
 
     #contact .team-member h4 {
@@ -282,6 +306,7 @@
     #contact .team-member p.contact {
         font-size: 0.8rem;
         word-break: break-word;
+        margin-top: auto !important; /* Push to bottom of card */
     }
 
     /* Footer for mobile */
@@ -366,9 +391,14 @@
         height: 250px;
     }
 
-    /* Team member sizes */
+    /* Team member sizes - maintain grid with equal heights */
+    #contact .container {
+        grid-auto-rows: 1fr !important;
+        gap: 10px !important;
+    }
+
     #contact .team-member {
-        min-height: 130px !important;
+        min-height: 0 !important;
         padding: 10px !important;
     }
     #contact .team-member h4 {
@@ -381,6 +411,7 @@
     }
     #contact .team-member p.contact {
         font-size: 0.75rem;
+        margin-top: auto !important;
     }
 
     /* Footer spacing */
@@ -441,14 +472,13 @@
         min-width: 80px;
     }
 
-    /* Team adjustments */
-    #contact .team-member {
-        padding: 8px !important;
-    }
-
-    /* Adjust grid gap for smaller screens */
+    /* Team adjustments - maintain equal heights */
     #contact .container {
         gap: 10px !important;
+    }
+
+    #contact .team-member {
+        padding: 8px !important;
     }
 }
 
@@ -494,9 +524,13 @@
         height: 180px;
     }
 
-    /* Team members */
+    /* Team members - maintain equal heights */
+    #contact .container {
+        gap: 8px !important;
+    }
+
     #contact .team-member {
-        min-height: 120px !important;
+        min-height: 0 !important;
         padding: 8px !important;
     }
 
@@ -508,11 +542,7 @@
     }
     #contact .team-member p.contact {
         font-size: 0.7rem;
-    }
-
-    /* Further reduce grid gap */
-    #contact .container {
-        gap: 8px !important;
+        margin-top: auto !important;
     }
 
     .result-container img,
@@ -557,13 +587,12 @@
     }
 
     /* Team member adjustments for very small screens */
-    #contact .team-member {
-        padding: 6px !important;
-    }
-
-    /* Minimal grid gap for very small screens */
     #contact .container {
         gap: 6px !important;
+    }
+
+    #contact .team-member {
+        padding: 6px !important;
     }
 }
 
