@@ -39,7 +39,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
                 localStorage.setItem('authToken', data.token);
                 localStorage.setItem('tokenExpires', expirationTime);
             }
-            window.location.href = 'home';
+            window.location.href = 'home/index.html';
         } else {
             document.getElementById('errorMessage').style.display = 'block';
             button.textContent = originalText;
