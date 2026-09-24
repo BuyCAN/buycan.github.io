@@ -1,493 +1,581 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Products</title>
-  <style>
-    /* Basic Reset */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    body {
-      font-family: Arial, sans-serif;
-      background: #f7f7f7;
-      color: #333;
-    }
-    header {
-      background: #b30000; /* Canadian red */
-      color: #fff;
-      padding: 1em;
-      text-align: center;
-    }
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+	<link rel="stylesheet" href="../home/style.css">
 
-    /* 3-column container */
-    .container {
-      display: flex;
-      height: calc(100vh - 70px);
-    }
+	<title>Product Browser & Editor</title>
 
-    /* Left column: ~20% for search UI */
-    .left-col {
-      width: 20%;
-      min-width: 200px;
-      background: #fff;
-      border-right: 1px solid #ddd;
-      padding: 1em;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between; /* So we can place the big Search button at the bottom */
-    }
+	<style>
+		/* Auth fade-out target */
+		.container {
+			opacity: 1;
+			transition: opacity 0.5s ease-out;
+		}
+		.container.fade-out {
+			opacity: 0;
+		}
 
-    .left-col-content {
-      /* This container holds the search fields & sort section,
-         leaving space at bottom for the big Search button. */
-    }
+		/* The 3-column browser/editor workspace */
+		.workspace {
+			display: flex;
+			gap: 16px;
+			height: calc(100vh - 215px);
+			min-height: 480px;
+		}
 
-    /* Middle column: ~40% for product results */
-    .middle-col {
-      width: 40%;
-      background: #fff;
-      border-right: 1px solid #ddd;
-      padding: 1em;
-      overflow-y: auto;
-    }
+		/* Left column: filters + search button */
+		.left-col {
+			width: 22%;
+			min-width: 220px;
+			background: var(--light);
+			border-radius: 12px;
+			padding: 1em;
+			overflow-y: auto;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between; /* big Search button pinned to the bottom */
+		}
 
-    /* Right column: ~40% for product editor */
-    .right-col {
-      flex: 1; /* fill remaining space (~40%) */
-      padding: 1em;
-      overflow-y: auto;
-    }
+		/* Middle column: product results */
+		.middle-col {
+			width: 38%;
+			background: var(--light);
+			border-radius: 12px;
+			padding: 1em;
+			overflow-y: auto;
+		}
 
-    /* Search Section */
-    .search-section label {
-      display: block;
-      margin-bottom: 0.25em;
-      font-weight: bold;
-    }
-    .search-section input[type="text"],
-    .search-section select {
-      width: 100%;
-      padding: 0.4em;
-      margin-bottom: 0.75em;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
+		/* Right column: product editor form */
+		.right-col {
+			flex: 1;
+			background: var(--light);
+			border-radius: 12px;
+			padding: 1em;
+			overflow-y: auto;
+		}
 
-    /* "Other" label input, hidden by default */
-    #label-other-container {
-      display: none;
-      margin-bottom: 0.75em;
-    }
+		/* Search Section */
+		.search-section label {
+			display: block;
+			margin-bottom: 0.25em;
+			font-weight: bold;
+			font-size: 0.85em;
+		}
+		.search-section input[type="text"],
+		.search-section select {
+			width: 100%;
+			padding: 0.4em;
+			margin-bottom: 0.75em;
+			border: 1px solid #ccc;
+			border-radius: 6px;
+			font-size: 0.9em;
+		}
 
-    /* Sort Section */
-    .sort-section {
-      display: flex;
-      gap: 0.5em;
-      margin-bottom: 1em;
-    }
-    .sort-section select {
-      flex: 1;
-    }
+		/* "Other" label input, hidden by default */
+		#label-other-container {
+			display: none;
+			margin-bottom: 0.75em;
+		}
 
-    /* Big search button at the bottom */
-    #search-button {
-      width: 100%;
-      padding: 1em;
-      background: #b30000;
-      color: #fff;
-      font-size: 1.1em;
-      font-weight: bold;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
+		/* Sort Section */
+		.sort-section {
+			display: flex;
+			gap: 0.5em;
+			margin-bottom: 1em;
+		}
+		.sort-section select {
+			flex: 1;
+		}
 
-    /* Loading text or animation area */
-    #search-loading {
-      margin-top: 1em;
-      font-size: 0.9em;
-      color: #888;
-      min-height: 20px; /* Reserve space even when empty */
-    }
+		/* Search + Add buttons at the bottom */
+		#search-button {
+			width: 100%;
+			padding: 0.9em;
+			background: var(--blue);
+			color: #fff;
+			font-size: 1em;
+			font-weight: bold;
+			border: none;
+			border-radius: 8px;
+			cursor: pointer;
+			margin-bottom: 0.5em;
+			transition: opacity 0.2s;
+		}
+		#search-button:hover {
+			opacity: 0.85;
+		}
 
-    /* Product List */
-    .product-list {
-      margin-bottom: 1em;
-    }
-    .product-item {
-      display: flex;
-      align-items: center;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      margin-bottom: 0.75em;
-      padding: 0.5em;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .product-item:hover {
-      background: #f0f0f0;
-    }
-    .product-item.selected {
-      background: #e6e6e6;
-    }
-    .product-item img {
-      width: 80px;
-      height: 80px;
-      object-fit: cover;
-      border-radius: 4px;
-      margin-right: 0.75em;
-    }
-    .product-details {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 0.3em;
-    }
-    .product-details .top-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .product-details .row-info {
-      display: flex;
-      align-items: center;
-      gap: 0.5em;
-      font-size: 0.9em;
-    }
-    /* Large display for % Canadian, on the right side */
-    .product-percentage {
-      margin-left: auto;
-      font-weight: bold;
-      font-size: 1.3em;
-      color: #333;
-    }
+		#add-product-button {
+			width: 100%;
+			padding: 0.7em;
+			background: transparent;
+			color: var(--blue);
+			font-size: 0.95em;
+			font-weight: bold;
+			border: 1px solid var(--blue);
+			border-radius: 8px;
+			cursor: pointer;
+			transition: background 0.2s, color 0.2s;
+		}
+		#add-product-button:hover {
+			background: var(--blue);
+			color: #fff;
+		}
 
-    /* Load More button */
-    #load-more {
-      display: none; /* hidden by default; shown if more results exist */
-      width: 100%;
-      padding: 0.75em;
-      background: #b30000;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      margin-top: 0.5em;
-    }
+		/* Loading text or animation area */
+		#search-loading {
+			margin-top: 1em;
+			font-size: 0.9em;
+			color: #888;
+			min-height: 20px; /* Reserve space even when empty */
+		}
 
-    /* Form Styling */
-    form {
-      background: #fff;
-      padding: 1em;
-      border-radius: 4px;
-      border: 1px solid #ddd;
-    }
-    form section {
-      margin-bottom: 1em;
-      padding-bottom: 1em;
-      border-bottom: 1px solid #ccc;
-    }
-    form section:last-child {
-      border-bottom: none;
-    }
-    form h2 {
-      margin-bottom: 0.5em;
-      color: #b30000;
-      font-size: 1.2em;
-    }
-    form label {
-      display: block;
-      margin-bottom: 0.5em;
-      font-weight: bold;
-    }
-    form input[type="text"],
-    form input[type="number"],
-    form textarea {
-      width: 100%;
-      padding: 0.5em;
-      margin-top: 0.25em;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 0.9em;
-    }
-    form input[type="checkbox"] {
-      margin-right: 0.5em;
-    }
-    form button[type="submit"] {
-      background: #b30000;
-      color: #fff;
-      border: none;
-      padding: 0.75em 1.5em;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 1em;
-    }
+		/* Product List */
+		.product-list {
+			margin-bottom: 1em;
+		}
+		.product-item {
+			display: flex;
+			align-items: center;
+			border: 1px solid #ddd;
+			border-radius: 8px;
+			margin-bottom: 0.75em;
+			padding: 0.5em;
+			cursor: pointer;
+			transition: background 0.2s, border-color 0.2s;
+		}
+		.product-item:hover {
+			background: #f5f5f5;
+		}
+		.product-item.selected {
+			background: var(--light-blue);
+			border-color: var(--blue);
+		}
+		.product-item img {
+			width: 80px;
+			height: 80px;
+			object-fit: cover;
+			border-radius: 6px;
+			margin-right: 0.75em;
+		}
+		.product-details {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			gap: 0.3em;
+		}
+		.product-details .top-row {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+		.product-details .row-info {
+			display: flex;
+			align-items: center;
+			gap: 0.5em;
+			font-size: 0.9em;
+		}
+		/* Large display for % Canadian, on the right side */
+		.product-percentage {
+			margin-left: auto;
+			font-weight: bold;
+			font-size: 1.3em;
+			color: #333;
+		}
 
-    /* Highlight changed fields */
-    .field-changed {
-      background: #fff8c4; /* pale yellow */
-    }
+		/* Load More button */
+		#load-more {
+			display: none; /* hidden by default; shown if more results exist */
+			width: 100%;
+			padding: 0.75em;
+			background: var(--blue);
+			color: #fff;
+			border: none;
+			border-radius: 8px;
+			cursor: pointer;
+			margin-top: 0.5em;
+		}
 
-    #message {
-      margin-top: 1em;
-      font-weight: bold;
-    }
+		/* Form Styling */
+		form {
+			background: transparent;
+			padding: 0;
+		}
+		form section {
+			background: #fff;
+			margin-bottom: 1em;
+			padding: 1em;
+			border-radius: 10px;
+			border: 1px solid #eee;
+		}
+		form section:last-child {
+			margin-bottom: 0;
+		}
+		form h2 {
+			margin-bottom: 0.5em;
+			color: var(--blue);
+			font-size: 1.05em;
+		}
+		form label {
+			display: block;
+			margin-bottom: 0.5em;
+			font-weight: bold;
+			font-size: 0.85em;
+		}
+		form input[type="text"],
+		form input[type="number"],
+		form textarea {
+			width: 100%;
+			padding: 0.5em;
+			margin-top: 0.25em;
+			border: 1px solid #ccc;
+			border-radius: 6px;
+			font-size: 0.9em;
+			font-weight: normal;
+		}
+		form input[type="checkbox"] {
+			margin-right: 0.5em;
+		}
+		form button[type="submit"] {
+			background: var(--blue);
+			color: #fff;
+			border: none;
+			padding: 0.75em 1.5em;
+			border-radius: 8px;
+			cursor: pointer;
+			font-size: 1em;
+		}
+		form button[type="submit"]:hover {
+			opacity: 0.85;
+		}
 
-    /* Alternative Images */
-    .alt-images {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5em;
-      margin-bottom: 1em;
-    }
-    .alt-images img {
-      width: 70px;
-      height: 70px;
-      object-fit: cover;
-      border-radius: 4px;
-      cursor: pointer;
-      border: 2px solid transparent;
-      transition: border 0.2s;
-    }
-    .alt-images img:hover {
-      border-color: #999;
-    }
-    .alt-images img.primary {
-      border-color: #b30000; /* highlight current primary */
-    }
-  </style>
+		/* Highlight changed fields */
+		.field-changed {
+			background: #fff8c4; /* pale yellow */
+		}
+
+		#message {
+			margin-top: 1em;
+			font-weight: bold;
+		}
+
+		/* Alternative Images */
+		.alt-images {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.5em;
+			margin-bottom: 1em;
+		}
+		.alt-images img {
+			width: 70px;
+			height: 70px;
+			object-fit: cover;
+			border-radius: 6px;
+			cursor: pointer;
+			border: 2px solid transparent;
+			transition: border 0.2s;
+		}
+		.alt-images img:hover {
+			border-color: #999;
+		}
+		.alt-images img.primary {
+			border-color: var(--blue); /* highlight current primary */
+		}
+	</style>
 </head>
 <body>
-  <header>
-    <h1>BuyCAN Product Browser & Editor</h1>
-  </header>
 
-  <div class="container">
-    <!-- LEFT COL: Filters & big Search button at bottom -->
-    <div class="left-col">
-      <div class="left-col-content">
-        <div class="search-section">
-          <!-- Product Name -->
-          <label for="search-product">Search by Product Name (fuzzy):</label>
-          <input type="text" id="search-product" placeholder="e.g. Bubly Lime" />
+	<!-- SIDEBAR -->
+	<section id="sidebar">
+		<a href="#" class="brand">
+			<i class='bx bx-home-smile bx-lg'></i>
+			<span class="text">Admin Portal</span>
+		</a>
+		<ul class="side-menu top">
+			<li>
+				<a href="../home/index.html">
+					<i class='bx bxs-dashboard bx-sm' ></i>
+					<span class="text">Dashboard</span>
+				</a>
+			</li>
+			<li>
+				<a href="../statistics/index.html">
+					<i class='bx bx-stats bx-sm'></i>
+					<span class="text">Statistics</span>
+				</a>
+			</li>
+			<li class="active">
+				<a href="#">
+					<i class='bx bxs-cart bx-sm'></i>
+					<span class="text">Products</span>
+				</a>
+			</li>
+			<li>
+				<a href="../docs/index.html">
+					<i class='bx bxs-file-doc bx-sm' ></i>
+					<span class="text">Documents</span>
+				</a>
+			</li>
+		</ul>
+		<ul class="side-menu bottom">
+			<li>
+				<a href="#" class="logout" id="logoutButton">
+					<i class='bx bx-power-off bx-sm bx-burst-hover' ></i>
+					<span class="text">Logout</span>
+				</a>
+			</li>
+		</ul>
+	</section>
+	<!-- SIDEBAR -->
 
-          <!-- Brand -->
-          <label for="search-brand">Search by Brand (exact):</label>
-          <input type="text" id="search-brand" placeholder="e.g. Bubly" />
+	<!-- CONTENT -->
+	<section id="content">
+		 <!-- NAVBAR -->
+		<nav>
+			<i class='bx bx-menu'></i>
+		</nav>
+		<!-- NAVBAR -->
 
-          <!-- Parent Company -->
-          <label for="search-parent">Search by Parent Company (exact):</label>
-          <input type="text" id="search-parent" placeholder="e.g. PepsiCo" />
+		<!-- MAIN -->
+		<main>
+			<div class="container">
+				<div class="head-title">
+					<div class="left">
+						<h1>Product Browser & Editor</h1>
+					</div>
+				</div>
 
-          <!-- Verified -->
-          <label>
-            <input type="checkbox" id="search-verified" />
-            Verified Only
-          </label>
+				<!-- LEFT COL: Filters & big Search button at bottom -->
+				<div class="workspace">
+					<div class="left-col">
+						<div class="left-col-content">
+							<div class="search-section">
+								<!-- Product Name -->
+								<label for="search-product">Search by Product Name (fuzzy):</label>
+								<input type="text" id="search-product" placeholder="e.g. Bubly Lime" />
 
-          <!-- Sponsored -->
-          <label>
-            <input type="checkbox" id="search-sponsored" />
-            Sponsored Only
-          </label>
+								<!-- Brand -->
+								<label for="search-brand">Search by Brand (exact):</label>
+								<input type="text" id="search-brand" placeholder="e.g. Bubly" />
 
-          <!-- Label (exact) -->
-          <label for="search-label">Label (exact):</label>
-          <select id="search-label">
-            <option value="">Any</option>
-            <option value="Product of Canada">Product of Canada</option>
-            <option value="Made in Canada">Made in Canada</option>
-            <option value="100% Canadian">100% Canadian</option>
-            <option value="Packaged in Canada">Packaged in Canada</option>
-            <option value="Prepared in Canada">Prepared in Canada</option>
-            <option value="Local">Local</option>
-            <option value="Imported">Imported</option>
-            <option value="Canned in Canada">Canned in Canada</option>
-            <option value="Processed in Canada">Processed in Canada</option>
-            <option value="Distilled in Canada">Distilled in Canada</option>
-            <option value="other">Other (Custom)...</option>
-          </select>
-          <!-- If "Other (Custom)" is selected, we show this container -->
-          <div id="label-other-container">
-            <label for="search-label-other">Enter custom label:</label>
-            <input type="text" id="search-label-other" placeholder="e.g. Bottled in Canada" />
-          </div>
+								<!-- Parent Company -->
+								<label for="search-parent">Search by Parent Company (exact):</label>
+								<input type="text" id="search-parent" placeholder="e.g. PepsiCo" />
 
-          <!-- Result Confidence -->
-          <label for="search-result-confidence">Result Confidence:</label>
-          <select id="search-result-confidence">
-            <option value="">Any</option>
-            <option value="High">High</option>
-            <option value="Medium">Medium</option>
-            <option value="Low">Low</option>
-          </select>
+								<!-- Verified -->
+								<label>
+									<input type="checkbox" id="search-verified" />
+									Verified Only
+								</label>
 
-          <!-- Country of Registration -->
-          <label for="search-country">Country of Registration (exact):</label>
-          <input type="text" id="search-country" placeholder="e.g. United States" />
+								<!-- Sponsored -->
+								<label>
+									<input type="checkbox" id="search-sponsored" />
+									Sponsored Only
+								</label>
 
-          <!-- Sort Section -->
-          <div class="sort-section">
-            <select id="sort-by">
-              <option value="">No Sort</option>
-              <option value="date_added">Date Added</option>
-              <option value="positive_ratings">Positive Ratings</option>
-              <option value="negative_ratings">Negative Ratings</option>
-              <option value="num_scans">Num Scans</option>
-              <option value="percentage_canadian">% Canadian</option>
-              <option value="generation_cost">Generation Cost</option>
-              <option value="generation_time">Generation Time</option>
-              <option value="verified">Verified</option>
-              <option value="sponsored">Sponsored</option>
-            </select>
-            <select id="sort-order">
-              <option value="desc">Descending</option>
-              <option value="asc">Ascending</option>
-            </select>
-          </div>
-        </div>
-      </div>
+								<!-- Label (exact) -->
+								<label for="search-label">Label (exact):</label>
+								<select id="search-label">
+									<option value="">Any</option>
+									<option value="Product of Canada">Product of Canada</option>
+									<option value="Made in Canada">Made in Canada</option>
+									<option value="100% Canadian">100% Canadian</option>
+									<option value="Packaged in Canada">Packaged in Canada</option>
+									<option value="Prepared in Canada">Prepared in Canada</option>
+									<option value="Local">Local</option>
+									<option value="Imported">Imported</option>
+									<option value="Canned in Canada">Canned in Canada</option>
+									<option value="Processed in Canada">Processed in Canada</option>
+									<option value="Distilled in Canada">Distilled in Canada</option>
+									<option value="other">Other (Custom)...</option>
+								</select>
+								<!-- If "Other (Custom)" is selected, we show this container -->
+								<div id="label-other-container">
+									<label for="search-label-other">Enter custom label:</label>
+									<input type="text" id="search-label-other" placeholder="e.g. Bottled in Canada" />
+								</div>
 
-      <!-- Big Search button at bottom -->
-      <button id="search-button">Search</button>
-      <button id="add-product-button">Add New Product</button>
+								<!-- Result Confidence -->
+								<label for="search-result-confidence">Result Confidence:</label>
+								<select id="search-result-confidence">
+									<option value="">Any</option>
+									<option value="High">High</option>
+									<option value="Medium">Medium</option>
+									<option value="Low">Low</option>
+								</select>
 
-      <!-- Loading text/animation placeholder -->
-      <div id="search-loading"></div>
-    </div>
+								<!-- Country of Registration -->
+								<label for="search-country">Country of Registration (exact):</label>
+								<input type="text" id="search-country" placeholder="e.g. United States" />
 
-    <!-- MIDDLE COL: Product Results -->
-    <div class="middle-col">
-      <div class="product-list" id="product-list"></div>
-      <button id="load-more">Load More</button>
-    </div>
+								<!-- Sort Section -->
+								<div class="sort-section">
+									<select id="sort-by">
+										<option value="">No Sort</option>
+										<option value="date_added">Date Added</option>
+										<option value="positive_ratings">Positive Ratings</option>
+										<option value="negative_ratings">Negative Ratings</option>
+										<option value="num_scans">Num Scans</option>
+										<option value="percentage_canadian">% Canadian</option>
+										<option value="generation_cost">Generation Cost</option>
+										<option value="generation_time">Generation Time</option>
+										<option value="verified">Verified</option>
+										<option value="sponsored">Sponsored</option>
+									</select>
+									<select id="sort-order">
+										<option value="desc">Descending</option>
+										<option value="asc">Ascending</option>
+									</select>
+								</div>
+							</div>
+						</div>
 
-    <!-- RIGHT COL: Product Editing Form -->
-    <div class="right-col">
-      <form id="product-form">
-        <div class="alt-images" id="alt-images-container"></div>
+						<!-- Search + Add buttons at the bottom -->
+						<button id="search-button">Search</button>
+						<button id="add-product-button">Add New Product</button>
 
-        <!-- Product Info Section -->
-        <section>
-          <h2>Product Info</h2>
-          <label>Barcode:
-            <input type="text" id="product-barcode" readonly />
-          </label>
-          <label>Product Name:
-            <input type="text" id="product-name" />
-          </label>
-          <label>Brand:
-            <input type="text" id="product-brand" />
-          </label>
-          <label>Product Tags (comma-separated):
-            <input type="text" id="product-tags" />
-          </label>
-        </section>
+						<!-- Loading text/animation placeholder -->
+						<div id="search-loading"></div>
+					</div>
 
-        <!-- Parent Company Section -->
-        <section>
-          <h2>Parent Company Info</h2>
-          <label>Parent Company Name:
-            <input type="text" id="parent-company-name" />
-          </label>
-          <label>Parent Company Description:
-            <textarea id="parent-company-description"></textarea>
-          </label>
-          <label>Country of Registration:
-            <input type="text" id="parent-company-country" />
-          </label>
-          <label>Country Code:
-            <input type="text" id="parent-company-code" />
-          </label>
-          <label>Result Confidence:
-            <input type="text" id="parent-company-confidence" />
-          </label>
-          <label>Explanation:
-            <textarea id="parent-company-explanation"></textarea>
-          </label>
-          <label>Company Tags (comma-separated):
-            <input type="text" id="company-tags" />
-          </label>
-        </section>
+					<!-- MIDDLE COL: Product Results -->
+					<div class="middle-col">
+						<div class="product-list" id="product-list"></div>
+						<button id="load-more">Load More</button>
+					</div>
 
-        <!-- Manufacturing Info Section -->
-        <section>
-          <h2>Manufacturing Info</h2>
-          <label>Percentage Canadian:
-            <input type="number" id="percentage-canadian" />
-          </label>
-          <label>Label:
-            <input type="text" id="label" />
-          </label>
-          <label>Label Description:
-            <textarea id="label-description"></textarea>
-          </label>
-          <label>Manufacturing Result Confidence:
-            <input type="text" id="manufacturing-confidence" />
-          </label>
-          <label>Label Explanation:
-            <textarea id="label-explanation"></textarea>
-          </label>
-        </section>
+					<!-- RIGHT COL: Product Editing Form -->
+					<div class="right-col">
+						<form id="product-form">
+							<div class="alt-images" id="alt-images-container"></div>
 
-        <!-- Metadata Section -->
-        <section>
-          <h2>Metadata</h2>
-          <label>Image URL (Primary):
-            <input type="text" id="image-url" />
-          </label>
-          <label>
-            <input type="checkbox" id="verified" />
-            Verified
-          </label>
-          <label>
-            <input type="checkbox" id="sponsored" />
-            Sponsored
-          </label>
-          <label>Positive Ratings:
-            <input type="number" id="positive-ratings" />
-          </label>
-          <label>Negative Ratings:
-            <input type="number" id="negative-ratings" />
-          </label>
-        </section>
+							<!-- Product Info Section -->
+							<section>
+								<h2>Product Info</h2>
+								<label>Barcode:
+									<input type="text" id="product-barcode" readonly />
+								</label>
+								<label>Product Name:
+									<input type="text" id="product-name" />
+								</label>
+								<label>Brand:
+									<input type="text" id="product-brand" />
+								</label>
+								<label>Product Tags (comma-separated):
+									<input type="text" id="product-tags" />
+								</label>
+							</section>
 
-        <!-- Read-Only System Metadata Section -->
-        <section>
-          <h2>System Metadata (Read-Only)</h2>
-          <label>Num Scans:
-            <input type="text" id="num-scans" readonly />
-          </label>
-          <label>Product Exists:
-            <input type="text" id="product-exists" readonly />
-          </label>
-          <label>Date Generated:
-            <input type="text" id="date-generated" readonly />
-          </label>
-          <label>Cost To Generate:
-            <input type="text" id="cost-to-generate" readonly />
-          </label>
-          <label>Time To Generate:
-            <input type="text" id="time-to-generate" readonly />
-          </label>
-          <label>Feedback:
-            <textarea id="feedback" readonly></textarea>
-          </label>
-        </section>
+							<!-- Parent Company Section -->
+							<section>
+								<h2>Parent Company Info</h2>
+								<label>Parent Company Name:
+									<input type="text" id="parent-company-name" />
+								</label>
+								<label>Parent Company Description:
+									<textarea id="parent-company-description"></textarea>
+								</label>
+								<label>Country of Registration:
+									<input type="text" id="parent-company-country" />
+								</label>
+								<label>Country Code:
+									<input type="text" id="parent-company-code" />
+								</label>
+								<label>Result Confidence:
+									<input type="text" id="parent-company-confidence" />
+								</label>
+								<label>Explanation:
+									<textarea id="parent-company-explanation"></textarea>
+								</label>
+								<label>Company Tags (comma-separated):
+									<input type="text" id="company-tags" />
+								</label>
+							</section>
 
-        <button type="submit">Submit Changes</button>
-      </form>
-      <div id="message"></div>
-    </div>
-  </div>
+							<!-- Manufacturing Info Section -->
+							<section>
+								<h2>Manufacturing Info</h2>
+								<label>Percentage Canadian:
+									<input type="number" id="percentage-canadian" />
+								</label>
+								<label>Label:
+									<input type="text" id="label" />
+								</label>
+								<label>Label Description:
+									<textarea id="label-description"></textarea>
+								</label>
+								<label>Manufacturing Result Confidence:
+									<input type="text" id="manufacturing-confidence" />
+								</label>
+								<label>Label Explanation:
+									<textarea id="label-explanation"></textarea>
+								</label>
+							</section>
 
-  <script src="/js/config.js"></script>
-  <script src="/js/product_editor.js"></script>
-  <script src="/js/auth_script.js"></script>
+							<!-- Metadata Section -->
+							<section>
+								<h2>Metadata</h2>
+								<label>Image URL (Primary):
+									<input type="text" id="image-url" />
+								</label>
+								<label>
+									<input type="checkbox" id="verified" />
+									Verified
+								</label>
+								<label>
+									<input type="checkbox" id="sponsored" />
+									Sponsored
+								</label>
+								<label>Positive Ratings:
+									<input type="number" id="positive-ratings" />
+								</label>
+								<label>Negative Ratings:
+									<input type="number" id="negative-ratings" />
+								</label>
+							</section>
+
+							<!-- Read-Only System Metadata Section -->
+							<section>
+								<h2>System Metadata (Read-Only)</h2>
+								<label>Num Scans:
+									<input type="text" id="num-scans" readonly />
+								</label>
+								<label>Product Exists:
+									<input type="text" id="product-exists" readonly />
+								</label>
+								<label>Date Generated:
+									<input type="text" id="date-generated" readonly />
+								</label>
+								<label>Cost To Generate:
+									<input type="text" id="cost-to-generate" readonly />
+								</label>
+								<label>Time To Generate:
+									<input type="text" id="time-to-generate" readonly />
+								</label>
+								<label>Feedback:
+									<textarea id="feedback" readonly></textarea>
+								</label>
+							</section>
+
+							<button type="submit">Submit Changes</button>
+						</form>
+						<div id="message"></div>
+					</div>
+				</div>
+			</div>
+		</main>
+		<!-- MAIN -->
+	</section>
+	<!-- CONTENT -->
+
+	<script src="/js/config.js"></script>
+	<script src="/js/product_editor.js"></script>
+	<script src="/js/auth_script.js"></script>
+	<script src="../home/home_script.js"></script>
 
 </body>
 </html>

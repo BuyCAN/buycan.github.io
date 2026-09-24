@@ -105,3 +105,28 @@ document.addEventListener("DOMContentLoaded", function () {
         menu.style.display = 'none'; // Set all menus to hidden
     });
 });
+
+// REAL server status (replaces the old hardcoded placeholder card)
+const APP_AUTH_TOKEN = 'PEEPEEPOOPOODOODOOKAKA';
+
+window.addEventListener('DOMContentLoaded', function () {
+    const statusEl = document.getElementById('server-status');
+    const headlineEl = document.getElementById('server-status-headline');
+
+    fetch(`${CONFIG.API_BASE_URL}/get-server-status?auth_token=${encodeURIComponent(APP_AUTH_TOKEN)}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Status ' + response.status);
+            }
+            return response.json();
+        })
+        .then(data => {
+            statusEl.textContent = data.status || 'Unknown';
+            statusEl.classList.add((data.status || '').toLowerCase() === 'good' ? 'good' : 'bad');
+            headlineEl.textContent = data.statusHeadline || 'Server Status';
+        })
+        .catch(() => {
+            statusEl.textContent = 'Unreachable';
+            statusEl.classList.add('bad');
+        });
+});
