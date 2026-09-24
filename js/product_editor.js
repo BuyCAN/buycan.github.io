@@ -10,6 +10,12 @@
 
 const AUTH_TOKEN = "Bearer PEEPEEPOOPOODOODOOKAKA";
 const LIMIT = 30;
+// Neutral placeholder tile (via.placeholder.com is dead and leaves broken images)
+const PLACEHOLDER_IMG = "data:image/svg+xml;utf8," + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80">' +
+    '<rect width="100%" height="100%" fill="#e8e8e8"/>' +
+    '<text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="11" fill="#999">no img</text>' +
+    '</svg>');
 let offset = 0;
 let originalValues = {};
 let isAddingNewProduct = false;  // flag to indicate add mode
@@ -157,7 +163,7 @@ function fetchProducts(append = false) {
                 div.className = 'product-item';
                 div.dataset.barcode = item.barcode;
 
-                const imgSrc = item.metadata?.imageURL || 'https://via.placeholder.com/80';
+                const imgSrc = item.metadata?.imageURL || PLACEHOLDER_IMG;
 
                 // Verified check (only show if verified == true)
                 const verifiedIcon = item.metadata?.verified ? "✔️" : "";
@@ -205,6 +211,11 @@ function fetchProducts(append = false) {
                     document.querySelectorAll('.product-item').forEach(el => el.classList.remove('selected'));
                     div.classList.add('selected');
                     loadProductDetails(item.barcode);
+                });
+
+                // Hotlinked images die all the time — fall back to the placeholder tile
+                div.querySelector('img').addEventListener('error', function () {
+                    this.src = PLACEHOLDER_IMG;
                 });
 
                 productList.appendChild(div);
@@ -524,8 +535,6 @@ document.getElementById('product-form').addEventListener('submit', (e) => {
         }
         const barcode = productBarcode.value.trim();
         const partialData = buildPartialUpdate();
-        console.log("Final partialData ->", partialData);
-        console.log("JSON stringified ->", JSON.stringify(partialData, null, 2));
 
         fetch(`${CONFIG.API_BASE_URL}/modify-product/${barcode}`, {
             method: "PUT",

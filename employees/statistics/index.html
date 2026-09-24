@@ -12,6 +12,15 @@
 	<style>
 		/* Dashboard-specific styles layered on the AdminHub base (../home/style.css) */
 
+		/* Auth fade-out target */
+		.container {
+			opacity: 1;
+			transition: opacity 0.5s ease-out;
+		}
+		.container.fade-out {
+			opacity: 0;
+		}
+
 		/* Range picker row */
 		.range-controls {
 			background: #fff;
