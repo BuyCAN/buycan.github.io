@@ -188,20 +188,22 @@
       });
   }
 
-  // Monetization event series: day-bucketed telemetry counts for the selected range.
-  function fetchEventCounts(rangeDays) {
+  // Monetization event series: day-bucketed telemetry counts.
+  // /get-event-counts always returns the last N days ending today (UTC), so
+  // one call is made at the server cap (92 days) and the counts are filtered
+  // client-side to the selected range — historical windows stay accurate.
+  function fetchEventCounts(selectedDays) {
     const setText = (id, value) => { document.getElementById(id).textContent = value; };
-    return authedFetch(`/get-event-counts?days=${rangeDays}`)
+    return authedFetch(`/get-event-counts?days=${MAX_RANGE_DAYS}`)
       .then(payload => {
-        const counts = payload.counts || [];
-        const totals = {};   // event_type -> total count
+        const rangeSet = new Set(selectedDays);
+        const counts = (payload.counts || []).filter(({ day }) => rangeSet.has(day));
+        const totals = {};   // event_type -> total count within the range
         const byDay = {};    // day -> { event_type: count }
-        const daysSet = new Set();
         counts.forEach(({ day, event_type, count }) => {
           totals[event_type] = (totals[event_type] || 0) + count;
           byDay[day] = byDay[day] || {};
           byDay[day][event_type] = count;
-          daysSet.add(day);
         });
 
         const renders = totals['alternative_card_rendered'] || 0;
@@ -215,16 +217,16 @@
         setText('event_scans', scans.toLocaleString());
 
         document.getElementById('event_note').textContent =
-          `Server window ${payload.start_day} → ${payload.end_day}. ` +
-          (counts.length === 0 ? 'No monetization events recorded in this window yet.' : '');
+          `${selectedDays[0]} → ${selectedDays[selectedDays.length - 1]}. ` +
+          (counts.length === 0 ? 'No monetization events recorded in this range yet.' : '');
 
-        // Per-day line, one dataset per event type present in the data
+        // Per-day line over the whole selected range (zero-event days included),
+        // one dataset per event type present in the data
         if (eventChartInstance) { eventChartInstance.destroy(); eventChartInstance = null; }
         if (counts.length === 0) {
           document.getElementById('eventChartBox').hidden = true;
           return;
         }
-        const labels = Array.from(daysSet).sort();
         const seriesColors = { 'alternative_card_rendered': '#D51900', 'alternative_card_clicked': '#1d5fbf', 'scan_completed': '#2a9d3f' };
         const seriesLabels = { 'alternative_card_rendered': 'Card Renders', 'alternative_card_clicked': 'Card Clicks', 'scan_completed': 'Scans' };
         const eventTypes = Object.keys(totals);
@@ -232,10 +234,10 @@
         eventChartInstance = new Chart(document.getElementById('eventChart'), {
           type: 'line',
           data: {
-            labels: labels,
+            labels: selectedDays,
             datasets: eventTypes.map(type => ({
               label: seriesLabels[type] || type,
-              data: labels.map(day => (byDay[day] && byDay[day][type]) || 0),
+              data: selectedDays.map(day => (byDay[day] && byDay[day][type]) || 0),
               borderColor: seriesColors[type] || '#888',
               backgroundColor: 'rgba(0, 0, 0, 0.03)',
               fill: false,
@@ -251,6 +253,7 @@
         });
       })
       .catch(() => {
+        if (eventChartInstance) { eventChartInstance.destroy(); eventChartInstance = null; }
         setText('event_renders', 'Unavailable');
         setText('event_clicks', 'Unavailable');
         setText('event_ctr', 'Unavailable');
@@ -260,7 +263,8 @@
       });
   }
 
-  // Server-derived totals: one /get-product-statistics call with no date params
+  // Server-derived totals: one /get-product-statistics call with no date params.
+  // All values render via textContent (no HTML interpolation of fetched data).
   function fetchServerTotals() {
     const setText = (id, value) => { document.getElementById(id).textContent = value; };
     return authedFetch('/get-product-statistics')
@@ -281,40 +285,6 @@
         setText('server_failed_scans', 'Unavailable');
         setText('server_total_cost', 'Unavailable');
         setText('server_avg_time', 'Unavailable');
-      });
-  }
-
-  // Registered users: /display-users
-  function fetchUsers() {
-    const totalEl = document.getElementById('users_total');
-    const breakdownEl = document.getElementById('users_breakdown');
-    return authedFetch('/display-users')
-      .then(payload => {
-        const users = payload.users || [];
-        totalEl.textContent = users.length.toLocaleString();
-
-        if (users.length === 0) {
-          breakdownEl.textContent = 'No users recorded yet.';
-          return;
-        }
-
-        // Tally device types and app versions (top 3 each)
-        const tally = (key) => {
-          const counts = {};
-          users.forEach(u => {
-            const value = u[key] || 'Unknown';
-            counts[value] = (counts[value] || 0) + 1;
-          });
-          return Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 3)
-            .map(([value, count]) => `${value} (${count})`).join(', ');
-        };
-        breakdownEl.innerHTML =
-          `<strong>Top devices:</strong> ${tally('device_type')}<br>` +
-          `<strong>Top app versions:</strong> ${tally('app_version')}`;
-      })
-      .catch(() => {
-        totalEl.textContent = 'Unavailable';
-        breakdownEl.textContent = 'User data is unavailable right now — the server could not be reached.';
       });
   }
 
@@ -345,7 +315,7 @@
     }
 
     // Monetization event series follows the selected range (independent of the per-day stats fetch)
-    fetchEventCounts(days.length);
+    fetchEventCounts(days);
 
     Promise.allSettled(days.map(day => fetchDay(day).then(data => ({ day, data }))))
       .then(results => {
@@ -400,7 +370,6 @@
     // Default view: last 30 days, auto-loaded (fetchData also refreshes the event series)
     document.querySelector('.range-controls button[data-preset="30"]').click();
 
-    // Range-independent live cards
+    // Range-independent live card
     fetchServerTotals();
-    fetchUsers();
   });
