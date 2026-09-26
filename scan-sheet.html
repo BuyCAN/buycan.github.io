@@ -362,7 +362,12 @@ var TAG_CLASS = {
       var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
       box.appendChild(svg);
       try {
-        JsBarcode(svg, item.code, {
+        // Database barcodes are 12-digit UPC-A (check digit included). As
+        // EAN-13 they must be prefixed with 0 — appending a computed check
+        // digit instead corrupts the code the camera reads and the backend's
+        // leading-zero strip then misses the stored barcode.
+        var printable = item.code.length === 12 ? "0" + item.code : item.code;
+        JsBarcode(svg, printable, {
           format: "EAN13", width: 3, height: 110, fontSize: 18,
           font: "Space Mono, monospace", margin: 12,
           background: "#ffffff", lineColor: "#000000"
