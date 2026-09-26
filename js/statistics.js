@@ -18,8 +18,11 @@
   // Cap on how many days a custom range may span — keeps a fetch storm off the API
   const MAX_RANGE_DAYS = 92;
 
+  // Auth token (query-parameter auth, same as the rest of the portal)
+  const AUTH_TOKEN = 'PEEPEEPOOPOODOODOOKAKA';
+
   // Global chart instances so we can update/destroy on each fetch
-  let pieChartInstance, scanOutcomeChartInstance, productBreakdownChartInstance, trendChartInstance;
+  let pieChartInstance, scanOutcomeChartInstance, productBreakdownChartInstance, trendChartInstance, eventChartInstance;
 
   function estDayList(startStr, endStr) {
     // Inclusive list of "YYYY-MM-DD" strings between two EST date strings
@@ -38,9 +41,8 @@
   }
 
   function fetchDay(dayStr) {
-    const authToken = 'PEEPEEPOOPOODOODOOKAKA';
     const [year, month, day] = dayStr.split('-').map(Number);
-    const url = `${CONFIG.API_BASE_URL}/get-product-statistics?auth_token=${encodeURIComponent(authToken)}&year=${year}&month=${month}&day=${day}`;
+    const url = `${CONFIG.API_BASE_URL}/get-product-statistics?auth_token=${encodeURIComponent(AUTH_TOKEN)}&year=${year}&month=${month}&day=${day}`;
     return fetch(url).then(response => {
       if (!response.ok) {
         throw new Error('Status ' + response.status);
@@ -173,6 +175,119 @@
     document.getElementById('rangeDisplay').textContent = `${startStr} → ${endStr} (${agg.trend.labels.length} day${agg.trend.labels.length === 1 ? '' : 's'})`;
   }
 
+  // ---------- Live server-side cards ----------
+
+  function authedFetch(path) {
+    const sep = path.includes('?') ? '&' : '?';
+    return fetch(`${CONFIG.API_BASE_URL}${path}${sep}auth_token=${encodeURIComponent(AUTH_TOKEN)}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Status ' + response.status);
+        }
+        return response.json();
+      });
+  }
+
+  // Monetization event series: day-bucketed telemetry counts.
+  // /get-event-counts always returns the last N days ending today (UTC), so
+  // one call is made at the server cap (92 days) and the counts are filtered
+  // client-side to the selected range — historical windows stay accurate.
+  function fetchEventCounts(selectedDays) {
+    const setText = (id, value) => { document.getElementById(id).textContent = value; };
+    return authedFetch(`/get-event-counts?days=${MAX_RANGE_DAYS}`)
+      .then(payload => {
+        const rangeSet = new Set(selectedDays);
+        const counts = (payload.counts || []).filter(({ day }) => rangeSet.has(day));
+        const totals = {};   // event_type -> total count within the range
+        const byDay = {};    // day -> { event_type: count }
+        counts.forEach(({ day, event_type, count }) => {
+          totals[event_type] = (totals[event_type] || 0) + count;
+          byDay[day] = byDay[day] || {};
+          byDay[day][event_type] = count;
+        });
+
+        const renders = totals['alternative_card_rendered'] || 0;
+        const clicks = totals['alternative_card_clicked'] || 0;
+        const scans = totals['scan_completed'] || 0;
+        const ctr = renders > 0 ? (clicks / renders * 100) : 0;
+
+        setText('event_renders', renders.toLocaleString());
+        setText('event_clicks', clicks.toLocaleString());
+        setText('event_ctr', renders > 0 ? ctr.toFixed(1) + '%' : '—');
+        setText('event_scans', scans.toLocaleString());
+
+        document.getElementById('event_note').textContent =
+          `${selectedDays[0]} → ${selectedDays[selectedDays.length - 1]}. ` +
+          (counts.length === 0 ? 'No monetization events recorded in this range yet.' : '');
+
+        // Per-day line over the whole selected range (zero-event days included),
+        // one dataset per event type present in the data
+        if (eventChartInstance) { eventChartInstance.destroy(); eventChartInstance = null; }
+        if (counts.length === 0) {
+          document.getElementById('eventChartBox').hidden = true;
+          return;
+        }
+        const seriesColors = { 'alternative_card_rendered': '#D51900', 'alternative_card_clicked': '#1d5fbf', 'scan_completed': '#2a9d3f' };
+        const seriesLabels = { 'alternative_card_rendered': 'Card Renders', 'alternative_card_clicked': 'Card Clicks', 'scan_completed': 'Scans' };
+        const eventTypes = Object.keys(totals);
+        document.getElementById('eventChartBox').hidden = false;
+        eventChartInstance = new Chart(document.getElementById('eventChart'), {
+          type: 'line',
+          data: {
+            labels: selectedDays,
+            datasets: eventTypes.map(type => ({
+              label: seriesLabels[type] || type,
+              data: selectedDays.map(day => (byDay[day] && byDay[day][type]) || 0),
+              borderColor: seriesColors[type] || '#888',
+              backgroundColor: 'rgba(0, 0, 0, 0.03)',
+              fill: false,
+              tension: 0.3
+            }))
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            scales: { y: { beginAtZero: true } }
+          }
+        });
+      })
+      .catch(() => {
+        if (eventChartInstance) { eventChartInstance.destroy(); eventChartInstance = null; }
+        setText('event_renders', 'Unavailable');
+        setText('event_clicks', 'Unavailable');
+        setText('event_ctr', 'Unavailable');
+        setText('event_scans', 'Unavailable');
+        document.getElementById('event_note').textContent = 'Monetization event counts are unavailable right now — the server could not be reached.';
+        document.getElementById('eventChartBox').hidden = true;
+      });
+  }
+
+  // Server-derived totals: one /get-product-statistics call with no date params.
+  // All values render via textContent (no HTML interpolation of fetched data).
+  function fetchServerTotals() {
+    const setText = (id, value) => { document.getElementById(id).textContent = value; };
+    return authedFetch('/get-product-statistics')
+      .then(data => {
+        const start = (data.date_range && data.date_range.start || '').slice(0, 10);
+        const end = (data.date_range && data.date_range.end || '').slice(0, 10);
+        setText('server_window', start && end ? `${start} → ${end}` : 'N/A');
+        setText('server_total_scans', (data.total_scans || 0).toLocaleString());
+        setText('server_new_products', (data.new_products_generated || 0).toLocaleString());
+        setText('server_failed_scans', (data.total_failed_scans || 0).toLocaleString());
+        setText('server_total_cost', '$' + Number(data.cost_analysis ? data.cost_analysis.total_cost : 0).toFixed(2) + ' CAD');
+        setText('server_avg_time', Number(data.time_analysis ? data.time_analysis.average_time_to_generate : 0).toFixed(1) + 's');
+      })
+      .catch(() => {
+        setText('server_window', 'Unavailable');
+        setText('server_total_scans', 'Unavailable');
+        setText('server_new_products', 'Unavailable');
+        setText('server_failed_scans', 'Unavailable');
+        setText('server_total_cost', 'Unavailable');
+        setText('server_avg_time', 'Unavailable');
+      });
+  }
+
   function fetchData() {
     const startDate = document.getElementById('startDate').value;
     const endDate = document.getElementById('endDate').value;
@@ -198,6 +313,9 @@
       errorMessage.style.display = 'block';
       return;
     }
+
+    // Monetization event series follows the selected range (independent of the per-day stats fetch)
+    fetchEventCounts(days);
 
     Promise.allSettled(days.map(day => fetchDay(day).then(data => ({ day, data }))))
       .then(results => {
@@ -249,6 +367,9 @@
       fetchData();
     });
 
-    // Default view: last 30 days, auto-loaded
+    // Default view: last 30 days, auto-loaded (fetchData also refreshes the event series)
     document.querySelector('.range-controls button[data-preset="30"]').click();
+
+    // Range-independent live card
+    fetchServerTotals();
   });

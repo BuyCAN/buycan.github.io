@@ -306,13 +306,35 @@
 					</div>
 				</div>
 
-				<!-- Placeholder for monetization instrumentation (monetization plan §6) -->
-				<div class="card" style="margin-top: 20px;">
-					<h3>Monetization Metrics</h3>
-					<p class="kpi">Walled scans, ad unlocks, trial starts and churn will appear here once the quota instrumentation ships (monetization plan §6). The chart code is built to take new series without rework.</p>
+				<!-- Live server-side totals (single /get-product-statistics call, no date params) -->
+				<div class="dashboard-grid">
+					<div class="card">
+						<h3>Server Totals</h3>
+						<p class="kpi"><strong>Window:</strong> <span id="server_window">Loading…</span></p>
+						<p class="kpi"><strong>Total Scans:</strong> <span id="server_total_scans">N/A</span></p>
+						<p class="kpi"><strong>New Products Generated:</strong> <span id="server_new_products">N/A</span></p>
+						<p class="kpi"><strong>Failed Scans:</strong> <span id="server_failed_scans">N/A</span></p>
+						<p class="kpi"><strong>Total Generation Cost:</strong> <span id="server_total_cost">N/A</span></p>
+						<p class="kpi"><strong>Avg Time to Generate:</strong> <span id="server_avg_time">N/A</span></p>
+					</div>
 				</div>
 
-				<p class="date-note">*Data is only accurate on or after March 15th, 2025</p>
+				<!-- Monetization event series (monetization plan §6), fed by /get-event-counts for the selected range -->
+				<div class="card-trend">
+					<h3>Monetization Events</h3>
+					<p class="kpi" style="margin-bottom: 10px;">
+						<strong>Card Renders:</strong> <span id="event_renders">N/A</span> ·
+						<strong>Card Clicks:</strong> <span id="event_clicks">N/A</span> ·
+						<strong>Render→Click CTR:</strong> <span id="event_ctr">N/A</span> ·
+						<strong>Scans (server-side):</strong> <span id="event_scans">N/A</span>
+					</p>
+					<p class="date-note" id="event_note"></p>
+					<div class="chart-box" id="eventChartBox" hidden>
+						<canvas id="eventChart"></canvas>
+					</div>
+				</div>
+
+				<p class="date-note">*Data is only accurate on or after March 15th, 2025. Walled-scan, ad-unlock and trial-start series land here as the §6 quota instrumentation ships.</p>
 			</div>
 		</main>
 		<!-- MAIN -->
