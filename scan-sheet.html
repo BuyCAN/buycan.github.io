@@ -302,15 +302,78 @@ var SHEET_ITEMS = [
     key: "fake", section: "miss", type: "qr", code: "12345",
     name: "Fake Barcode (QR)", pct: "MISS",
     tags: ["error path"],
-    expect: "Not-found screen after ~2&nbsp;seconds. This barcode isn't in the database, so it leaves one blank row server-side &mdash; purgeable, expected.",
-    check: "Not-found screen"
+    expect: "Clean <strong>invalid barcode</strong> error, not a product &mdash; the 2026-09-26 validity floor rejects anything under 8 digits before it can reach generation.",
+    check: "Error page, no crash"
+  },
+
+  // Quota-wall test items (2026-09-26): all verified DB-cached (200 via
+  // get-by-barcode) so scanning them consumes quota WITHOUT paid generation.
+  // Only fresh for devices that have not scanned them before — re-scans of
+  // known barcodes are always free. Requires dev mode OFF (dev omits user_id,
+  // so the quota never engages) and FREE_SCANS_PER_DAY temporarily lowered.
+  {
+    key: "quota1", section: "quota", code: "055742524284",
+    name: "McIntosh Apple Juice 2L (Sobeys)",
+    tags: ["scan_completed"],
+    expect: "Normal product page. Counts 1 toward the quota wall.",
+    check: "Loads normally"
+  },
+  {
+    key: "quota2", section: "quota", code: "059600038470",
+    name: "Orange Juice With Pulp (Loblaws)",
+    tags: ["scan_completed"],
+    expect: "Normal product page.",
+    check: "Loads normally"
+  },
+  {
+    key: "quota3", section: "quota", code: "055298196607",
+    name: "Azzurro Espresso Ground Coffee",
+    tags: ["scan_completed"],
+    expect: "Normal product page.",
+    check: "Loads normally"
+  },
+  {
+    key: "quota4", section: "quota", code: "059749976749",
+    name: "Classic Vegetable Chips (Loblaws)",
+    tags: ["scan_completed"],
+    expect: "Normal product page.",
+    check: "Loads normally"
+  },
+  {
+    key: "quota5", section: "quota", code: "835302001598",
+    name: "Freeze Dried Beef Liver Trainers (Crump's)",
+    tags: ["scan_completed"],
+    expect: "One of these first five should trip the <strong>Daily scan limit</strong> wall when FREE_SCANS_PER_DAY=5 (your device may already have used some today).",
+    check: "Loads, or quota wall appears"
+  },
+  {
+    key: "quota6", section: "quota", code: "036000485332",
+    name: "Cottonelle Flushable Wipes",
+    tags: ["scan_completed"],
+    expect: "If the wall appeared earlier: scan this AFTER watching a rewarded ad &mdash; the bonus scan should let it through.",
+    check: "Ad-unlock scan works"
+  },
+  {
+    key: "quota7", section: "quota", code: "071121962812",
+    name: "Cutter Backwoods Insect Repellent",
+    tags: ["scan_completed"],
+    expect: "Second ad-unlock scan, if you want to exercise the bonus counter twice (3 bonus scans per day).",
+    check: "Bonus path consistent"
+  },
+  {
+    key: "quota8", section: "quota", code: "3073780971751",
+    name: "Babybel Lactose-Free (13-digit EAN)",
+    tags: ["scan_completed"],
+    expect: "Normal product page &mdash; also confirms 13-digit barcodes scan fine.",
+    check: "Loads normally"
   }
 ];
 
 var SECTIONS = {
   render: { badge: "A", klass: "red",  title: "Card renders + tap works" },
   none:   { badge: "B", klass: "blue", title: "No card on Canadian product" },
-  miss:   { badge: "C", klass: "grey", title: "Broken scan" }
+  miss:   { badge: "C", klass: "grey", title: "Broken scan" },
+  quota:  { badge: "D", klass: "blue", title: "Quota wall test (dev OFF, wall set to 5)" }
 };
 var TAG_CLASS = {
   "scan_completed": "scan", "card_rendered": "render", "card_clicked": "click",
