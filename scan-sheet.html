@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BuyCAN Scan Sheet</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&family=Space+Mono:wght@400;700&display=swap">
+<style>
+:root {
+  --paper: #f7f6f3;
+  --label: #ffffff;
+  --ink: #191714;
+  --ink-soft: #6f6a64;
+  --line: #e5e1da;
+  --red: #D51900;
+  --blue: #1d5fbf;
+  --green: #2a9d3f;
+  --green-wash: #e8f4ea;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #171512;
+    --label: #ffffff; /* barcodes stay on real paper */
+    --ink: #ece8e2;
+    --ink-soft: #a39d94;
+    --line: #2e2a25;
+    --red: #ff5a3d;
+    --blue: #7aa7e8;
+    --green: #5cc46e;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #171512;
+  --label: #ffffff;
+  --ink: #ece8e2;
+  --ink-soft: #a39d94;
+  --line: #2e2a25;
+  --red: #ff5a3d;
+  --blue: #7aa7e8;
+  --green: #5cc46e;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  padding-block: 28px 64px;
+  padding-inline: 20px;
+}
+.wrap { max-width: 560px; margin: 0 auto; }
+
+.masthead { border-bottom: 3px solid var(--red); padding-bottom: 14px; margin-bottom: 22px; }
+.eyebrow {
+  font-family: "Space Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin: 0 0 6px;
+}
+h1 {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0 0 6px;
+  text-wrap: balance;
+}
+.lede { color: var(--ink-soft); margin: 0; max-width: 46ch; }
+
+.howto {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 20px 0 30px;
+}
+.howto div {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+.howto b { display: block; color: var(--ink); font-weight: 600; margin-bottom: 2px; }
+
+.progress {
+  position: sticky;
+  top: 0;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 5;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+  padding: 10px 2px;
+  margin-bottom: 26px;
+}
+.progress .count {
+  font-family: "Space Mono", monospace;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.progress .reset {
+  font-family: "Space Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--ink-soft);
+  padding: 5px 10px;
+  cursor: pointer;
+}
+.progress .reset:hover { color: var(--red); border-color: var(--red); }
+
+.sheethead {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 30px 0 12px;
+}
+.sheethead:first-of-type { margin-top: 0; }
+.sheethead .k {
+  font-family: "Space Mono", monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: #ffffff;
+  border-radius: 4px;
+  padding: 2px 7px;
+}
+.sheethead .k.red { background: var(--red); }
+.sheethead .k.blue { background: var(--blue); }
+.sheethead .k.grey { background: var(--ink-soft); }
+.sheethead h2 { font-size: 17px; font-weight: 800; margin: 0; letter-spacing: -0.01em; }
+
+/* A test item = a product label */
+.label-card {
+  background: var(--label);
+  color: #191714;
+  border-radius: 10px;
+  padding: 18px 18px 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 1px 4px rgba(25, 23, 20, 0.10);
+  border: 2px solid transparent;
+}
+.label-card.done { border-color: var(--green); }
+.label-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.label-head .name { font-weight: 800; font-size: 16px; letter-spacing: -0.01em; }
+.label-head .pct {
+  font-family: "Space Mono", monospace;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.barcode-box {
+  background: #ffffff;
+  border: 1px solid #d9d4cc;
+  border-radius: 6px;
+  padding: 14px 10px 8px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+.barcode-box svg { max-width: 100%; height: auto; }
+.expect {
+  font-size: 13.5px;
+  color: #514c45;
+  margin: 0 0 10px;
+}
+.expect strong { color: #191714; }
+.event-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.event-tag {
+  font-family: "Space Mono", monospace;
+  font-size: 10.5px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  letter-spacing: 0.02em;
+}
+.event-tag.render { background: #fbe9e5; color: #b32300; }
+.event-tag.click { background: #e7effb; color: #1d5fbf; }
+.event-tag.scan { background: #e7f3ea; color: #2a9d3f; }
+.event-tag.none { background: #efece7; color: #6f6a64; }
+.check {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #191714;
+  cursor: pointer;
+  user-select: none;
+}
+.check input { width: 17px; height: 17px; accent-color: #2a9d3f; cursor: pointer; }
+
+.afterword {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin-top: 34px;
+  font-size: 13.5px;
+  color: var(--ink-soft);
+}
+.afterword strong { color: var(--ink); }
+.afterword code {
+  font-family: "Space Mono", monospace;
+  font-size: 12px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow" id="eyebrow">BuyCAN QA</p>
+    <h1>Scan Sheet</h1>
+    <p class="lede">A handful of items covering the app's states. Open this page full-screen on a computer, turn the brightness up, and point the phone at one label at a time from about 20&nbsp;cm.</p>
+  </header>
+
+  <div class="howto">
+    <div><b>Brightness up</b>Max the screen brightness; avoid glare.</div>
+    <div><b>Hold steady</b>20&ndash;25&nbsp;cm out, label filling most of the view.</div>
+    <div><b>One at a time</b>Let the product page load before the next label.</div>
+  </div>
+
+  <div class="progress">
+    <span class="count"><span id="doneCount">0</span> / <span id="totalCount">0</span> verified</span>
+    <button class="reset" id="resetBtn" type="button">Reset</button>
+  </div>
+
+  <main id="sheet"></main>
+
+  <footer class="afterword">
+    <strong>When you're done,</strong> tell Claude how many renders and clicks you ticked so it can confirm server-side via <code>/get-event-counts</code>. Checkboxes survive a reload of this page.
+  </footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsbarcode/3.11.6/JsBarcode.all.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+/* ============================================================================
+   TEST ROSTER — edit this array to update the sheet.
+
+   section : "render" (alternatives card expected) | "none" (no card) | "miss" (error path)
+   type    : "ean13" (default) | "qr"
+   code    : the digits the camera should read
+   tags    : which telemetry events the actions on this item fire
+   expect  : what a passing run looks like, in one sentence
+
+   Item keys go into the checkbox storage, so renaming a key resets its tick.
+============================================================================ */
+var SHEET_BUILD = "2026-09-26 build (telemetry v1 + About fix)";
+
+var SHEET_ITEMS = [
+  {
+    key: "campbells", section: "render", code: "063211010510",
+    name: "Campbell's Chicken + Rice Soup", pct: "0% CAN",
+    tags: ["scan_completed", "card_rendered", "card_clicked"],
+    expect: "Red <strong>Alternative Canadian Products</strong> card with 5 soup alternatives. Tap one &mdash; it should still open normally.",
+    check: "Renders, tap navigates"
+  },
+  {
+    key: "oreo", section: "render", code: "044000053710",
+    name: "OREO Party Size Cookies", pct: "0% CAN",
+    tags: ["card_rendered", "card_clicked"],
+    expect: "Card renders with alternatives. Tap one alternative this time too.",
+    check: "Renders, tap navigates"
+  },
+  {
+    key: "voltaren", section: "render", code: "060815052779",
+    name: "Voltaren Emulgel", pct: "0% CAN",
+    tags: ["card_rendered"],
+    expect: "Card renders with alternatives. A pharmacy item &mdash; good variety check.",
+    check: "Renders"
+  },
+  {
+    key: "kraftpb", section: "none", code: "068100084245",
+    name: "Kraft Smooth Peanut Butter", pct: "100% CAN",
+    tags: ["no card events"],
+    expect: "<strong>No</strong> alternatives card anywhere on the page &mdash; it's 100% Canadian.",
+    check: "No card"
+  },
+  {
+    key: "fake", section: "miss", type: "qr", code: "12345",
+    name: "Fake Barcode (QR)", pct: "MISS",
+    tags: ["error path"],
+    expect: "Not-found screen after ~2&nbsp;seconds. This barcode isn't in the database, so it leaves one blank row server-side &mdash; purgeable, expected.",
+    check: "Not-found screen"
+  }
+];
+
+var SECTIONS = {
+  render: { badge: "A", klass: "red",  title: "Card renders + tap works" },
+  none:   { badge: "B", klass: "blue", title: "No card on Canadian product" },
+  miss:   { badge: "C", klass: "grey", title: "Broken scan" }
+};
+var TAG_CLASS = {
+  "scan_completed": "scan", "card_rendered": "render", "card_clicked": "click",
+  "no card events": "none", "error path": "none"
+};
+
+(function () {
+  "use strict";
+
+  document.getElementById("eyebrow").textContent = "BuyCAN QA · " + SHEET_BUILD;
+  document.getElementById("totalCount").textContent = SHEET_ITEMS.length;
+
+  var sheet = document.getElementById("sheet");
+  var lastSection = null;
+  SHEET_ITEMS.forEach(function (item) {
+    if (item.section !== lastSection) {
+      var meta = SECTIONS[item.section];
+      var head = document.createElement("div");
+      head.className = "sheethead";
+      head.innerHTML = '<span class="k ' + meta.klass + '">' + meta.badge + "</span><h2>" + meta.title + "</h2>";
+      sheet.appendChild(head);
+      lastSection = item.section;
+    }
+
+    var card = document.createElement("article");
+    card.className = "label-card";
+    card.dataset.item = item.key;
+
+    var tags = item.tags.map(function (t) {
+      return '<span class="event-tag ' + (TAG_CLASS[t] || "none") + '">' + t + "</span>";
+    }).join("");
+
+    card.innerHTML =
+      '<div class="label-head"><span class="name">' + item.name + '</span><span class="pct">' + item.pct + "</span></div>" +
+      '<div class="barcode-box" data-codebox></div>' +
+      '<p class="expect">' + item.expect + "</p>" +
+      '<div class="event-tags">' + tags + "</div>" +
+      '<label class="check"><input type="checkbox" data-key="' + item.key + '"> ' + item.check + "</label>";
+    sheet.appendChild(card);
+
+    var box = card.querySelector("[data-codebox]");
+    if (item.type === "qr") {
+      new QRCode(box, {
+        text: item.code, width: 170, height: 170,
+        colorDark: "#000000", colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.M
+      });
+    } else {
+      var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      box.appendChild(svg);
+      try {
+        JsBarcode(svg, item.code, {
+          format: "EAN13", width: 3, height: 110, fontSize: 18,
+          font: "Space Mono, monospace", margin: 12,
+          background: "#ffffff", lineColor: "#000000"
+        });
+      } catch (e) {
+        box.textContent = item.code;
+      }
+    }
+  });
+
+  var STORE_KEY = "buycan-scan-sheet-v1";
+  var state = {};
+  try { state = JSON.parse(localStorage.getItem(STORE_KEY) || "{}"); } catch (e) { state = {}; }
+
+  var boxes = Array.prototype.slice.call(sheet.querySelectorAll(".check input"));
+  function refresh() {
+    var done = 0;
+    boxes.forEach(function (box) {
+      box.closest(".label-card").classList.toggle("done", box.checked);
+      if (box.checked) done++;
+    });
+    document.getElementById("doneCount").textContent = done;
+  }
+  boxes.forEach(function (box) {
+    box.checked = !!state[box.dataset.key];
+    box.addEventListener("change", function () {
+      state[box.dataset.key] = box.checked;
+      try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {}
+      refresh();
+    });
+  });
+  refresh();
+
+  document.getElementById("resetBtn").addEventListener("click", function () {
+    state = {};
+    try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+    boxes.forEach(function (box) { box.checked = false; });
+    refresh();
+  });
+})();
+</script>
+</body>
+</html>
