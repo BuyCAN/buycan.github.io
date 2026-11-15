@@ -24,6 +24,14 @@
         }, 500); // Match this with CSS transition duration
     }
 
+    // A 401/403 from the API means the stored token is no longer accepted
+    // (expired, or the server's admin token changed): go back to the login.
+    function handleAuthFailure(status) {
+        if (status === 401 || status === 403) {
+            logout();
+        }
+    }
+
     // activity timeout
     let inactivityTimeout;
     const TIMEOUT_DURATION = 30 * 60 * 1000; // 30mins in milliseconds

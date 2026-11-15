@@ -18,8 +18,11 @@
   // Cap on how many days a custom range may span — keeps a fetch storm off the API
   const MAX_RANGE_DAYS = 92;
 
-  // Auth token (query-parameter auth, same as the rest of the portal)
-  const AUTH_TOKEN = 'PEEPEEPOOPOODOODOOKAKA';
+  // The token comes from the employee login (js/login.js stores it), never from
+  // this file: this repo is public. Sent as a header so it stays out of URLs.
+  function authHeaders() {
+    return { 'Authorization': 'Bearer ' + (localStorage.getItem('authToken') || '') };
+  }
 
   // Global chart instances so we can update/destroy on each fetch
   let pieChartInstance, scanOutcomeChartInstance, productBreakdownChartInstance, trendChartInstance, eventChartInstance;
@@ -42,9 +45,10 @@
 
   function fetchDay(dayStr) {
     const [year, month, day] = dayStr.split('-').map(Number);
-    const url = `${CONFIG.API_BASE_URL}/get-product-statistics?auth_token=${encodeURIComponent(AUTH_TOKEN)}&year=${year}&month=${month}&day=${day}`;
-    return fetch(url).then(response => {
+    const url = `${CONFIG.API_BASE_URL}/get-product-statistics?year=${year}&month=${month}&day=${day}`;
+    return fetch(url, { headers: authHeaders() }).then(response => {
       if (!response.ok) {
+        handleAuthFailure(response.status);
         throw new Error('Status ' + response.status);
       }
       return response.json();
@@ -178,10 +182,10 @@
   // ---------- Live server-side cards ----------
 
   function authedFetch(path) {
-    const sep = path.includes('?') ? '&' : '?';
-    return fetch(`${CONFIG.API_BASE_URL}${path}${sep}auth_token=${encodeURIComponent(AUTH_TOKEN)}`)
+    return fetch(`${CONFIG.API_BASE_URL}${path}`, { headers: authHeaders() })
       .then(response => {
         if (!response.ok) {
+          handleAuthFailure(response.status);
           throw new Error('Status ' + response.status);
         }
         return response.json();

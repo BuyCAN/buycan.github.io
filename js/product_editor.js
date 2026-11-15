@@ -8,7 +8,11 @@
       - Alternative images appear at the top of the form.
     */
 
-const AUTH_TOKEN = "Bearer PEEPEEPOOPOODOODOOKAKA";
+// The token comes from the employee login (js/login.js stores it), never from
+// this file: this repo is public.
+function authHeader() {
+    return "Bearer " + (localStorage.getItem("authToken") || "");
+}
 const LIMIT = 30;
 // Neutral placeholder tile (via.placeholder.com is dead and leaves broken images)
 const PLACEHOLDER_IMG = "data:image/svg+xml;utf8," + encodeURIComponent(
@@ -138,12 +142,13 @@ function fetchProducts(append = false) {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": AUTH_TOKEN
+            "Authorization": authHeader()
         },
         body: JSON.stringify(body)
     })
         .then(res => {
             if (!res.ok) {
+                handleAuthFailure(res.status);
                 throw new Error(`Search error: ${res.status}`);
             }
             return res.json();
@@ -246,11 +251,12 @@ function loadProductDetails(barcode) {
     fetch(`${CONFIG.API_BASE_URL}/get-by-barcode/${barcode}?test=true`, {
         method: "GET",
         headers: {
-            "Authorization": AUTH_TOKEN
+            "Authorization": authHeader()
         }
     })
         .then(res => {
             if (!res.ok) {
+                handleAuthFailure(res.status);
                 throw new Error(`Details API error: ${res.status}`);
             }
             return res.json();
@@ -492,12 +498,13 @@ document.getElementById('product-form').addEventListener('submit', (e) => {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": AUTH_TOKEN
+                "Authorization": authHeader()
             },
             body: JSON.stringify(partialData)
         })
         .then(res => {
             if (!res.ok) {
+                handleAuthFailure(res.status);
                 throw new Error(`Add/Update (PUT) error: ${res.status}`);
             }
             return res.json();
@@ -540,12 +547,13 @@ document.getElementById('product-form').addEventListener('submit', (e) => {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": AUTH_TOKEN
+                "Authorization": authHeader()
             },
             body: JSON.stringify(partialData)
         })
             .then(res => {
                 if (!res.ok) {
+                    handleAuthFailure(res.status);
                     throw new Error(`Update error: ${res.status}`);
                 }
                 return res.json();
