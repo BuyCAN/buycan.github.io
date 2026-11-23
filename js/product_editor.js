@@ -80,6 +80,18 @@ const costToGenerate = document.getElementById('cost-to-generate');
 const timeToGenerate = document.getElementById('time-to-generate');
 const feedback = document.getElementById('feedback');
 
+// Data source + product actions (brand submissions, backend issue #88)
+const dataSourceField = document.getElementById('data-source');
+const dataSourceNote = document.getElementById('data-source-note');
+const handBackButton = document.getElementById('hand-back-button');
+const regenerateButton = document.getElementById('regenerate-button');
+const deleteButton = document.getElementById('delete-button');
+const overridePrompt = document.getElementById('override-prompt');
+const overrideText = document.getElementById('override-text');
+const overrideConfirm = document.getElementById('override-confirm');
+const overrideCancel = document.getElementById('override-cancel');
+let currentDataSource = "ai";
+
 // Toggle custom label input visibility
 labelSelect.addEventListener('change', () => {
     if (labelSelect.value === 'other') {
@@ -248,7 +260,7 @@ function loadProductDetails(barcode) {
     timeToGenerate.setAttribute("readonly", "readonly");
     feedback.setAttribute("readonly", "readonly");
 
-    fetch(`${CONFIG.API_BASE_URL}/get-by-barcode/${barcode}?test=true`, {
+    return fetch(`${CONFIG.API_BASE_URL}/get-by-barcode/${barcode}?test=true`, {
         method: "GET",
         headers: {
             "Authorization": authHeader()
@@ -296,6 +308,9 @@ function loadProductDetails(barcode) {
             costToGenerate.value = product.metadata?.costToGenerate || "";
             timeToGenerate.value = product.metadata?.timeToGenerate || "";
             feedback.value = product.metadata?.feedback || "";
+
+            showDataSource(product.metadata?.dataSource);
+            hideOverridePrompt();
 
             // handle alternative images
             displayAlternativeImages(product);
@@ -379,7 +394,8 @@ function storeOriginalValues(product) {
         "date-generated": product.metadata?.dateGenerated || "",
         "cost-to-generate": product.metadata?.costToGenerate || "",
         "time-to-generate": product.metadata?.timeToGenerate || "",
-        "feedback": product.metadata?.feedback || ""
+        "feedback": product.metadata?.feedback || "",
+        "data-source": dataSourceField.value
     };
 }
 
@@ -476,6 +492,8 @@ function clearForm() {
     });
     altImagesContainer.innerHTML = "";
     originalValues = {};
+    showDataSource(null);
+    hideOverridePrompt();
 }
 
 // Submit changes / add new product
@@ -605,3 +623,171 @@ loadMoreBtn.addEventListener('click', () => {
     offset += LIMIT;
     fetchProducts(true);
 });
+
+// ---------------------------------------------------------------------------
+// Data source (metadata.dataSource) and protected-product actions.
+// "brand"/"staff" products are protected from AI: the backend answers 409 to
+// a delete or a regenerate unless we explicitly override (?force=1, or
+// "data_source": "ai" which hands the product back to the AI pipeline).
+// Contract: BuyCanadianBackend docs/frontend_contracts/brand-data-source.md
+// ---------------------------------------------------------------------------
+
+const DATA_SOURCE_TEXT = {
+    ai: "Researched by BuyCAN's AI pipeline.",
+    brand: "Supplied by the brand and reviewed by staff. Protected: AI never overwrites it. Editing content here turns it into \"staff\".",
+    staff: "A brand submission that staff then edited. Protected: AI never overwrites it."
+};
+
+function isProtectedSource(source) {
+    return source === "brand" || source === "staff";
+}
+
+function showDataSource(raw) {
+    // A missing or unknown value is treated as "ai" (old responses, future values).
+    currentDataSource = (raw && Object.prototype.hasOwnProperty.call(DATA_SOURCE_TEXT, raw)) ? raw : "ai";
+    const loaded = !!productBarcode.value && !isAddingNewProduct;
+    dataSourceField.value = loaded ? currentDataSource : "";
+    dataSourceNote.textContent = loaded ? DATA_SOURCE_TEXT[currentDataSource] : "";
+    dataSourceNote.classList.toggle('protected', loaded && isProtectedSource(currentDataSource));
+    handBackButton.hidden = !(loaded && isProtectedSource(currentDataSource));
+}
+
+function setActionMessage(text, ok) {
+    messageEl.textContent = text;
+    messageEl.style.color = ok ? "green" : "red";
+}
+
+function hideOverridePrompt() {
+    overridePrompt.hidden = true;
+    overrideText.textContent = "";
+    overrideConfirm.onclick = null;
+}
+
+// Ask for an explicit override after a 409. The server message is shown as text.
+function showOverridePrompt(serverMessage, explanation, confirmLabel, onConfirm) {
+    overrideText.textContent = (serverMessage ? serverMessage + " " : "") + explanation;
+    overrideConfirm.textContent = confirmLabel;
+    overrideConfirm.onclick = () => {
+        hideOverridePrompt();
+        onConfirm();
+    };
+    overridePrompt.hidden = false;
+    overridePrompt.scrollIntoView({behavior: "smooth", block: "nearest"});
+}
+
+function loadedBarcode() {
+    if (isAddingNewProduct || !productBarcode.value.trim()) {
+        setActionMessage("Select a product first.", false);
+        return null;
+    }
+    return productBarcode.value.trim();
+}
+
+async function readError(res) {
+    try {
+        const data = await res.json();
+        return data.error || "";
+    } catch (e) {
+        return "";
+    }
+}
+
+function modifyProduct(barcode, body) {
+    return fetch(`${CONFIG.API_BASE_URL}/modify-product/${encodeURIComponent(barcode)}`, {
+        method: "PUT",
+        headers: {"Content-Type": "application/json", "Authorization": authHeader()},
+        body: JSON.stringify(body)
+    });
+}
+
+// Delete: 409 for brand/staff data -> explicit "delete anyway" (?force=1)
+async function deleteProduct(barcode, force) {
+    const url = `${CONFIG.API_BASE_URL}/delete-product/${encodeURIComponent(barcode)}` + (force ? "?force=1" : "");
+    let res;
+    try {
+        res = await fetch(url, {method: "DELETE", headers: {"Authorization": authHeader()}});
+    } catch (e) {
+        return setActionMessage("Couldn't reach the server.", false);
+    }
+    if (res.status === 409 && !force) {
+        const msg = await readError(res);
+        return showOverridePrompt(msg,
+            "This product holds brand or staff supplied data. Deleting it throws that data away.",
+            "Delete anyway", () => deleteProduct(barcode, true));
+    }
+    if (!res.ok) {
+        handleAuthFailure(res.status);
+        return setActionMessage((await readError(res)) || `Delete failed (${res.status}).`, false);
+    }
+    clearForm();
+    setActionMessage(`Deleted ${barcode}.`, true);
+    fetchProducts(false);
+}
+
+// Regenerate: 409 for brand/staff data -> explicit "hand back to AI" (data_source "ai")
+async function regenerateProduct(barcode, handBack) {
+    const body = {regenerate: true};
+    if (handBack) body.data_source = "ai";
+    let res;
+    try {
+        res = await modifyProduct(barcode, body);
+    } catch (e) {
+        return setActionMessage("Couldn't reach the server.", false);
+    }
+    if (res.status === 409 && !handBack) {
+        const msg = await readError(res);
+        return showOverridePrompt(msg,
+            "To regenerate it, hand it back to the AI pipeline: the brand's data will be replaced on the next scan.",
+            "Hand back to AI and regenerate", () => regenerateProduct(barcode, true));
+    }
+    if (!res.ok) {
+        handleAuthFailure(res.status);
+        return setActionMessage((await readError(res)) || `Regenerate failed (${res.status}).`, false);
+    }
+    const done = handBack
+        ? `${barcode} handed back to AI and marked for regeneration on its next scan.`
+        : `${barcode} marked for regeneration on its next scan.`;
+    if (handBack) await loadProductDetails(barcode);  // reload first: it clears the message
+    setActionMessage(done, true);
+}
+
+async function handBackToAI(barcode) {
+    let res;
+    try {
+        res = await modifyProduct(barcode, {data_source: "ai"});
+    } catch (e) {
+        return setActionMessage("Couldn't reach the server.", false);
+    }
+    if (!res.ok) {
+        handleAuthFailure(res.status);
+        return setActionMessage((await readError(res)) || `Update failed (${res.status}).`, false);
+    }
+    await loadProductDetails(barcode);  // reload first: it clears the message
+    setActionMessage(`${barcode} handed back to AI. It's no longer protected from AI updates.`, true);
+}
+
+deleteButton.addEventListener('click', () => {
+    const barcode = loadedBarcode();
+    if (!barcode) return;
+    hideOverridePrompt();
+    if (!window.confirm(`Delete product ${barcode}? It will be generated again by AI the next time someone scans it.`)) return;
+    deleteProduct(barcode, false);
+});
+
+regenerateButton.addEventListener('click', () => {
+    const barcode = loadedBarcode();
+    if (!barcode) return;
+    hideOverridePrompt();
+    regenerateProduct(barcode, false);
+});
+
+handBackButton.addEventListener('click', () => {
+    const barcode = loadedBarcode();
+    if (!barcode) return;
+    hideOverridePrompt();
+    showOverridePrompt("",
+        `Hand ${barcode} back to the AI pipeline? It will show as AI-researched and lose its protection, so a later regeneration can replace the brand's data.`,
+        "Hand back to AI", () => handBackToAI(barcode));
+});
+
+overrideCancel.addEventListener('click', hideOverridePrompt);

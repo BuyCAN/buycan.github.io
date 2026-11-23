@@ -284,6 +284,53 @@
 		.alt-images img.primary {
 			border-color: var(--blue); /* highlight current primary */
 		}
+
+		/* Data source + product actions (brand submissions, issue #15) */
+		[hidden] { display: none !important; }
+		.data-source-note {
+			font-size: 0.8em;
+			color: #666;
+			margin: -0.25em 0 0.75em 0;
+		}
+		.data-source-note.protected {
+			color: #8a4b00;
+			font-weight: bold;
+		}
+		.action-buttons {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.5em;
+		}
+		.action-btn {
+			padding: 0.5em 1em;
+			border-radius: 8px;
+			border: 1px solid var(--blue);
+			background: transparent;
+			color: var(--blue);
+			font-weight: bold;
+			font-size: 0.85em;
+			cursor: pointer;
+		}
+		.action-btn:hover { opacity: 0.85; }
+		.action-btn.danger {
+			border-color: var(--red);
+			color: var(--red);
+		}
+		.override-prompt .action-btn.danger {
+			background: var(--red);
+			color: #fff;
+		}
+		.override-prompt {
+			margin-top: 0.75em;
+			padding: 0.75em;
+			background: #fff3cd;
+			border: 1px solid #e0a800;
+			border-radius: 8px;
+			font-size: 0.85em;
+		}
+		.override-prompt p {
+			margin-bottom: 0.5em;
+		}
 	</style>
 </head>
 <body>
@@ -311,6 +358,12 @@
 				<a href="#">
 					<i class='bx bxs-cart bx-sm'></i>
 					<span class="text">Products</span>
+				</a>
+			</li>
+			<li>
+				<a href="../brand-submissions/index.html">
+					<i class='bx bxs-inbox bx-sm'></i>
+					<span class="text">Brand Submissions</span>
 				</a>
 			</li>
 			<li>
@@ -519,6 +572,10 @@
 							<!-- Metadata Section -->
 							<section>
 								<h2>Metadata</h2>
+								<label>Data Source:
+									<input type="text" id="data-source" readonly />
+								</label>
+								<p id="data-source-note" class="data-source-note"></p>
 								<label>Image URL (Primary):
 									<input type="text" id="image-url" />
 								</label>
@@ -559,6 +616,21 @@
 								<label>Feedback:
 									<textarea id="feedback" readonly></textarea>
 								</label>
+							</section>
+
+							<!-- Product actions: protected (brand/staff) products need an explicit override -->
+							<section id="product-actions">
+								<h2>Product Actions</h2>
+								<div class="action-buttons">
+									<button type="button" id="hand-back-button" class="action-btn" hidden>Hand back to AI</button>
+									<button type="button" id="regenerate-button" class="action-btn">Mark for regeneration</button>
+									<button type="button" id="delete-button" class="action-btn danger">Delete product</button>
+								</div>
+								<div id="override-prompt" class="override-prompt" hidden>
+									<p id="override-text"></p>
+									<button type="button" id="override-confirm" class="action-btn danger"></button>
+									<button type="button" id="override-cancel" class="action-btn">Cancel</button>
+								</div>
 							</section>
 
 							<button type="submit">Submit Changes</button>

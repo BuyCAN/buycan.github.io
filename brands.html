@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta Information -->
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta name="description" content="BuyCAN for brands: correct or add your product's information">
+
+    <!-- Open Graph Tags for Social Media Sharing -->
+    <meta property="og:title" content="For Brands | BuyCAN">
+    <meta property="og:description" content="Brands can submit corrections or new products for review by the BuyCAN team">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://buycan.github.io/brands.html">
+    <meta name="theme-color" content="#1a5276">
+
+    <!-- Page Title -->
+    <title>For Brands | BuyCAN</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/brand.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Favicon -->
+    <link rel="icon" href="images/onlyleaf.png" type="image/png">
+</head>
+<body>
+    <header class="nav-bar">
+        <div class="nav-container">
+            <!-- Logo and Site Name -->
+            <div class="nav-logo">
+                <a href="index.html" class="logo-link">
+                    <img src="images/logo2.png" alt="BuyCan Logo" height="40">
+                    <span class="logo-text">BuyCan</span>
+                </a>
+            </div>
+
+            <nav class="nav-links">
+                <div class="static-links">
+                    <a href="support-us.html">Support Us</a>
+                    <a href="barcode.html">Barcode Lookup</a>
+                </div>
+
+                <div class="dropdown-nav">
+                    <button class="dropdown-btn">
+                        Home
+                        <span class="dropdown-arrow">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </span>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="index.html">Home Page</a>
+                        <a href="index.html#about">About Us</a>
+                        <a href="index.html#app-preview">App Preview</a>
+                        <a href="index.html#download">Download</a>
+                        <a href="index.html#contact">Our Team</a>
+                        <a href="policy.html">Privacy Policy</a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <section class="section-light">
+        <div class="container">
+            <div class="section-header">
+                <h2>For Brands</h2>
+                <p>Is our information about your product wrong or missing? Tell us, and our team will review it.</p>
+            </div>
+
+            <div class="lookup-container brand-container">
+                <!-- Shown when the backend answers 503 "disabled" -->
+                <div id="closed-panel" class="brand-panel brand-notice" hidden>
+                    <h3>Brand submissions aren't open yet</h3>
+                    <p>We're getting ready to accept product information from brands. Please check back soon, or email us at
+                        <a href="mailto:buycanadianapp@gmail.com">buycanadianapp@gmail.com</a>.</p>
+                </div>
+
+                <!-- Shown after a successful (202) submission -->
+                <div id="thanks-panel" class="brand-panel brand-success" hidden tabindex="-1">
+                    <h3>Thanks!</h3>
+                    <p>We'll review this and may email you to confirm you represent the brand.</p>
+                    <button type="button" id="another-button" class="lookup-button secondary-button">Submit another product</button>
+                </div>
+
+                <div id="intro-panel" class="brand-intro">
+                    <h3>How it works</h3>
+                    <ol>
+                        <li>Enter your product's barcode (UPC or EAN) to see what BuyCAN shows today.</li>
+                        <li>Correct what's wrong, or fill in a product we don't have yet.</li>
+                        <li>Add links that back up any Canadian claim, such as a photo of the label or your product page.</li>
+                        <li>Our team reviews every submission by hand and may email you to confirm you work for the brand. Nothing changes in the app until we approve it.</li>
+                    </ol>
+                    <p class="brand-fineprint">It's free. We don't accept file uploads: please link to images and pages hosted on your own website.
+                        Information we approve is shown in the app as provided by the brand.</p>
+                </div>
+
+                <!-- Step 1: barcode -->
+                <form id="brand-barcode-form" class="barcode-form" novalidate>
+                    <div class="form-group">
+                        <label for="barcode">Product barcode (UPC/EAN)</label>
+                        <div class="barcode-row">
+                            <input type="text" id="barcode" name="barcode" inputmode="numeric" autocomplete="off"
+                                   placeholder="e.g. 068400804895" required>
+                            <button type="submit" class="lookup-button" id="lookup-button">Look up</button>
+                        </div>
+                        <div class="field-error" data-error-for="barcode"></div>
+                    </div>
+                    <div class="loading" id="lookup-loading">
+                        <div class="loading-spinner"></div>
+                        <p>Looking up barcode...</p>
+                    </div>
+                </form>
+
+                <!-- Step 2: the submission form, shown after a lookup -->
+                <form id="submit-form" class="brand-form" novalidate hidden>
+                    <div id="product-status" class="brand-status"></div>
+
+                    <fieldset>
+                        <legend>Product information</legend>
+                        <p class="fieldset-help" id="product-help"></p>
+
+                        <div class="form-group">
+                            <label for="product_name">Product name <span class="req-new">*</span></label>
+                            <input type="text" id="product_name" name="product_name" maxlength="200">
+                            <div class="field-error" data-error-for="product_name"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="brand">Brand <span class="req-new">*</span></label>
+                            <input type="text" id="brand" name="brand" maxlength="200">
+                            <div class="field-error" data-error-for="brand"></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="parent_company">Parent company <span class="req-new">*</span></label>
+                                <input type="text" id="parent_company" name="parent_company" maxlength="200">
+                                <div class="field-error" data-error-for="parent_company"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="parent_company_country">Parent company's country</label>
+                                <input type="text" id="parent_company_country" name="parent_company_country" maxlength="200" placeholder="e.g. Canada">
+                                <div class="field-error" data-error-for="parent_company_country"></div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="percentage_canadian">% Canadian <span class="req-new">*</span></label>
+                                <input type="number" id="percentage_canadian" name="percentage_canadian" min="0" max="100" step="1" inputmode="numeric">
+                                <div class="field-hint evidence-hint">Raising this needs an evidence link (below).</div>
+                                <div class="field-error" data-error-for="percentage_canadian"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="label">Label <span class="req-new">*</span></label>
+                                <select id="label" name="label"></select>
+                                <div class="field-hint evidence-hint">Changing the label needs an evidence link (below).</div>
+                                <div class="field-error" data-error-for="label"></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="where_made">Where it's made</label>
+                            <textarea id="where_made" name="where_made" rows="3" maxlength="1000"
+                                      placeholder="e.g. Made in Brampton, Ontario with Canadian wheat"></textarea>
+                            <div class="field-error" data-error-for="where_made"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="image_url">Product image link (https)</label>
+                            <input type="url" id="image_url" name="image_url" maxlength="2000"
+                                   placeholder="https://www.yourbrand.ca/images/product.png">
+                            <div class="field-hint">A link to an image on your website. It must start with https://.</div>
+                            <div class="field-error" data-error-for="image_url"></div>
+                        </div>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>Evidence</legend>
+                        <p class="fieldset-help">Up to 5 links, such as a photo of the label or the product page on your website.
+                            <strong id="evidence-required-note" hidden>Required for this submission, because it raises the % Canadian or changes the label.</strong></p>
+                        <div id="evidence-list"></div>
+                        <button type="button" id="add-evidence" class="text-button">+ Add another link</button>
+                        <div class="field-error" data-error-for="evidence"></div>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>Your contact details</legend>
+                        <p class="fieldset-help">We use these only to confirm you represent the brand. We may email you before approving.</p>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="submitter_name">Your name *</label>
+                                <input type="text" id="submitter_name" name="submitter_name" maxlength="200" autocomplete="name" required>
+                                <div class="field-error" data-error-for="submitter_name"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="submitter_email">Work email *</label>
+                                <input type="email" id="submitter_email" name="submitter_email" maxlength="254" autocomplete="email" required>
+                                <div class="field-error" data-error-for="submitter_email"></div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="company_name">Company name *</label>
+                                <input type="text" id="company_name" name="company_name" maxlength="200" autocomplete="organization" required>
+                                <div class="field-error" data-error-for="company_name"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="company_website">Company website *</label>
+                                <input type="url" id="company_website" name="company_website" maxlength="2000" placeholder="https://www.yourbrand.ca" required>
+                                <div class="field-error" data-error-for="company_website"></div>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- Honeypot: hidden from people with CSS (not type=hidden). Always sent empty by real users. -->
+                    <div class="hp-field" aria-hidden="true">
+                        <label for="company_fax">Company fax</label>
+                        <input type="text" id="company_fax" name="company_fax" tabindex="-1" autocomplete="off">
+                    </div>
+
+                    <div class="turnstile-wrap">
+                        <div id="turnstile-widget"></div>
+                        <div class="field-error" data-error-for="turnstile"></div>
+                    </div>
+
+                    <div class="form-error" id="form-error" role="alert"></div>
+
+                    <button type="submit" class="lookup-button" id="submit-button">Submit for review</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>BuyCan</h3>
+                <p>Supporting Canadian-made products and local businesses since 2025.</p>
+            </div>
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="brands.html">For Brands</a></li>
+                    <li><a href="policy.html">Privacy Policy</a></li>
+                    <li><a href="/employees">Employee Login</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Connect</h3>
+                <ul>
+                    <li><a href="https://mail.google.com/mail/?view=cm&fs=1&to=buycanadianapp@gmail.com" target="_blank" rel="noopener noreferrer">Email Us</a></li>
+                    <li><a href="https://www.instagram.com/BuyCanApp" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2025 BuyCan. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <a href="#" class="back-to-top" aria-label="Back to top">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+    </a>
+
+    <script src="js/config.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/brand_submit.js"></script>
+    <!-- Cloudflare Turnstile (explicit render: brand_submit.js renders it with CONFIG.TURNSTILE_SITE_KEY) -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onTurnstileLoad" async defer></script>
+</body>
+</html>

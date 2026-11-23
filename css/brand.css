@@ -1,0 +1,270 @@
+/* ==========================================================================
+   Brand submission page (brands.html)
+   Builds on the barcode lookup styles in product.css.
+   ========================================================================== */
+
+.brand-container [hidden] {
+    display: none !important;
+}
+
+.brand-intro {
+    margin-bottom: 24px;
+}
+
+.brand-intro h3 {
+    margin-top: 0;
+    color: var(--primary-color);
+}
+
+.brand-intro ol {
+    padding-left: 1.3em;
+    line-height: 1.6;
+}
+
+.brand-fineprint {
+    font-size: 0.9em;
+    color: var(--muted-color);
+}
+
+.barcode-row {
+    display: flex;
+    gap: 10px;
+}
+
+.barcode-row input {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Panels: closed / thanks */
+.brand-panel {
+    padding: 20px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.brand-panel h3 {
+    margin-top: 0;
+}
+
+.brand-notice {
+    background: #fff8e1;
+    border: 1px solid var(--warning-color);
+}
+
+.brand-success {
+    background: #e9f7ef;
+    border: 1px solid var(--success-color);
+}
+
+.secondary-button {
+    margin-top: 10px;
+}
+
+/* What we show today / new product banner */
+.brand-status {
+    padding: 14px 16px;
+    border-radius: 6px;
+    background: var(--light-gray);
+    border-left: 4px solid var(--primary-color);
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.brand-status h4 {
+    margin: 0 0 6px 0;
+    color: var(--primary-color);
+}
+
+.brand-status dl {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 4px 12px;
+    margin: 8px 0 0 0;
+    font-size: 0.92em;
+}
+
+.brand-status dt {
+    font-weight: 600;
+    color: var(--dark-gray);
+}
+
+.brand-status dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+/* The form */
+.brand-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.brand-form fieldset {
+    border: 1px solid var(--medium-gray);
+    border-radius: 6px;
+    padding: 16px;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 0;
+}
+
+.brand-form legend {
+    font-weight: 700;
+    color: var(--primary-color);
+    padding: 0 6px;
+}
+
+.fieldset-help {
+    margin: 0;
+    font-size: 0.92em;
+    color: var(--dark-gray);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.brand-form .form-group select,
+.brand-form .form-group textarea {
+    padding: 12px;
+    border: 1px solid var(--medium-gray);
+    border-radius: 4px;
+    font-size: 16px;
+    font-family: inherit;
+    background: var(--white);
+    width: 100%;
+}
+
+.brand-form .form-group input {
+    width: 100%;
+}
+
+.brand-form .form-group select:focus,
+.brand-form .form-group textarea:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+.req-new {
+    display: none;
+    color: var(--danger-color);
+}
+
+.brand-form.is-new .req-new {
+    display: inline;
+}
+
+.field-hint {
+    font-size: 0.85em;
+    color: var(--muted-color);
+}
+
+.field-error {
+    font-size: 0.88em;
+    color: var(--danger-color);
+    font-weight: 600;
+}
+
+.field-error:empty {
+    display: none;
+}
+
+.has-error input,
+.has-error select,
+.has-error textarea {
+    border-color: var(--danger-color) !important;
+}
+
+.form-error {
+    color: var(--danger-color);
+    font-weight: 600;
+}
+
+.form-error:empty {
+    display: none;
+}
+
+/* Evidence links */
+.evidence-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.evidence-row input {
+    flex: 1;
+    min-width: 0;
+    padding: 12px;
+    border: 1px solid var(--medium-gray);
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.evidence-row button {
+    border: 1px solid var(--medium-gray);
+    background: var(--white);
+    border-radius: 4px;
+    padding: 0 12px;
+    cursor: pointer;
+    color: var(--dark-gray);
+}
+
+.text-button {
+    align-self: flex-start;
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--primary-color);
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.text-button:disabled {
+    color: var(--muted-color);
+    cursor: default;
+    text-decoration: none;
+}
+
+/* Honeypot: off-screen for people, still in the DOM for bots. */
+.hp-field {
+    position: absolute;
+    left: -10000px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+.turnstile-wrap {
+    min-height: 65px;
+}
+
+.brand-form .lookup-button:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+@media (max-width: 600px) {
+    .lookup-container.brand-container {
+        padding: 18px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .brand-status dl {
+        grid-template-columns: 1fr;
+    }
+
+    .brand-status dt {
+        margin-top: 4px;
+    }
+}
